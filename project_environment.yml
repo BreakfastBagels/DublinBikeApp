@@ -1,0 +1,9 @@
+name: comp30830_project
+channels:
+  - defaults
+dependencies:
+  - python=3.9
+  - jupyterlab
+  - pandas
+  - numpy
+prefix: C:\Users\foste\anaconda3\envs\comp30830.1

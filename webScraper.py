@@ -6,6 +6,8 @@ from sqlalchemy import create_engine
 with open("API_keys.json", "r") as API_file:
     API_keys_handle = json.load(API_file)
 
+with open("DB_keys.json", "r") as DB_file:
+    DB_file_handle = json.load(DB_file)
 
 def dublin_bikes_scraper():
     """Function to return sample data from dynamic bike availability data."""
@@ -24,27 +26,22 @@ def dublin_bikes_scraper():
     return dublin_bikes_dynamic_json
 
 def post_json_to_table(json):
-    USER = "admin"
-    PASSWORD = "Comp30830!"
-    HOST = "main-db.cd8z7cqv2c8a.us-east-1.rds.amazonaws.com"
-    PORT = "3306"
-    DB = "maindb"
+    USER = DB_file_handle['user']
+    PASSWORD = DB_file_handle['password']
+    HOST = DB_file_handle['host']
+    PORT = DB_file_handle['port']
+    DB = DB_file_handle['db']
     
     conn_str = f"mysql+mysqlconnector://{USER}:{PASSWORD}@{HOST}:{PORT}/{DB}"
     #leaving echo=True for console debugging - take out on deployment
     engine = create_engine(conn_str, echo=True)
-    sql="""CREATE DATABASE IF NOT EXISTS testdb;"""
-    engine.execute(sql)
-
-    '''
     for row in json:
-        print("Running")
+        #print("Running")
         time_value = row['last_update']*10**-3
-        
-        print(sql_query)
+        sql_query = f'''INSERT INTO `dynamic_table` (Station_Number, Available_Stands, Available_Bikes, Status, Updated) VALUES ({row['number']}, {row['available_bike_stands']}, {row['available_bikes']}, {row['status']}, {time_value});'''
+        #print(sql_query)
         engine.execute(sql_query)
-        print("executed")
-    '''
+        #print("executed")
 
 if __name__ == "__main__":
     while True:

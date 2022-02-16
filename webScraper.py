@@ -1,6 +1,7 @@
 import requests
 import json
 import time
+import datetime
 from sqlalchemy import create_engine
 
 with open("API_keys.json", "r") as API_file:
@@ -40,8 +41,9 @@ def post_json_to_table(json):
     engine = create_engine(conn_str, echo=True)
     for row in json:
         # print("Running")
-        time_value = row['last_update']*10**-3
-        status = f"{row['status']}"
+        timestamp = datetime.datetime.fromtimestamp((row['last_update']*10**-3))
+        time_value = f"\'{timestamp}\'"
+        status = f"\'{row['status']}\'"
         sql_query = f'''INSERT INTO `dynamic_table` (Station_Number, Available_Stands, Available_Bikes, Status, Updated) VALUES ({row['number']}, {row['available_bike_stands']}, {row['available_bikes']}, {status}, {time_value});'''
         # print(sql_query)
         engine.execute(sql_query)

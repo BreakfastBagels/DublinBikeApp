@@ -22,6 +22,7 @@ def dublin_bikes_scraper():
     # print(f"Statistics for station number {dublin_bikes_dynamic_json[0]['number']}:")
     # print(f"Current bike availability: {dublin_bikes_dynamic_json[0]['available_bikes']}")
     # print(f"Current bike space availability: {dublin_bikes_dynamic_json[0]['available_bike_stands']}")
+    print(f"Current bike space availability: {dublin_bikes_dynamic_json[0]['status']}")
     # print(f"This information was last updated at {time.ctime(dublin_bikes_dynamic_json[0]['last_update']*10**-3)}")
 
     return dublin_bikes_dynamic_json
@@ -40,7 +41,8 @@ def post_json_to_table(json):
     for row in json:
         # print("Running")
         time_value = row['last_update']*10**-3
-        sql_query = f'''INSERT INTO `dynamic_table` (Station_Number, Available_Stands, Available_Bikes, Status, Updated) VALUES ({row['number']}, {row['available_bike_stands']}, {row['available_bikes']}, {row['status']}, {time_value});'''
+        status = f"{row['status']}"
+        sql_query = f'''INSERT INTO `dynamic_table` (Station_Number, Available_Stands, Available_Bikes, Status, Updated) VALUES ({row['number']}, {row['available_bike_stands']}, {row['available_bikes']}, {status}, {time_value});'''
         # print(sql_query)
         engine.execute(sql_query)
         # print("executed")

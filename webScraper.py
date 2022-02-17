@@ -49,12 +49,8 @@ def post_json_to_table(json):
         status = f"\'{row['status']}\'"
         sql_query = f'''INSERT INTO `dynamic_table` (Station_Number, Available_Stands, Available_Bikes, Status, Updated, Entered) VALUES ({row['number']}, {row['available_bike_stands']}, {row['available_bikes']}, {status}, {timestamp_updated}, {timestamp_entered});'''
         # print(sql_query)
-        try:
-            engine.execute(sql_query)
-            # print("executed")
-        except sqlalchemy.exc.IntegrityError as e:
-            print(f"Error: {e}")
-
+        engine.execute(sql_query)
+        # print("executed")
 
 if __name__ == "__main__":
     while True:

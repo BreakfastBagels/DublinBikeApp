@@ -130,3 +130,5 @@ dmypy.json
 
 #Ignore API key file no matter its directory
 **/API_keys.json
+**/DB_keys.json
+**/nohup.out

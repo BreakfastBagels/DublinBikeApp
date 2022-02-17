@@ -42,10 +42,12 @@ def post_json_to_table(json):
     engine = create_engine(conn_str, echo=True)
     for row in json:
         # print("Running")
-        timestamp = datetime.datetime.fromtimestamp((row['last_update']*10**-3))
-        time_value = f"\'{timestamp}\'"
+        timestamp_updated = datetime.datetime.fromtimestamp((row['last_update']*10**-3))
+        timestamp_updated = f"\'{timestamp_updated}\'"
+        timestamp_entered = datetime.datetime.fromtimestamp(time.time())
+        timestamp_entered = f"\'{timestamp_entered}\'"
         status = f"\'{row['status']}\'"
-        sql_query = f'''INSERT INTO `dynamic_table` (Station_Number, Available_Stands, Available_Bikes, Status, Updated) VALUES ({row['number']}, {row['available_bike_stands']}, {row['available_bikes']}, {status}, {time_value});'''
+        sql_query = f'''INSERT INTO `dynamic_table` (Station_Number, Available_Stands, Available_Bikes, Status, Updated, Entered) VALUES ({row['number']}, {row['available_bike_stands']}, {row['available_bikes']}, {status}, {timestamp_updated}, {timestamp_entered});'''
         # print(sql_query)
         try:
             engine.execute(sql_query)

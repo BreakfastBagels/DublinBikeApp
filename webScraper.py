@@ -1,22 +1,17 @@
-import requests
 import json
 import time
 import datetime
+import getJSON as gj
 from sqlalchemy import create_engine
-
-with open("API_keys.json", "r") as API_file:
-    API_keys_handle = json.load(API_file)
 
 with open("DB_keys.json", "r") as DB_file:
     DB_file_handle = json.load(DB_file)
 
 
 def dublin_bikes_scraper():
-    """Function to return sample data from dynamic bike availability data."""
-    dublin_bikes_dynamic_data = requests.get("https://api.jcdecaux.com/vls/v1/stations?contract=dublin&apiKey="
-                                             + API_keys_handle['bikesApi'])
-    dublin_bikes_dynamic_json = json.loads(dublin_bikes_dynamic_data.content)
-    return dublin_bikes_dynamic_json
+    dublin_bikes = gj.GetJson('bikesApi')
+    dublin_bikes_json = dublin_bikes.get_bikes_json()
+    return dublin_bikes_json
 
 
 def post_json_to_table(json):

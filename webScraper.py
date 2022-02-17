@@ -47,7 +47,7 @@ def post_json_to_table(json):
         timestamp_entered = datetime.datetime.fromtimestamp(time.time())
         timestamp_entered = f"\'{timestamp_entered}\'"
         status = f"\'{row['status']}\'"
-        sql_query = f'''INSERT INTO `dynamic_table` (Station_Number, Available_Stands, Available_Bikes, Status, Updated, Entered) VALUES ({row['number']}, {row['available_bike_stands']}, {row['available_bikes']}, {status}, {timestamp_updated}, {timestamp_entered});'''
+        sql_query = f'''INSERT INTO `dynamic_table` (Station_Number, Available_Stands, Available_Bikes, Status, Station_Updated, Time_Entered) VALUES ({row['number']}, {row['available_bike_stands']}, {row['available_bikes']}, {status}, {timestamp_updated}, {timestamp_entered});'''
         # print(sql_query)
         engine.execute(sql_query)
         # print("executed")

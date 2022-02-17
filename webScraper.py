@@ -3,6 +3,7 @@ import json
 import time
 import datetime
 from sqlalchemy import create_engine
+import sqlalchemy
 
 with open("API_keys.json", "r") as API_file:
     API_keys_handle = json.load(API_file)
@@ -46,8 +47,11 @@ def post_json_to_table(json):
         status = f"\'{row['status']}\'"
         sql_query = f'''INSERT INTO `dynamic_table` (Station_Number, Available_Stands, Available_Bikes, Status, Updated) VALUES ({row['number']}, {row['available_bike_stands']}, {row['available_bikes']}, {status}, {time_value});'''
         # print(sql_query)
-        engine.execute(sql_query)
-        # print("executed")
+        try:
+            engine.execute(sql_query)
+            # print("executed")
+        except sqlalchemy.exc.IntegrityError as e:
+            print(f"Error: {e}")
 
 
 if __name__ == "__main__":

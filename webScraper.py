@@ -1,6 +1,8 @@
 import json
 import time
 import datetime
+
+import errors
 import getJSON as gj
 from sqlalchemy import create_engine
 
@@ -10,8 +12,26 @@ with open("DB_keys.json", "r") as DB_file:
 
 def dublin_bikes_scraper():
     dublin_bikes = gj.GetJson('bikesApi')
-    dublin_bikes_json = dublin_bikes.get_bikes_json()
-    return dublin_bikes_json
+    try:
+        dublin_bikes_json = dublin_bikes.get_bikes_json()
+    except errors.Error400:
+        print(errors.Error400())
+    except errors.Error401:
+        print(errors.Error401())
+    except errors.Error403:
+        print(errors.Error403())
+    except errors.Error404:
+        print(errors.Error404)
+    except errors.Error408:
+        print(errors.Error408())
+    except errors.Error429:
+        print(errors.Error429())
+    except errors.Error500:
+        print(errors.Error500())
+    except errors.Error511:
+        print(errors.Error511())
+    else:
+        return dublin_bikes_json
 
 
 def post_json_to_table(json):

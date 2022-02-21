@@ -25,18 +25,17 @@ def post_weather_to_table(json):
     
     conn_weather = f"mysql+mysqlconnector://{user}:{password}@{host}:{port}/{db}"
     weather_engine = create_engine(conn_weather, echo=True)
-    
-    for row in json:
-        timestamp_current_weather = datetime.datetime.fromtimestamp(time.time())
-        timestamp_current_weather = f"\'{timestamp_current_weather}\'"
-        current_temp = f"\'{row['current']['temp']}\'"
-        wind_speed = f"\'{row['current']['wind_speed']}\'"
-        current_ID = f"\'{row['current']['weather']['main']}\'"
-        current_description = f"\'{row['current']['weather']['description']}\'"
-        feels_like = f"\'{row['current']['feels_like']}\'"
-        sql_weather = f'''INSERT INTO `current_weather` (Time, Current_Temp, Feels_Like, Wind_Speed, Current_ID, Current_Description) VALUES ({timestamp_current_weather}, {current_temp}, {feels_like}, {wind_speed}, {current_ID}, {current_description});'''
-        weather_engine.execute(sql_weather)
-    
+
+    timestamp_current_weather = datetime.datetime.fromtimestamp(time.time())
+    timestamp_current_weather = f"\'{timestamp_current_weather}\'"
+    current_temp = f"\'{json['current']['temp']}\'"
+    wind_speed = f"\'{json['current']['wind_speed']}\'"
+    current_ID = f"\'{json['current']['weather'][0]['main']}\'"
+    current_description = f"\'{json['current']['weather'][0]['description']}\'"
+    feels_like = f"\'{json['current']['feels_like']}\'"
+    sql_weather = f'''INSERT INTO `current_weather` (Time, Current_Temp, Feels_Like, Wind_Speed, Current_ID, Current_Description) VALUES ({timestamp_current_weather}, {current_temp}, {feels_like}, {wind_speed}, {current_ID}, {current_description});'''
+    weather_engine.execute(sql_weather)
+
 if __name__ == "__main__":
     while True:
         weather_json = weather_scraper()

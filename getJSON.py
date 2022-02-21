@@ -61,4 +61,23 @@ class GetJson:
 
 # API request handled here for the weather data
     def get_weather_data(self):
-        pass
+        weather_data = requests.get\
+            (f"https://api.openweathermap.org/data/2.5/onecall?lat=53.3497645&lon=-6.2602732&exclude=minutely&appid={self.get_api()}")
+        if weather_data.status_code == 200:
+            return json.loads(weather_data.content)
+        elif weather_data.status_code == 400:
+            raise errors.Error400()
+        elif weather_data.status_code == 401:
+            raise errors.Error401()
+        elif weather_data.status_code == 403:
+            raise errors.Error403()
+        elif weather_data.status_code == 404:
+            raise errors.Error404()
+        elif weather_data.status_code == 408:
+            raise errors.Error408()
+        elif weather_data.status_code == 429:
+            raise errors.Error429()
+        elif weather_data.status_code == 500:
+            raise errors.Error500()
+        elif weather_data.status_code == 511:
+            raise errors.Error511()

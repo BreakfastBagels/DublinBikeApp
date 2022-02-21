@@ -132,3 +132,4 @@ dmypy.json
 **/API_keys.json
 **/DB_keys.json
 **/nohup.out
+**/Bagel_Weather.json

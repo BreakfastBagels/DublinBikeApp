@@ -34,7 +34,7 @@ def post_weather_to_table(json):
         current_ID = f"\'{row['current']['weather']['main']}\'"
         current_description = f"\'{row['current']['weather']['description']}\'"
         feels_like = f"\'{row['current']['feels_like']}\'"
-        sql_weather = f'''INSERT INTO `dynamic_table` (Time, Current_Temp, Feels_Like, Wind_Speed, Current_ID, Current_Description) VALUES ({timestamp_current_weather}, {current_temp}, {feels_like}, {wind_speed}, {current_ID}, {current_description});'''
+        sql_weather = f'''INSERT INTO `current_weather` (Time, Current_Temp, Feels_Like, Wind_Speed, Current_ID, Current_Description) VALUES ({timestamp_current_weather}, {current_temp}, {feels_like}, {wind_speed}, {current_ID}, {current_description});'''
         weather_engine.execute(sql_weather)
     
 if __name__ == "__main__":

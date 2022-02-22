@@ -129,7 +129,6 @@ dmypy.json
 .pyre/
 
 #Ignore API key file no matter its directory
-**/API_keys.json
-**/DB_keys.json
+**/keys.json
 **/nohup.out
 **/Bagel_Weather.json

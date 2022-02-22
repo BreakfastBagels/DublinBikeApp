@@ -3,8 +3,8 @@ import requests
 import errors
 
 # API keys file opened in this module to access the necessary keys for the user
-with open('API_keys.json', 'r') as API_file:
-    api_keys = json.load(API_file)
+with open('keys.json', 'r') as keys_file:
+    api_keys = json.load(keys_file)
 
 
 class GetJson:

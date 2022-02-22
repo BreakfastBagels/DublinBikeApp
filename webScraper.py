@@ -6,8 +6,8 @@ import errors
 import getJSON as gj
 from sqlalchemy import create_engine
 
-with open("DB_keys.json", "r") as DB_file:
-    DB_file_handle = json.load(DB_file)
+with open("keys.json", "r") as keys_file:
+    keys_handle = json.load(keys_file)
 
 
 def dublin_bikes_scraper():
@@ -35,11 +35,11 @@ def dublin_bikes_scraper():
 
 
 def post_json_to_table(json):
-    user = DB_file_handle['user']
-    password = DB_file_handle['password']
-    host = DB_file_handle['host']
-    port = DB_file_handle['port']
-    db = DB_file_handle['db']
+    user = keys_file['DB']['user']
+    password = keys_file['DB']['password']
+    host = keys_file['DB']['host']
+    port = keys_file['DB']['port']
+    db = keys_file['DB']['db']
     
     conn_str = f"mysql+mysqlconnector://{user}:{password}@{host}:{port}/{db}"
     engine = create_engine(conn_str, echo=True)

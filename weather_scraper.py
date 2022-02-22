@@ -31,14 +31,14 @@ def post_weather_to_table(json):
     current_ID = f"\'{json['current']['weather'][0]['main']}\'"
     current_description = f"\'{json['current']['weather'][0]['description']}\'"
     feels_like = f"\'{json['current']['feels_like']}\'"
-    max = f"\'{json['daily'][0]['temp']['max']}\'"
-    min = f"\'{json['daily'][0]['temp']['min']}\'"
+    max_weather = f"\'{json['daily'][0]['temp']['max']}\'"
+    min_weather = f"\'{json['daily'][0]['temp']['min']}\'"
     sunrise = f"\'{json['current']['sunrise']}\'"
     sunset = f"\'{json['current']['sunset']}\'"
     sql_weather = f'''INSERT INTO `current_weather` (Time, Current_Temp,
      Feels_Like, Wind_Speed, Current_ID, Current_Description, Sunrise, Sunset, Max_Temp, Min_Temp) 
      VALUES ({timestamp_current_weather}, {current_temp}, {feels_like}, 
-    {wind_speed}, {current_ID}, {current_description}, {sunrise}, {sunset}, {max}, {min});'''
+    {wind_speed}, {current_ID}, {current_description}, {sunrise}, {sunset}, {max_weather}, {min_weather});'''
     weather_engine.execute(sql_weather)
 
 

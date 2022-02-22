@@ -24,7 +24,7 @@ class GetJson:
         elif requested_key not in api_keys:
             raise ValueError("That input is invalid. Check the api keys file for valid inputs")
         else:
-            self._key = requested_key
+            return requested_key
 
     def del_key(self):
         del self._key

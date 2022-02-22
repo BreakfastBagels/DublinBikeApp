@@ -3,12 +3,9 @@ import time
 import datetime
 import getJSON as gj
 from sqlalchemy import create_engine
-
-with open('Bagel_Weather.json', 'r') as API_weather_file:
-    API_keys = json.load(API_weather_file)
     
-with open("DB_keys.json", "r") as DB_file:
-    DB_file_handle = json.load(DB_file)
+with open("keys.json", "r") as keys_file:
+    keys_handle = json.load(keys_file)
 
 
 def weather_scraper():
@@ -18,11 +15,11 @@ def weather_scraper():
 
 
 def post_weather_to_table(json):
-    user = DB_file_handle['user']
-    password = DB_file_handle['password']
-    host = DB_file_handle['host']
-    port = DB_file_handle['port']
-    db = DB_file_handle['db']
+    user = keys_handle['DB']['user']
+    password = keys_handle['DB']['password']
+    host = keys_handle['DB']['host']
+    port = keys_handle['DB']['port']
+    db = keys_handle['DB']['db']
     
     conn_weather = f"mysql+mysqlconnector://{user}:{password}@{host}:{port}/{db}"
     weather_engine = create_engine(conn_weather, echo=True)

@@ -58,4 +58,4 @@ if __name__ == "__main__":
     while True:
         bikes_json = dublin_bikes_scraper()
         post_json_to_table(bikes_json)
-        time.sleep(300)        # Info appears to update around every 5 minutes based on tests
+        time.sleep(600)        # Info appears to update around every 5 minutes based on tests

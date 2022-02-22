@@ -2,6 +2,7 @@ import json
 import time
 import datetime
 import getJSON as gj
+import errors
 from sqlalchemy import create_engine
     
 with open("keys.json", "r") as keys_file:
@@ -10,8 +11,27 @@ with open("keys.json", "r") as keys_file:
 
 def weather_scraper():
     """Function to return data from weather data"""
-    dublin_weather_json = gj.GetJson('Bagel_Weather')
-    return dublin_weather_json
+    dublin_weather = gj.GetJson('Bagel_Weather')
+    try:
+        dublin_weather_json = dublin_weather.get_weather_data()
+    except errors.Error400:
+        print(errors.Error400())
+    except errors.Error401:
+        print(errors.Error401())
+    except errors.Error403:
+        print(errors.Error403())
+    except errors.Error404:
+        print(errors.Error404)
+    except errors.Error408:
+        print(errors.Error408())
+    except errors.Error429:
+        print(errors.Error429())
+    except errors.Error500:
+        print(errors.Error500())
+    except errors.Error511:
+        print(errors.Error511())
+    else:
+        return dublin_weather_json
 
 
 def post_weather_to_table(json):

@@ -35,11 +35,11 @@ def dublin_bikes_scraper():
 
 
 def post_json_to_table(json):
-    user = keys_file['DB']['user']
-    password = keys_file['DB']['password']
-    host = keys_file['DB']['host']
-    port = keys_file['DB']['port']
-    db = keys_file['DB']['db']
+    user = keys_handle['DB']['user']
+    password = keys_handle['DB']['password']
+    host = keys_handle['DB']['host']
+    port = keys_handle['DB']['port']
+    db = keys_handle['DB']['db']
     
     conn_str = f"mysql+mysqlconnector://{user}:{password}@{host}:{port}/{db}"
     engine = create_engine(conn_str, echo=True)

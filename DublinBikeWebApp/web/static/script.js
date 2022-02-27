@@ -1,9 +1,9 @@
-const button = document.getElementById('get-button');
+const requestButtons = [...document.getElementsByClassName('request-button')];
 
-button.addEventListener('click', getJSON);
-
-async function getJSON() {
-    const response = await fetch('/station');
-    const json = await response.json()
-    console.log(json)
-}
+requestButtons.forEach((button) => {
+    button.addEventListener('click', async () => {
+        const response = await fetch(`/station/${button.id}`);
+        const json = await response.json()
+        console.log(json)
+    })
+})

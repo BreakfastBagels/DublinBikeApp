@@ -9,23 +9,32 @@ def root():
 
 @app.route('/station/<int:station_id>')
 def get_station(station_id):
-    if (station_id == 1):
+    if (station_id == 2):
         return jsonify(
              {
-                 "station_number": "1",
-                 "station_name" : "O'Connell Street"
+                 "number": "2",
+                 "name" : "BLESSINGTON STREET",
+                 "address" : "Blessington Street",
+                 "latitude" : "53.356769",
+                 "longitude" : "-6.26814",
              })
-    elif (station_id == 2):
+    elif (station_id == 3):
         return jsonify(
              {
-                 "station_number": "2",
-                 "station_name" : "Grafton Street"
+                 "number": "3",
+                 "name" : "BOLTON STREET",
+                 "address" : "Bolton Street",
+                 "latitude" : "53.351182",
+                 "longitude" : "-6.269859",
              })
     else:
         return jsonify(
              {
-                 "station_number": "99",
-                 "station_name" : "Error"
+                 "number": "99",
+                 "name" : "ERROR",
+                 "address" : "Bolton Street",
+                 "latitude" : "0.0000",
+                 "longitude" : "0.0000",
              })
 
 if __name__ == "__main__":

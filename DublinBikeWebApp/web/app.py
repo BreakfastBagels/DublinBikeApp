@@ -1,11 +1,29 @@
 #!/usr/bin/env python
-from flask import Flask, jsonify
+from flask import Flask, jsonify, redirect, url_for, render_template
+from flaskext.mysql import MySQL
 
-app = Flask(__name__, static_url_path='')
+app = Flask(__name__)
+mysql = MySQL()
 
-@app.route('/')
-def root():
-    return app.send_static_file('index.html')
+app.config['MYSQL_DATABASE_HOST'] = '127.0.0.1'
+app.config['MYSQL_DATABASE_PORT'] = 3306
+app.config['MYSQL_DATABASE_USER'] = 'root'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'jackjack'
+
+mysql.init_app(app)
+
+@app.route("/")
+def landing_page():
+    return render_template("index.html", content = "trying stuff out")
+
+@app.route("/get-weather")
+def get():
+    cur = mysql.connect().cursor()
+    cur.execute('''select * from maindb.current_weather''')
+    r = [dict((cur.description[i][0], value)
+                for i, value in enumerate(row)) for row in cur.fetchall()]
+    json_weather = jsonify({'myCollection' : r})
+    return json_weather
 
 @app.route('/station/<int:station_id>')
 def get_station(station_id):

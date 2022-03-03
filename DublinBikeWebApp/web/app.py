@@ -68,7 +68,7 @@ def get_keys():
 #     if not (engine):
 #         engine = create_engine(conn_str, echo=True)
 #     sql = "SELECT * FROM localdublinbikescopy.static_table;"
-#     station_info = engine.execute(sql).fetchall()
+#     station_info = engi&& ne.execute(sql).fetchall()
 #     station_info_list = {}
 #     for row in station_info:
 #         station_info_list.update({"number":row.number, "name":row.name, "address":row.address, "lat":row.latitude, "lng": row.longitude})

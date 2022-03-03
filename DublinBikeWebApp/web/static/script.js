@@ -87,3 +87,25 @@ function capitalise(str) {
     const lower = str.toLowerCase()
     return str.charAt(0).toUpperCase() + lower.slice(1)
 }
+
+fetch("/keys.json")
+    .then(function(resp) {
+        return resp.json();
+    })
+    .then(function(data) {
+        let mapkey = data['mapsApi'];
+        var script = document.createElement('script');
+        var api_url = 'https://maps.googleapis.com/maps/api/js?key='+mapkey+'&callback=initMap';
+        script.src = api_url
+        script.async = true;
+
+        window.initMap = function() {
+            let map;
+
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat:53.34228, lng:-6.27455},
+                zoom: 13});
+        };
+
+        document.head.appendChild(script);
+    })

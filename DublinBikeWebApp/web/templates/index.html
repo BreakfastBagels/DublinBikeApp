@@ -2,6 +2,8 @@
 <html>
     <head>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" 
+        href="{{ url_for('static', filename='mapstyles.css')}}" />
         <title>{%block title %}{% endblock %}</title>
         <script src="../static/script.js" defer></script>
     </head>
@@ -43,7 +45,11 @@
     </nav>
     {% block content %}
     <div class="container">
-        <div class="row mt-3" id="station-div">
+        <div class="row-mt-3">
+          <h3>First Flask test-drive</h3>
+          <div id="map"></div>
+        </div>
+        <div class="row mt-3" id="map">
             <div class="col-6"id="button-div">
                 <button type="button" class="btn btn-primary request-button" id="2">Get station 2 data</button>
                 <button type="button" class="btn btn-primary request-button" id="3">Get station 3 data</button>

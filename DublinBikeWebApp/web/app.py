@@ -62,17 +62,17 @@ def get_keys():
         api_keys = json.load(keys_file)
         return jsonify(api_keys)
 
-# @app.route('/static_stations')
-# def static_stations():
-#     engine = create_engine(conn_str, echo=True)
-#     if not (engine):
-#         engine = create_engine(conn_str, echo=True)
-#     sql = "SELECT * FROM localdublinbikescopy.static_table;"
-#     station_info = engi&& ne.execute(sql).fetchall()
-#     station_info_list = {}
-#     for row in station_info:
-#         station_info_list.update({"number":row.number, "name":row.name, "address":row.address, "lat":row.latitude, "lng": row.longitude})
-#     return jsonify(station_info_list)
+@app.route('/static_stations')
+def static_stations():
+    engine = create_engine(conn_str, echo=True)
+    if not (engine):
+        engine = create_engine(conn_str, echo=True)
+    sql = "SELECT * FROM localdublinbikescopy.static_table;"
+    station_info = engine.execute(sql).fetchall()
+    station_info_list = {}
+    for row in station_info:
+        station_info_list.update({"number":row.number, "name":row.name, "address":row.address, "lat":row.latitude, "lng": row.longitude})
+    return jsonify(station_info_list)
 
 if __name__ == "__main__":
     app.run(debug=True)

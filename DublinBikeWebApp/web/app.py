@@ -23,7 +23,7 @@ def get():
     cur.execute('''select * from maindb.current_weather''')
     r = [dict((cur.description[i][0], value)
                 for i, value in enumerate(row)) for row in cur.fetchall()]
-    json_weather = jsonify({'myCollection' : r})
+    json_weather = jsonify({'weather' : r})
     return json_weather
 
 @app.route('/station/<int:station_id>')
@@ -64,15 +64,12 @@ def get_keys():
 
 @app.route('/static_stations')
 def static_stations():
-    engine = create_engine(conn_str, echo=True)
-    if not (engine):
-        engine = create_engine(conn_str, echo=True)
-    sql = "SELECT * FROM localdublinbikescopy.static_table;"
-    station_info = engine.execute(sql).fetchall()
-    station_info_list = {}
-    for row in station_info:
-        station_info_list.update({"number":row.number, "name":row.name, "address":row.address, "lat":row.latitude, "lng": row.longitude})
-    return jsonify(station_info_list)
+    cur = mysql.connect().cursor()
+    cur.execute('''select * from maindb.static_table''')
+    r = [dict((cur.description[i][0], value)
+                for i, value in enumerate(row)) for row in cur.fetchall()]
+    json_stations = jsonify({'stations' : r})
+    return json_stations
 
 if __name__ == "__main__":
     app.run(debug=True)

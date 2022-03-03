@@ -88,7 +88,7 @@ function capitalise(str) {
     return str.charAt(0).toUpperCase() + lower.slice(1)
 }
 
-fetch("/keys.json")
+fetch("/keys")
     .then(function(resp) {
         return resp.json();
     })

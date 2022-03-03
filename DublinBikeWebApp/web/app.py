@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from flask import Flask, jsonify, redirect, url_for, render_template
 from flaskext.mysql import MySQL
+import json
 
 app = Flask(__name__)
 mysql = MySQL()
@@ -54,6 +55,24 @@ def get_station(station_id):
                  "latitude" : "0.0000",
                  "longitude" : "0.0000",
              })
+
+@app.route('/keys')
+def get_keys():
+    with open('DublinBikeDataCollection/keys.json', 'r') as keys_file:
+        api_keys = json.load(keys_file)
+        return jsonify(api_keys)
+
+# @app.route('/static_stations')
+# def static_stations():
+#     engine = create_engine(conn_str, echo=True)
+#     if not (engine):
+#         engine = create_engine(conn_str, echo=True)
+#     sql = "SELECT * FROM localdublinbikescopy.static_table;"
+#     station_info = engine.execute(sql).fetchall()
+#     station_info_list = {}
+#     for row in station_info:
+#         station_info_list.update({"number":row.number, "name":row.name, "address":row.address, "lat":row.latitude, "lng": row.longitude})
+#     return jsonify(station_info_list)
 
 if __name__ == "__main__":
     app.run(debug=True)

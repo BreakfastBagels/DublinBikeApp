@@ -25,7 +25,7 @@ async function getWeatherJSON() {
 
 async function postWeatherInfoToDom() {
     const weatherJSON = await getWeatherJSON();
-    const collectionArray = weatherJSON.myCollection;
+    const collectionArray = weatherJSON.weather;
     const lastEntry = collectionArray[collectionArray.length - 1];
     const weatherBox = drawWeatherBox(lastEntry);
     weatherBoxCol.appendChild(weatherBox);

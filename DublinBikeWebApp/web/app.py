@@ -9,7 +9,7 @@ mysql = MySQL()
 app.config['MYSQL_DATABASE_HOST'] = '127.0.0.1'
 app.config['MYSQL_DATABASE_PORT'] = 3306
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'jackjack'
+app.config['MYSQL_DATABASE_PASSWORD'] = ''
 
 mysql.init_app(app)
 
@@ -20,7 +20,7 @@ def landing_page():
 @app.route("/get-weather")
 def get():
     cur = mysql.connect().cursor()
-    cur.execute('''select * from maindb.current_weather''')
+    cur.execute('''select * from localdublinbikescopy.current_weather''')
     r = [dict((cur.description[i][0], value)
                 for i, value in enumerate(row)) for row in cur.fetchall()]
     json_weather = jsonify({'weather' : r})
@@ -65,7 +65,7 @@ def get_keys():
 @app.route('/static_stations')
 def static_stations():
     cur = mysql.connect().cursor()
-    cur.execute('''select * from maindb.static_table''')
+    cur.execute('''select * from localdublinbikescopy.static_table''')
     r = [dict((cur.description[i][0], value)
                 for i, value in enumerate(row)) for row in cur.fetchall()]
     json_stations = jsonify({'stations' : r})

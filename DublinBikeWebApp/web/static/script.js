@@ -96,7 +96,7 @@ fetch("/keys")
         let mapkey = data['mapsApi'];
         var script = document.createElement('script');
         var api_url = 'https://maps.googleapis.com/maps/api/js?key='+mapkey+'&callback=initMap';
-        script.src = api_url
+        script.src = api_url;
         script.async = true;
 
         window.initMap = function() {
@@ -105,6 +105,27 @@ fetch("/keys")
             map = new google.maps.Map(document.getElementById("map"), {
                 center: { lat:53.34228, lng:-6.27455},
                 zoom: 13});
+
+            fetch("/static_stations")
+            .then(function(resp) {
+                return resp.json();
+            })
+            .then(function(data) {
+//                console.log(parseFloat(data['stations'][0]['latitude']), typeof(parseFloat(data['stations'][0]['latitude'])));
+                for (var i = 0; i < data['stations'].length; i++) {
+                    var station_position = {'latitude':data['stations'][i]['latitude'],
+                    'longitude':data['stations'][i]['longitude']}
+//                    console.log(station_position['latitude'], station_position['longitude']);
+                    var marker = new google.maps.Marker({
+                        position: {lat: parseFloat(station_position['latitude']),
+                        lng: parseFloat(station_position['longitude'])},
+                        map: map,
+                        title: data['stations'][i]['name'],
+                    });
+//
+//                    marker.setMap(map);
+                    }
+                });
         };
 
         document.head.appendChild(script);

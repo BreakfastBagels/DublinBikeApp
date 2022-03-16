@@ -11,7 +11,7 @@
     <body>
 
       <!-- Navigation -->
-      <nav class="navbar navbar-expand-lg navbar-dark bg-info">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
           <a class="navbar-brand" href="#">BAGEL BIKES</a>
 
@@ -22,13 +22,13 @@
           <div class="collapse navbar-collapse" id="nav">
             <ul class="navbar-nav ms-auto">
               <li class="nav-item">
-                <a href="#" class="nav-link">Home</a>
+                <a href="home" class="nav-link">Home</a>
               </li>
               <li class="nav-item">
-                <a href="#map" class="nav-link">Bike Map</a>
+                <a href="map" class="nav-link">Bike Map</a>
               </li>
               <li class="nav-item">
-                <a href="#stats" class="nav-link">Helpful Statistics</a>
+                <a href="stats" class="nav-link">Helpful Statistics</a>
               </li>
             </ul>
           </div>
@@ -37,7 +37,7 @@
 
       <!-- Banner Image -->
 
-      <section class="bg-light text-dark p-5">
+      <section class="bg-info text-light p-5">
         <div class="container">
           <div class="d-sm-flex">
             <div>
@@ -49,27 +49,9 @@
         </div>
       </section>
 
-<!-- Map Section -->
-
-    {% block content %}
-    <section class="bg-light text-dark p-5">
-    <div class="container">
-      <p class="lead">Map with Current Bike Station Information</p>
-        <div class="row-mt-3">
-          <div id="map"></div>
-        </div>
-        <div class="row mt-3" id="map">
-            <div class="col-6"id="button-div">
-                <button type="button" class="btn btn-primary request-button" id="2">Get station 2 data</button>
-                <button type="button" class="btn btn-primary request-button" id="3">Get station 3 data</button>
-            </div>
-            <div class="col-6" id="info-div">
-            </div>
-        </div>
-      </div>
-    </section>
-
 <!-- Weather Section -->
+  
+    {% block content %}
 
       <section class="bg-light text-dark p-5">
       <div class="container">

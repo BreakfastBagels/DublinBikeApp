@@ -104,7 +104,28 @@ fetch("/keys")
 
             map = new google.maps.Map(document.getElementById("map"), {
                 center: { lat:53.34228, lng:-6.27455},
-                zoom: 13});
+                zoom: 14,
+                styles: [
+                {featureType: "administrative",
+                elementType: "all",
+                stylers: [{visibility: "off"}],},
+                {featureType: "poi.government",
+                elementType: "all",
+                stylers: [{visibility: "off"}],},
+                {featureType: "poi.medical",
+                elementType: "all",
+                stylers: [{visibility: "off"}],},
+                {featureType: "poi.school",
+                elementType: "all",
+                stylers: [{visibility: "off"}],},
+                {featureType: "poi.place_of_worship",
+                elementType: "all",
+                stylers: [{visibility: "off"}],},
+                {featureType: "poi.sports_complex",
+                elementType: "all",
+                stylers: [{visibility: "off"}],},
+                ]
+                });
 
             fetch("/static_stations")
             .then(function(resp) {

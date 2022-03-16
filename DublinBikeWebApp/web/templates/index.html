@@ -37,7 +37,7 @@
 
       <!-- Banner Image -->
 
-      <section class="bg-light text-dark p-2">
+      <section class="bg-light text-dark p-5">
         <div class="container">
           <div class="d-sm-flex">
             <div>
@@ -49,9 +49,12 @@
         </div>
       </section>
 
+<!-- Map Section -->
 
     {% block content %}
+    <section class="bg-light text-dark p-5">
     <div class="container">
+      <p class="lead">Map with Current Bike Station Information</p>
         <div class="row-mt-3">
           <div id="map"></div>
         </div>
@@ -63,11 +66,20 @@
             <div class="col-6" id="info-div">
             </div>
         </div>
+      </div>
+    </section>
+
+<!-- Weather Section -->
+
+      <section class="bg-light text-dark p-5">
+      <div class="container">
+        <p class="lead">Current and Future Weather Information</p>
         <div class="row mt-3" id="weather-div">
             <div class="col-6-md p-4 border text-center" id="weather-box-col"></div>
             <div class="col-6-md"></div>
         </div>
     </div>
+  </section>
     {% endblock %}
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>

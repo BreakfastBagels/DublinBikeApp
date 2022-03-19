@@ -100,6 +100,8 @@ fetch("/keys")
         script.async = true;
 
         window.initMap = function() {
+            var directionsService = new google.maps.DirectionsService();
+            var directionsRenderer = new google.maps.DirectionsRenderer();
             let map;
 
             map = new google.maps.Map(document.getElementById("map"), {
@@ -127,6 +129,8 @@ fetch("/keys")
                 ]
                 });
 
+            directionsRenderer.setMap(map);
+
             fetch("/static_stations")
             .then(function(resp) {
                 return resp.json();
@@ -148,21 +152,24 @@ fetch("/keys")
                     }
                 });
 
-//            function createRoute() {
-//                var start = document.getElementById('start').value;
-//                var end = document.getElementById('end').value;
-//                var request = {
-//                    origin: start,
-//                    destination: end,
-//                    travelMode: 'BICYCLING',
-//                };
-//                directionsService.route(request, function(result, status) {
-//                    if (status == 'OK') {
-//                        directionsRenderer.setDirections(result);
-//                    }
-//                });
-//            }
         };
 
         document.head.appendChild(script);
+
+        function createRoute() {
+            var start = document.getElementById('start').value;
+            var end = document.getElementById('end').value;
+            var request = {
+                origin: start,
+                destination: end,
+                travelMode: 'BICYCLING',
+            };
+            directionsService.route(request, function(result, status) {
+                if (status == 'OK') {
+                    directionsRenderer.setDirections(result);
+                }
+            });
+        }
     })
+
+

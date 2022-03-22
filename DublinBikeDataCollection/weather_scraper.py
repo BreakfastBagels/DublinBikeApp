@@ -64,7 +64,7 @@ def post_weather_to_table(json):
     #hourly weather
     for i in range(len(json)):
         hour_temp = f"\'{json['hourly'][i]['temp']}\'"
-        hour_time = f"\'{json['hourly'][i]['dt']}\'"
+        hour_time = f"\'{datetime.datetime.fromtimestamp(json['hourly'][i]['dt'])}\'"
         hour_feels = f"\'{json['hourly'][i]['feels_like']}\'"
         hour_wind = f"\'{json['hourly'][i]['wind_speed']}\'"
         hour_ID = f"\'{json['hourly'][i]['weather'][0]['id']}\'"
@@ -77,7 +77,7 @@ def post_weather_to_table(json):
 
     #daily_weather
     for j in range(len(json)):
-        day_time = f"\'{json['daily'][j]['dt']}\'"
+        day_time = f"\'{datetime.datetime.fromtimestamp(json['daily'][j]['dt'])}\'"
         day_sunrise = f"\'{json['daily'][j]['sunrise']}\'"
         day_sunset = f"\'{json['daily'][j]['sunset']}\'"
         day_temp = f"\'{json['daily'][j]['temp']['day']}\'"

@@ -1,6 +1,7 @@
 const requestButtons = [...document.getElementsByClassName('request-button')];
 const weatherBoxCol = document.getElementById('weather-box-col');
 var directionsService;
+var directionsRenderer;
 
 requestButtons.forEach((button) => {
     button.addEventListener('click', async () => {
@@ -102,7 +103,7 @@ fetch("/keys")
 
         window.initMap = function() {
             directionsService = new google.maps.DirectionsService();
-            var directionsRenderer = new google.maps.DirectionsRenderer();
+            directionsRenderer = new google.maps.DirectionsRenderer();
             let map;
 
             map = new google.maps.Map(document.getElementById("map"), {
@@ -174,11 +175,15 @@ fetch("/keys")
     })
 
 function createRoute() {
-    var start = document.getElementById('start').value;
-    var end = document.getElementById('end').value;
+    var startString = document.getElementById('start').value;
+    var endString = document.getElementById('end').value;
+    console.log(startString, typeof(start));
+    console.log(endString, typeof(end));
+    var startArray = startString.split(",");
+    var endArray = endString.split(",");
     var request = {
-        origin: start,
-        destination: end,
+        origin: {lat: parseFloat(startArray[0]), lng: parseFloat(startArray[1])},
+        destination: {lat: parseFloat(endArray[0]), lng: parseFloat(endArray[1])},
         travelMode: 'BICYCLING',
     };
     directionsService.route(request, function(result, status) {

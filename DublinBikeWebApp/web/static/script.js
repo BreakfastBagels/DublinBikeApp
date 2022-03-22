@@ -1,22 +1,8 @@
-const requestButtons = [...document.getElementsByClassName('request-button')];
+// Global Calls
 const weatherBoxCol = document.getElementById('weather-box-col');
-
-requestButtons.forEach((button) => {
-    button.addEventListener('click', async () => {
-        const stationJSON = await getStationJSON(button.id)
-        const stationTable = createStationTable(stationJSON);
-        insertStationTableToDom(stationTable);
-    })
-})
-
 postWeatherInfoToDom()
 
-async function getStationJSON(id) {
-    const response = await fetch(`/station/${id}`);
-    const json = await response.json();
-    return json
-}
-
+// Weather Box Code
 async function getWeatherJSON() {
     const response = await fetch('/get-weather');
     const json = await response.json();
@@ -29,32 +15,6 @@ async function postWeatherInfoToDom() {
     const lastEntry = collectionArray[collectionArray.length - 1];
     const weatherBox = drawWeatherBox(lastEntry);
     weatherBoxCol.appendChild(weatherBox);
-}
-
-function createStationTable(json) {
-    const table = document.createElement('table');
-    const attributeNames = [ 'Station Number', 'Station Name', 'Station Address', 'Latitude', 'Longitude']
-    const attributeKeys = ['number', 'name', 'address', 'latitude', 'longitude']
-    for (let i = 0; i < attributeNames.length; i++) {
-        let row = document.createElement('tr');
-        let rowAttributeCell = document.createElement('td');
-        rowAttributeCell.textContent = attributeNames[i];
-        row.appendChild(rowAttributeCell);
-        let rowInfoCell = document.createElement('td');
-        rowInfoCell.textContent = json[attributeKeys[i]];
-        row.appendChild(rowInfoCell)
-        table.appendChild(row)
-    }
-    return table
-}
-
-function insertStationTableToDom(table) {
-    const infoDiv = document.getElementById('info-div');
-    if (infoDiv.hasChildNodes()) {
-        const existingNode = infoDiv.firstChild;
-        infoDiv.removeChild(existingNode);
-    }
-    infoDiv.appendChild(table);
 }
 
 function drawWeatherBox(json) {
@@ -88,6 +48,29 @@ function capitalise(str) {
     return str.charAt(0).toUpperCase() + lower.slice(1)
 }
 
+// Google Maps Code
+async function getLiveStationJSON (stationNumber) {
+    const response = await fetch('/station_info');
+    const json = await response.json();
+    const stationInfoArr = json["station_info"]
+    for (let i = 0; i < stationInfoArr.length; i++) {
+        if (stationInfoArr[i]["Station_Number"] == stationNumber) return stationInfoArr[i]
+    }
+}
+
+function getInfoWindowContent(stationJSON) {
+    const cleanedStationName = stationJSON['address'].replace(/\"/g, "");
+    const stationCapacity = stationJSON['Available_Stands'] + stationJSON['Available_Bikes'];
+    return [
+        `Station Name: ${cleanedStationName}`, 
+        `Station Number: ${stationJSON['Station_Number']}`,
+        `Available Stands: ${stationJSON['Available_Stands']}`, 
+        `Available Bikes: ${stationJSON['Available_Bikes']}`,
+        `Station Capacity: ${stationCapacity}`,
+        `Last Updated: ${stationJSON['Time_Entered']}`,  
+    ].join("<br>");
+}
+
 fetch("/keys")
     .then(function(resp) {
         return resp.json();
@@ -96,7 +79,7 @@ fetch("/keys")
         let mapkey = data['mapsApi'];
         var script = document.createElement('script');
         var api_url = 'https://maps.googleapis.com/maps/api/js?key='+mapkey+'&callback=initMap';
-        script.src = api_url
+        script.src = api_url;
         script.async = true;
 
         window.initMap = function() {
@@ -104,7 +87,59 @@ fetch("/keys")
 
             map = new google.maps.Map(document.getElementById("map"), {
                 center: { lat:53.34228, lng:-6.27455},
-                zoom: 13});
+                zoom: 14,
+                styles: [
+                {featureType: "administrative",
+                elementType: "all",
+                stylers: [{visibility: "off"}],},
+                {featureType: "poi.government",
+                elementType: "all",
+                stylers: [{visibility: "off"}],},
+                {featureType: "poi.medical",
+                elementType: "all",
+                stylers: [{visibility: "off"}],},
+                {featureType: "poi.school",
+                elementType: "all",
+                stylers: [{visibility: "off"}],},
+                {featureType: "poi.place_of_worship",
+                elementType: "all",
+                stylers: [{visibility: "off"}],},
+                {featureType: "poi.sports_complex",
+                elementType: "all",
+                stylers: [{visibility: "off"}],},
+                ]
+                });
+
+            fetch("/static_stations")
+            .then(function(resp) {
+                return resp.json();
+            })
+            .then(function(data) {
+                for (let i = 0; i < data['stations'].length; i++) {
+                    const station_position = {'latitude':data['stations'][i]['latitude'],
+                    'longitude':data['stations'][i]['longitude']}
+                    const marker = new google.maps.Marker({
+                        position: {lat: parseFloat(station_position['latitude']),
+                        lng: parseFloat(station_position['longitude'])},
+                        map: map,
+                        title: data['stations'][i]['name'],
+                    });
+                    const stationNumber =  data['stations'][i]['number'];
+                    marker.addListener("click", async () => {
+                        const liveStationJSON = await getLiveStationJSON(stationNumber)
+                        const infoWindowContent = getInfoWindowContent(liveStationJSON);
+                        const infoWindow = new google.maps.InfoWindow({
+                            content: infoWindowContent,
+                        })
+                        infoWindow.open({
+                            anchor: marker,
+                            map,
+                            shouldFocus: false,
+                        })
+                    })                                                
+                    marker.setMap(map);
+                }
+            });
         };
 
         document.head.appendChild(script);

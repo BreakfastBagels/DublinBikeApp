@@ -1,7 +1,7 @@
 import json
 import time
 import datetime
-import getJSON as gj
+import getJson as gj
 import errors
 from sqlalchemy import create_engine
     
@@ -41,9 +41,9 @@ def post_weather_to_table(json):
     port = keys_handle['DB']['port']
     db = keys_handle['DB']['db']
     
+    #current weather
     conn_weather = f"mysql+mysqlconnector://{user}:{password}@{host}:{port}/{db}"
     weather_engine = create_engine(conn_weather, echo=True)
-
     timestamp_current_weather = datetime.datetime.fromtimestamp(time.time())
     timestamp_current_weather = f"\'{timestamp_current_weather}\'"
     current_temp = f"\'{json['current']['temp']}\'"
@@ -60,6 +60,41 @@ def post_weather_to_table(json):
      VALUES ({timestamp_current_weather}, {current_temp}, {feels_like}, 
     {wind_speed}, {current_ID}, {current_description}, {sunrise}, {sunset}, {max_weather}, {min_weather});'''
     weather_engine.execute(sql_weather)
+
+    #hourly weather
+    for i in json:
+        hour_temp = f"\'{json['hourly'][i]['temp']}\'"
+        hour_time = f"\'{json['hourly'][i]['dt']}\'"
+        hour_feels = f"\'{json['hourly'][i]['feels_like']}\'"
+        hour_wind = f"\'{json['hourly'][i]['wind_speed']}\'"
+        hour_ID = f"\'{json['hourly'][i]['weather'][0]['id']}\'"
+        hour_des = f"\'{json['hourly'][i]['weather'][0]['description']}\'"
+        hour_pic = f"\'{json['hourly'][i]['weather'][0]['icon']}\'"
+        sql_hourly = f'''INSERT INTO `hourly_weather` (Hourly_Time, Hourly_Temp, Hourly_Feels_Like,
+         Hourly_Wind, Hourly_ID, Hourly_Description, Hourly_Picture) 
+         VALUES ({hour_time}, {hour_temp}, {hour_feels}, {hour_wind}, {hour_ID}, {hour_des}, {hour_pic});'''
+        weather_engine.execute(sql_hourly)
+
+    #daily_weather
+    for j in json:
+        day_time = f"\'{json['daily'][j]['dt']}\'"
+        day_sunrise = f"\'{json['daily'][j]['sunrise']}\'"
+        day_sunset = f"\'{json['daily'][j]['sunset']}\'"
+        day_temp = f"\'{json['daily'][j]['temp']['day']}\'"
+        day_max = f"\'{json['daily'][j]['temp']['max']}\'"
+        day_min = f"\'{json['daily'][j]['temp']['min']}\'"
+        day_feels = f"\'{json['daily'][j]['feels_like']['day']}\'"
+        day_wind = f"\'{json['daily'][j]['wind_speed']}\'"
+        night_temp = f"\'{json['daily'][j]['temp']['night']}\'"
+        night_feels = f"\'{json['daily'][j]['feels_like']['night']}\'"
+        day_ID = f"\'{json['daily'][j]['weather'][0]['id']}\'"
+        day_des = f"\'{json['daily'][j]['weather'][0]['description']}\'"
+        day_pic = f"\'{json['daily'][j]['weather'][0]['icon']}\'"
+        sql_daily = f'''INSERT INTO `daily_weather` (Daily_Time, Daily_Sunrise, Daily_Sunset, Daily_Temp, Daily_Max,
+        Daily_Min, Daily_Feels, Daily_Wind, Daily_Temp_Night, Daily_Feels_Night, Daily_ID, Daily_Description, Daily_Picture) 
+         VALUES ({day_time}, {day_sunrise}, {day_sunset}, {day_temp}, {day_max}, {day_min}, {day_feels}, {day_wind},
+         {night_temp}, {night_feels},{day_ID}, {day_des}, {day_pic});'''
+        weather_engine.execute(sql_daily)
 
 
 if __name__ == "__main__":

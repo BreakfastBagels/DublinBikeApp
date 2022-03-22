@@ -22,7 +22,7 @@
           <div class="collapse navbar-collapse" id="nav">
             <ul class="navbar-nav ms-auto">
               <li class="nav-item">
-                <a href="index.html" class="nav-link">Home</a>
+                <a href="/index.html" class="nav-link">Home</a>
               </li>
               <li class="nav-item">
                 <a href="/map" class="nav-link">Bike Map</a>
@@ -40,31 +40,25 @@
       <section class="bg-info text-light p-5">
         <div class="container">
           <div class="d-sm-flex">
-            <div class="col-lg-8">
-              <h1 class="lead">Brought to you by the Breakfast Bagels</h1>
-              <p>This service brings you all the up-to-date information on available bikes in Dublin. Weather information and helpful statistics are also available!</p>
-              <p>Can put more info here on what's on this website and how everything works, yada yada yada</p>
-            </div>
-            <div class="col-lg-3 offset-1">
-              <img class="imag-fluid w-100" src="static/icons/bikebagel.png" />
+            <div>
+              <h1 class="lead">Up-To-Date Map Information</h1>
+              <p>Below you will find all the information you need regarding bike stations and their (or your) location!</p>
             </div>
           </div>
         </div>
       </section>
 
-<!-- Weather Section -->
-  
-    {% block content %}
+<!-- Map Section -->
 
-      <section class="bg-light text-dark p-5">
-      <div class="container">
-        <p class="lead">Current and Future Weather Information</p>
-        <div class="row mt-3" id="weather-div">
-            <div class="col-6-md p-4 border text-center" id="weather-box-col"></div>
-            <div class="col-6-md"></div>
+    {% block content %}
+    <section class="bg-light text-dark p-5">
+    <div class="container">
+      <p class="lead">Map with Current Bike Station Information</p>
+        <div class="row-mt-3">
+          <div id="map"></div>
         </div>
-    </div>
-  </section>
+      </div>
+    </section>
     {% endblock %}
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>

@@ -62,7 +62,7 @@ def post_weather_to_table(json):
     weather_engine.execute(sql_weather)
 
     #hourly weather
-    for i in json:
+    for i in range(len(json)):
         hour_temp = f"\'{json['hourly'][i]['temp']}\'"
         hour_time = f"\'{json['hourly'][i]['dt']}\'"
         hour_feels = f"\'{json['hourly'][i]['feels_like']}\'"
@@ -76,7 +76,7 @@ def post_weather_to_table(json):
         weather_engine.execute(sql_hourly)
 
     #daily_weather
-    for j in json:
+    for j in range(len(json)):
         day_time = f"\'{json['daily'][j]['dt']}\'"
         day_sunrise = f"\'{json['daily'][j]['sunrise']}\'"
         day_sunset = f"\'{json['daily'][j]['sunset']}\'"

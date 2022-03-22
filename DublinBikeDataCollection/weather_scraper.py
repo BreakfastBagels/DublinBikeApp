@@ -70,9 +70,10 @@ def post_weather_to_table(json):
         hour_ID = f"\'{json['hourly'][i]['weather'][0]['id']}\'"
         hour_des = f"\'{json['hourly'][i]['weather'][0]['description']}\'"
         hour_pic = f"\'{json['hourly'][i]['weather'][0]['icon']}\'"
+        hour_recorded = datetime.datetime.fromtimestamp(time.time())
         sql_hourly = f'''INSERT INTO `hourly_weather` (Hourly_Time, Hourly_Temp, Hourly_Feels_Like,
-         Hourly_Wind, Hourly_ID, Hourly_Description, Hourly_Picture) 
-         VALUES ({hour_time}, {hour_temp}, {hour_feels}, {hour_wind}, {hour_ID}, {hour_des}, {hour_pic});'''
+         Hourly_Wind, Hourly_ID, Hourly_Description, Hourly_Picture, Hour_Recorded) 
+         VALUES ({hour_time}, {hour_temp}, {hour_feels}, {hour_wind}, {hour_ID}, {hour_des}, {hour_pic}, {hour_recorded});'''
         weather_engine.execute(sql_hourly)
 
     #daily_weather
@@ -90,10 +91,11 @@ def post_weather_to_table(json):
         day_ID = f"\'{json['daily'][j]['weather'][0]['id']}\'"
         day_des = f"\'{json['daily'][j]['weather'][0]['description']}\'"
         day_pic = f"\'{json['daily'][j]['weather'][0]['icon']}\'"
+        hour_recorded = datetime.datetime.fromtimestamp(time.time())
         sql_daily = f'''INSERT INTO `daily_weather` (Daily_Time, Daily_Sunrise, Daily_Sunset, Daily_Temp, Daily_Max,
-        Daily_Min, Daily_Feels, Daily_Wind, Daily_Temp_Night, Daily_Feels_Night, Daily_ID, Daily_Description, Daily_Picture) 
+        Daily_Min, Daily_Feels, Daily_Wind, Daily_Temp_Night, Daily_Feels_Night, Daily_ID, Daily_Description, Daily_Picture, Hour_Recorded) 
          VALUES ({day_time}, {day_sunrise}, {day_sunset}, {day_temp}, {day_max}, {day_min}, {day_feels}, {day_wind},
-         {night_temp}, {night_feels},{day_ID}, {day_des}, {day_pic});'''
+         {night_temp}, {night_feels},{day_ID}, {day_des}, {day_pic}, {hour_recorded});'''
         weather_engine.execute(sql_daily)
 
 

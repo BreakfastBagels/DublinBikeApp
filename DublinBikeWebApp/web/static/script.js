@@ -157,20 +157,20 @@ fetch("/keys")
 
         document.head.appendChild(script);
 
-        function createRoute() {
-            var start = document.getElementById('start').value;
-            var end = document.getElementById('end').value;
-            var request = {
-                origin: start,
-                destination: end,
-                travelMode: 'BICYCLING',
-            };
-            directionsService.route(request, function(result, status) {
-                if (status == 'OK') {
-                    directionsRenderer.setDirections(result);
-                }
-            });
-        }
+//        function createRoute() {
+//            var start = document.getElementById('start').value;
+//            var end = document.getElementById('end').value;
+//            var request = {
+//                origin: start,
+//                destination: end,
+//                travelMode: 'BICYCLING',
+//            };
+//            directionsService.route(request, function(result, status) {
+//                if (status == 'OK') {
+//                    directionsRenderer.setDirections(result);
+//                }
+//            });
+//        }
     })
 
 function createRoute() {

@@ -1,7 +1,7 @@
 import json
 import time
 import datetime
-import getJSON as gj
+import getJson as gj
 import errors
 from sqlalchemy import create_engine
     

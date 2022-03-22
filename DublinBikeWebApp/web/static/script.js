@@ -1,5 +1,6 @@
 const requestButtons = [...document.getElementsByClassName('request-button')];
 const weatherBoxCol = document.getElementById('weather-box-col');
+var directionsService;
 
 requestButtons.forEach((button) => {
     button.addEventListener('click', async () => {
@@ -100,7 +101,7 @@ fetch("/keys")
         script.async = true;
 
         window.initMap = function() {
-            var directionsService = new google.maps.DirectionsService();
+            directionsService = new google.maps.DirectionsService();
             var directionsRenderer = new google.maps.DirectionsRenderer();
             let map;
 
@@ -171,5 +172,20 @@ fetch("/keys")
             });
         }
     })
+
+function createRoute() {
+    var start = document.getElementById('start').value;
+    var end = document.getElementById('end').value;
+    var request = {
+        origin: start,
+        destination: end,
+        travelMode: 'BICYCLING',
+    };
+    directionsService.route(request, function(result, status) {
+        if (status == 'OK') {
+            directionsRenderer.setDirections(result);
+             }
+            });
+        }
 
 

@@ -64,9 +64,12 @@ async function getHourJSON() {
 async function postHourInfoToDom() {
     const HourJSON = await getHourJSON();
     const collectionArray = HourJSON.hourly;
-    const lastEntry = collectionArray[collectionArray.length - 1];
-    const HourBox = drawHourBox(lastEntry);
-    HourBoxCol.appendChild(HourBox);
+    const lastEntry = collectionArray[collectionArray.slice(-7)];
+    for (var i = 1; i < 7; i++) {
+        nextEntry = lastEntry[i]
+        const HourBox = drawHourBox(nextEntry);
+        HourBoxCol.appendChild(HourBox);
+    }
 }
 
 function drawHourBox(json) {
@@ -93,11 +96,6 @@ function drawHourBox(json) {
     HourBoxElems.forEach(elem => HourBox.appendChild(elem))
 
     return HourBox
-}
-
-function capitalise(str) {
-    const lower = str.toLowerCase()
-    return str.charAt(0).toUpperCase() + lower.slice(1)
 }
 
 //Daily Weather Box Code
@@ -140,11 +138,6 @@ function drawDailyBox(json) {
     DailyBoxElems.forEach(elem => DailyBox.appendChild(elem))
 
     return DailyBox
-}
-
-function capitalise(str) {
-    const lower = str.toLowerCase()
-    return str.charAt(0).toUpperCase() + lower.slice(1)
 }
 
 // Google Maps Code

@@ -13,7 +13,7 @@ app.config['MYSQL_DATABASE_PASSWORD'] = 'Pepper12'
 
 mysql.init_app(app)
 
-@app.route("/")
+@app.route("/index")
 def landing_page():
     return render_template("index.html", content = "trying stuff out")
 

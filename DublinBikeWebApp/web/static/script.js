@@ -2,6 +2,12 @@
 const weatherBoxCol = document.getElementById('weather-box-col');
 postWeatherInfoToDom()
 
+const HourBoxCol = document.getElementById('hour-box-col');
+postHourInfoToDom()
+
+const DailyBoxCol = document.getElementById('daily-box-col');
+postDailyInfoToDom()
+
 // Weather Box Code
 async function getWeatherJSON() {
     const response = await fetch('/get-weather');
@@ -49,28 +55,28 @@ function capitalise(str) {
 }
 
 //Hourly Weather Box Code
-async function getWeatherJSON() {
-    const response = await fetch('/get-weather');
+async function getHourJSON() {
+    const response = await fetch('/hourly-weather');
     const json = await response.json();
     return json
 }
 
-async function postWeatherInfoToDom() {
-    const weatherJSON = await getWeatherJSON();
-    const collectionArray = weatherJSON.weather;
+async function postHourInfoToDom() {
+    const HourJSON = await getHourJSON();
+    const collectionArray = HourJSON.hourly;
     const lastEntry = collectionArray[collectionArray.length - 1];
-    const weatherBox = drawWeatherBox(lastEntry);
-    weatherBoxCol.appendChild(weatherBox);
+    const HourBox = drawHourBox(lastEntry);
+    HourBoxCol.appendChild(HourBox);
 }
 
-function drawWeatherBox(json) {
+function drawHourBox(json) {
     const HourBox = document.createElement('div');
 
     let HourHeading = document.createElement('h3');
     HourHeading.textContent = "Hourly Weather"
 
     let HourIcon = document.createElement('img')
-    HourIcon.src = `http://openweathermap.org/img/wn/${json['Hourly_ID']}@2x.png`;
+    HourIcon.src = `http://openweathermap.org/img/wn/${json['Hourly_Picture']}@2x.png`;
 
     let HourDescriptionHeading = document.createElement('h4');
     HourDescriptionHeading.textContent = capitalise(json['Hourly_Description']);
@@ -95,6 +101,51 @@ function capitalise(str) {
 }
 
 //Daily Weather Box Code
+
+async function getDailyJSON() {
+    const response = await fetch('/daily-weather');
+    const json = await response.json();
+    return json
+}
+
+async function postDailyInfoToDom() {
+    const DailyJSON = await getDailyJSON();
+    const collectionArray = DailyJSON.daily;
+    const lastEntry = collectionArray[collectionArray.length - 1];
+    const DailyBox = drawDailyBox(lastEntry);
+    DailyBoxCol.appendChild(DailyBox);
+}
+
+function drawDailyBox(json) {
+    const DailyBox = document.createElement('div');
+
+    let DailyHeading = document.createElement('h3');
+    DailyHeading.textContent = "Daily Weather"
+
+    let DailyIcon = document.createElement('img')
+    DailyIcon.src = `http://openweathermap.org/img/wn/${json['Daily_Picture']}@2x.png`;
+
+    let DailyDescriptionHeading = document.createElement('h4');
+    DailyDescriptionHeading.textContent = capitalise(json['Daily_Description']);
+
+    let DailyTempHeading = document.createElement('h4');
+    // Plus sign turns string into a number
+    DailyTempHeading.innerHTML = `${+(json['Daily_Temp']) - 273}&deg; celsius`
+
+    let DailyOTempHeading = document.createElement('h5');
+    DailyOTempHeading.innerHTML = `H: ${+json['Daily_Temp'] - 273}&deg;'` //L: ${+json['Min_Temp'] - 273}&deg;`
+
+    const DailyBoxElems = [DailyHeading, DailyIcon, DailyDescriptionHeading, DailyTempHeading, DailyOTempHeading]
+    
+    DailyBoxElems.forEach(elem => DailyBox.appendChild(elem))
+
+    return DailyBox
+}
+
+function capitalise(str) {
+    const lower = str.toLowerCase()
+    return str.charAt(0).toUpperCase() + lower.slice(1)
+}
 
 // Google Maps Code
 async function getLiveStationJSON (stationNumber) {

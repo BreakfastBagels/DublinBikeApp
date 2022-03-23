@@ -37,7 +37,7 @@ def get():
 @app.route("/hourly-weather")
 def get_hourly():
     cur = mysql.connect().cursor()
-    cur.execute('''select * from maindb.hourly_weather''')
+    cur.execute('''select * from maindb.hourly_weather order by Hour_Recorded''')
     r = [dict((cur.description[i][0], value)
                 for i, value in enumerate(row)) for row in cur.fetchall()]
     json_hourly = jsonify({'hourly' : r})
@@ -46,7 +46,7 @@ def get_hourly():
 @app.route("/daily-weather")
 def get_daily():
     cur = mysql.connect().cursor()
-    cur.execute('''select * from maindb.daily_weather''')
+    cur.execute('''select * from maindb.daily_weather order by Hour_Recorded''')
     r = [dict((cur.description[i][0], value)
                 for i, value in enumerate(row)) for row in cur.fetchall()]
     json_hourly = jsonify({'daily' : r})

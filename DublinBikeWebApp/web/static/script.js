@@ -64,16 +64,15 @@ async function getHourJSON() {
 async function postHourInfoToDom() {
     const HourJSON = await getHourJSON();
     const collectionArray = HourJSON.hourly;
-    const lastEntry = collectionArray[collectionArray.slice(-7)];
-    for (var i = 1; i < 7; i++) {
-        nextEntry = lastEntry[i]
-        const HourBox = drawHourBox(nextEntry);
+    for (let i = 1; i < 8; i++) {
+        const lastEntry = collectionArray[collectionArray.length - i];
+        const HourBox = drawHourBox(lastEntry);
         HourBoxCol.appendChild(HourBox);
     }
 }
 
 function drawHourBox(json) {
-    const HourBox = document.createElement('div');
+    const HourBox = document.createElement('div.side');
 
     let HourHeading = document.createElement('h3');
     HourHeading.textContent = "Hourly Weather"
@@ -109,9 +108,11 @@ async function getDailyJSON() {
 async function postDailyInfoToDom() {
     const DailyJSON = await getDailyJSON();
     const collectionArray = DailyJSON.daily;
-    const lastEntry = collectionArray[collectionArray.length - 1];
-    const DailyBox = drawDailyBox(lastEntry);
-    DailyBoxCol.appendChild(DailyBox);
+    for (let i = 1; i < 8; i++) {
+        const lastEntry = collectionArray[collectionArray.length - i];
+        const DailyBox = drawDailyBox(lastEntry);
+        DailyBoxCol.appendChild(DailyBox);
+    }
 }
 
 function drawDailyBox(json) {

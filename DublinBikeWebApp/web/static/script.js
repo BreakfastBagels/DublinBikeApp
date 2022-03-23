@@ -1,5 +1,8 @@
 const requestButtons = [...document.getElementsByClassName('request-button')];
 const weatherBoxCol = document.getElementById('weather-box-col');
+const stationInfoArray = [];
+const stationMarkerCoordinates = [];
+const stationMarkers = [];
 var directionsService;
 var directionsRenderer;
 var marker;
@@ -135,21 +138,21 @@ fetch("/keys")
 
             directionsRenderer.setMap(map);
 
-            allMarkers();
+            initAllMarkers();
         };
 
         document.head.appendChild(script);
 
     })
 
-function allMarkers() {
+function initAllMarkers() {
     fetch("/static_stations")
         .then(function(resp) {
             return resp.json();
         })
         .then(function(data) {
-//                console.log(parseFloat(data['stations'][0]['latitude']), typeof(parseFloat(data['stations'][0]['latitude'])));
             for (var i = 0; i < data['stations'].length; i++) {
+                stationInfoArray.push(data['stations'][i]);
                 var station_position = {'latitude':data['stations'][i]['latitude'],
                 'longitude':data['stations'][i]['longitude']}
 //                    console.log(station_position['latitude'], station_position['longitude']);
@@ -159,10 +162,21 @@ function allMarkers() {
                     map: map,
                     title: data['stations'][i]['name'],
                 });
-
+                stationMarkerCoordinates.push(station_position);
+                stationMarkers.push(marker);
+//                mapMarkers.push(marker.position);
             }
         });
     }
+
+function hideNonRouteMarkers() {
+//    console.log(stationMarkerCoordinates);
+//    console.log(stationInfoArray);
+//    console.log(stationMarkers);
+    for (var i = 0; i < stationMarkers.length; i++) {
+        stationMarkers[i].setMap(null);
+    }
+}
 
 function createRoute() {
     var startString = document.getElementById('start').value;
@@ -177,8 +191,9 @@ function createRoute() {
     directionsService.route(request, function(result, status) {
         if (status == 'OK') {
             directionsRenderer.setDirections(result);
-             }
-            });
         }
+    });
+    hideNonRouteMarkers();
+}
 
 

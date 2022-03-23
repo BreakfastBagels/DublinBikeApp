@@ -48,6 +48,54 @@ function capitalise(str) {
     return str.charAt(0).toUpperCase() + lower.slice(1)
 }
 
+//Hourly Weather Box Code
+async function getWeatherJSON() {
+    const response = await fetch('/get-weather');
+    const json = await response.json();
+    return json
+}
+
+async function postWeatherInfoToDom() {
+    const weatherJSON = await getWeatherJSON();
+    const collectionArray = weatherJSON.weather;
+    const lastEntry = collectionArray[collectionArray.length - 1];
+    const weatherBox = drawWeatherBox(lastEntry);
+    weatherBoxCol.appendChild(weatherBox);
+}
+
+function drawWeatherBox(json) {
+    const HourBox = document.createElement('div');
+
+    let HourHeading = document.createElement('h3');
+    HourHeading.textContent = "Hourly Weather"
+
+    let HourIcon = document.createElement('img')
+    HourIcon.src = `http://openweathermap.org/img/wn/${json['Hourly_ID']}@2x.png`;
+
+    let HourDescriptionHeading = document.createElement('h4');
+    HourDescriptionHeading.textContent = capitalise(json['Hourly_Description']);
+
+    let HourTempHeading = document.createElement('h4');
+    // Plus sign turns string into a number
+    HourTempHeading.innerHTML = `${+(json['Hourly_Temp']) - 273}&deg; celsius`
+
+    let HourOTempHeading = document.createElement('h5');
+    HourOTempHeading.innerHTML = `H: ${+json['Hourly_Temp'] - 273}&deg;'` //L: ${+json['Min_Temp'] - 273}&deg;`
+
+    const HourBoxElems = [HourHeading, HourIcon, HourDescriptionHeading, HourTempHeading, HourOTempHeading]
+    
+    HourBoxElems.forEach(elem => HourBox.appendChild(elem))
+
+    return HourBox
+}
+
+function capitalise(str) {
+    const lower = str.toLowerCase()
+    return str.charAt(0).toUpperCase() + lower.slice(1)
+}
+
+//Daily Weather Box Code
+
 // Google Maps Code
 async function getLiveStationJSON (stationNumber) {
     const response = await fetch('/station_info');

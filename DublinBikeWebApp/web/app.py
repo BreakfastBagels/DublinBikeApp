@@ -6,10 +6,10 @@ import json
 app = Flask(__name__)
 mysql = MySQL()
 
-app.config['MYSQL_DATABASE_HOST'] = '127.0.0.1'
+app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 app.config['MYSQL_DATABASE_PORT'] = 3306
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'jackjack'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'Pepper12'
 
 mysql.init_app(app)
 
@@ -25,7 +25,6 @@ def map_page():
 def stats_page():
     return render_template("stats.html")
 
-
 @app.route("/get-weather")
 def get():
     cur = mysql.connect().cursor()
@@ -34,6 +33,24 @@ def get():
                 for i, value in enumerate(row)) for row in cur.fetchall()]
     json_weather = jsonify({'weather' : r})
     return json_weather
+
+@app.route("/hourly-weather")
+def get_hourly():
+    cur = mysql.connect().cursor()
+    cur.execute('''select * from maindb.hourly_weather''')
+    r = [dict((cur.description[i][0], value)
+                for i, value in enumerate(row)) for row in cur.fetchall()]
+    json_hourly = jsonify({'hourly' : r})
+    return json_hourly
+
+@app.route("/daily-weather")
+def get_daily():
+    cur = mysql.connect().cursor()
+    cur.execute('''select * from maindb.daily_weather''')
+    r = [dict((cur.description[i][0], value)
+                for i, value in enumerate(row)) for row in cur.fetchall()]
+    json_hourly = jsonify({'daily' : r})
+    return json_hourly
 
 @app.route('/keys')
 def get_keys():

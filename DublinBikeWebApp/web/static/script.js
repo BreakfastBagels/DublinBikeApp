@@ -2,6 +2,8 @@ const requestButtons = [...document.getElementsByClassName('request-button')];
 const weatherBoxCol = document.getElementById('weather-box-col');
 var directionsService;
 var directionsRenderer;
+var marker;
+let map;
 
 requestButtons.forEach((button) => {
     button.addEventListener('click', async () => {
@@ -104,7 +106,7 @@ fetch("/keys")
         window.initMap = function() {
             directionsService = new google.maps.DirectionsService();
             directionsRenderer = new google.maps.DirectionsRenderer();
-            let map;
+
 
             map = new google.maps.Map(document.getElementById("map"), {
                 center: { lat:53.34228, lng:-6.27455},
@@ -133,52 +135,38 @@ fetch("/keys")
 
             directionsRenderer.setMap(map);
 
-            fetch("/static_stations")
-            .then(function(resp) {
-                return resp.json();
-            })
-            .then(function(data) {
-//                console.log(parseFloat(data['stations'][0]['latitude']), typeof(parseFloat(data['stations'][0]['latitude'])));
-                for (var i = 0; i < data['stations'].length; i++) {
-                    var station_position = {'latitude':data['stations'][i]['latitude'],
-                    'longitude':data['stations'][i]['longitude']}
-//                    console.log(station_position['latitude'], station_position['longitude']);
-                    var marker = new google.maps.Marker({
-                        position: {lat: parseFloat(station_position['latitude']),
-                        lng: parseFloat(station_position['longitude'])},
-                        map: map,
-                        title: data['stations'][i]['name'],
-                    });
-//
-//                    marker.setMap(map);
-                    }
-                });
-
+            allMarkers();
         };
 
         document.head.appendChild(script);
 
-//        function createRoute() {
-//            var start = document.getElementById('start').value;
-//            var end = document.getElementById('end').value;
-//            var request = {
-//                origin: start,
-//                destination: end,
-//                travelMode: 'BICYCLING',
-//            };
-//            directionsService.route(request, function(result, status) {
-//                if (status == 'OK') {
-//                    directionsRenderer.setDirections(result);
-//                }
-//            });
-//        }
     })
+
+function allMarkers() {
+    fetch("/static_stations")
+        .then(function(resp) {
+            return resp.json();
+        })
+        .then(function(data) {
+//                console.log(parseFloat(data['stations'][0]['latitude']), typeof(parseFloat(data['stations'][0]['latitude'])));
+            for (var i = 0; i < data['stations'].length; i++) {
+                var station_position = {'latitude':data['stations'][i]['latitude'],
+                'longitude':data['stations'][i]['longitude']}
+//                    console.log(station_position['latitude'], station_position['longitude']);
+                var marker = new google.maps.Marker({
+                    position: {lat: parseFloat(station_position['latitude']),
+                    lng: parseFloat(station_position['longitude'])},
+                    map: map,
+                    title: data['stations'][i]['name'],
+                });
+
+            }
+        });
+    }
 
 function createRoute() {
     var startString = document.getElementById('start').value;
     var endString = document.getElementById('end').value;
-    console.log(startString, typeof(start));
-    console.log(endString, typeof(end));
     var startArray = startString.split(",");
     var endArray = endString.split(",");
     var request = {

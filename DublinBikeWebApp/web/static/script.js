@@ -155,7 +155,6 @@ function initAllMarkers() {
                 stationInfoArray.push(data['stations'][i]);
                 var station_position = {'latitude':data['stations'][i]['latitude'],
                 'longitude':data['stations'][i]['longitude']}
-//                    console.log(station_position['latitude'], station_position['longitude']);
                 var marker = new google.maps.Marker({
                     position: {lat: parseFloat(station_position['latitude']),
                     lng: parseFloat(station_position['longitude'])},
@@ -164,17 +163,14 @@ function initAllMarkers() {
                 });
                 stationMarkerCoordinates.push(station_position);
                 stationMarkers.push(marker);
-//                mapMarkers.push(marker.position);
             }
         });
     }
 
-function hideNonRouteMarkers() {
-//    console.log(stationMarkerCoordinates);
-//    console.log(stationInfoArray);
-//    console.log(stationMarkers);
+function hideNonRouteMarkers(markerA, markerB) {
     for (var i = 0; i < stationMarkers.length; i++) {
-        stationMarkers[i].setMap(null);
+        if (stationMarkers[i] != markerA || stationMarkers[i] != markerB)
+            stationMarkers[i].setMap(null);
     }
 }
 
@@ -190,10 +186,15 @@ function createRoute() {
     };
     directionsService.route(request, function(result, status) {
         if (status == 'OK') {
+            directionsRenderer.setMap(map);
             directionsRenderer.setDirections(result);
         }
     });
     hideNonRouteMarkers();
+}
+
+function hideRoute() {
+    directionsRenderer.setMap(null);
 }
 
 

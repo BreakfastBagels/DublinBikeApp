@@ -50,17 +50,19 @@
         </div>
         <div>
             <strong>Start: </strong>
-            <select id="start" onchange="createRoute()">
+            <select id="start">
                 <option value="53.349562,-6.278198">Smithfield North</option>
                 <option value="53.353462,-6.265305">Parnell Square North</option>
                 <option value="53.336021,-6.26298">Clonmel Street</option>
             </select>
             <strong>End: </strong>
-            <select id="end" onchange="createRoute()">
+            <select id="end">
                 <option value="53.349562,-6.278198">Smithfield North</option>
                 <option value="53.353462,-6.265305">Parnell Square North</option>
                 <option value="53.336021,-6.26298">Clonmel Street</option>
             </select>
+            <button onclick="createRoute();">Create Route</button>
+            <button onclick="initAllMarkers();hideRoute();">Done</button>
         </div>
         <div class="row mt-3" id="stations">
             <div class="col-6"id="button-div">

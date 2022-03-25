@@ -9,17 +9,20 @@ mysql = MySQL()
 app.config['MYSQL_DATABASE_HOST'] = '127.0.0.1'
 app.config['MYSQL_DATABASE_PORT'] = 3306
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'jackjack'
+app.config['MYSQL_DATABASE_PASSWORD'] = ''
 
 mysql.init_app(app)
+
 
 @app.route("/")
 def landing_page():
     return render_template("index.html", content = "trying stuff out")
 
+
 @app.route("/map")
 def map_page():
     return render_template("map.html")
+
 
 @app.route("/stats")
 def stats_page():
@@ -35,11 +38,13 @@ def get():
     json_weather = jsonify({'weather' : r})
     return json_weather
 
+
 @app.route('/keys')
 def get_keys():
     with open('keys.json', 'r') as keys_file:
         api_keys = json.load(keys_file)
         return jsonify(api_keys)
+
 
 @app.route('/static_stations')
 def static_stations():
@@ -49,6 +54,7 @@ def static_stations():
                 for i, value in enumerate(row)) for row in cur.fetchall()]
     json_stations = jsonify({'stations' : r})
     return json_stations
+
 
 @app.route('/station_info')
 def get_station_info():
@@ -75,6 +81,7 @@ def get_station_info():
     cur = run_station_query()
     station_data_list = create_station_data_list(cur) 
     return jsonify({'station_info': station_data_list})
+
 
 if __name__ == "__main__":
     app.run(debug=True)

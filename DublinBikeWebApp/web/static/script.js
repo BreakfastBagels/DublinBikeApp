@@ -8,6 +8,8 @@ var directionsRenderer;
 var marker;
 let map;
 
+createMarkerRouteOptions();
+
 requestButtons.forEach((button) => {
     button.addEventListener('click', async () => {
         const stationJSON = await getStationJSON(button.id)
@@ -152,7 +154,8 @@ function initAllMarkers() {
         })
         .then(function(data) {
             for (var i = 0; i < data['stations'].length; i++) {
-                stationInfoArray.push(data['stations'][i]);
+                fillStationInfoArray(stationInfoArray, data['stations'][i]);
+//                stationInfoArray.push(data['stations'][i]);
                 var station_position = {'latitude':data['stations'][i]['latitude'],
                 'longitude':data['stations'][i]['longitude']}
                 var marker = new google.maps.Marker({
@@ -166,6 +169,12 @@ function initAllMarkers() {
             }
         });
     }
+
+function fillStationInfoArray(infoArray, data) {
+    if (infoArray.length < 110) {
+        infoArray.push(data);
+    }
+}
 
 function hideNonRouteMarkers(markerA, markerB) {
     for (var i = 0; i < stationMarkers.length; i++) {
@@ -196,5 +205,24 @@ function createRoute() {
 function hideRoute() {
     directionsRenderer.setMap(null);
 }
+
+function createMarkerRouteOptions() {
+    var stationMarkersString = "";
+        for (var i = 0; i < stationInfoArray.length; i++) {
+            var stationAddress = stationInfoArray[i]['address'];
+            console.log(stationAddress);
+            var stationLat = stationInfoArray[i]['latitude'];
+            var stationLng = stationInfoArray[i]['longitude'];
+            console.log(stationLat, stationLng);
+            stationMarkersString += "<option value = " +  parseFloat(stationLat) +
+                "," + parseFloat(stationLng) + ">" + stationAddress + "</li>";
+        }
+    document.getElementById('start').innerHTML += stationMarkersString;
+    document.getElementById('end').innerHTML += stationMarkersString;
+}
+
+//for (var i = 0; i < stationInfoArray.length; i++) {
+//    document.getElementById('test').innerHTML += "<li>stationInfoArray[i]['address']</li>";
+//}
 
 

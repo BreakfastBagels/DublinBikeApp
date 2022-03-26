@@ -71,6 +71,20 @@ function getInfoWindowContent(stationJSON) {
     ].join("<br>");
 }
 
+async function calc_availability(data) {
+    var currentStationInfo = getLiveStationJSON(data['number']);
+    const stationCapacity = currentStationInfo['Available_Stands'] + currentStationInfo['Available_Bikes'];
+    if (stationCapacity == currentStationInfo['Available_Bikes']) {
+        return "Full";
+        } else if (currentStationInfo['Available_Bikes'] == 0) {
+        return "Empty"
+        } else if (((currentStationInfo['Available_Bikes']/stationCapacity)*100) < 50){
+        return "Semi_Empty"
+        } else {
+        return "Semi_Full"}
+        }
+
+
 fetch("/keys")
     .then(function(resp) {
         return resp.json();
@@ -118,12 +132,13 @@ fetch("/keys")
                 for (let i = 0; i < data['stations'].length; i++) {
                     const station_position = {'latitude':data['stations'][i]['latitude'],
                     'longitude':data['stations'][i]['longitude']}
+                    station_availability = calc_availability(data['stations'][i]);
                     const marker = new google.maps.Marker({
                         position: {lat: parseFloat(station_position['latitude']),
                         lng: parseFloat(station_position['longitude'])},
                         map: map,
                         title: data['stations'][i]['name'],
-                        icon: "/Bagel_Full"
+                        icon: "/Bagel_Icon/" + station_availability
                     });
                     const stationNumber =  data['stations'][i]['number'];
                     marker.addListener("click", async () => {

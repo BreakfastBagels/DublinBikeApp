@@ -24,10 +24,16 @@ def map_page():
     return render_template("map.html")
 
 
-@app.route("/Bagel_Full")
-def bagel_full():
-    # image = 'Bagel_Full'
-    return send_file("static\\icons\\Bagel_Full.png", mimetype='image/png')
+@app.route("/Bagel_Icon/<type>")
+def bagel_icon(type):
+    if type == "Full":
+        return send_file("static\\icons\\Bagel_Full_Small.png", mimetype='image/png')
+    elif type == "Empty":
+        return send_file("static\\icons\\Bagel_Empty_Small.png", mimetype='image/png')
+    elif type == "Semi_Empty":
+        return send_file("static\\icons\\Bagel_Semi_Empty_Small.png", mimetype='image/png')
+    else:
+        return send_file("static\\icons\\Bagel_Semi_Full_Small.png", mimetype='image/png')
 
 
 @app.route("/stats")

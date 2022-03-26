@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from flask import Flask, jsonify, redirect, url_for, render_template
+from flask import Flask, jsonify, redirect, url_for, render_template, send_from_directory, send_file
 from flaskext.mysql import MySQL
 import json
 
@@ -24,6 +24,12 @@ def map_page():
     return render_template("map.html")
 
 
+@app.route("/Bagel_Full")
+def bagel_full():
+    # image = 'Bagel_Full'
+    return send_file("static\\icons\\Bagel_Full.png", mimetype='image/png')
+
+
 @app.route("/stats")
 def stats_page():
     return render_template("stats.html")
@@ -32,7 +38,7 @@ def stats_page():
 @app.route("/get-weather")
 def get():
     cur = mysql.connect().cursor()
-    cur.execute('''select * from maindb.current_weather''')
+    cur.execute('''select * from localdublinbikescopy.current_weather''')
     r = [dict((cur.description[i][0], value)
                 for i, value in enumerate(row)) for row in cur.fetchall()]
     json_weather = jsonify({'weather' : r})
@@ -49,7 +55,7 @@ def get_keys():
 @app.route('/static_stations')
 def static_stations():
     cur = mysql.connect().cursor()
-    cur.execute('''select * from maindb.static_table''')
+    cur.execute('''select * from localdublinbikescopy.static_table''')
     r = [dict((cur.description[i][0], value)
                 for i, value in enumerate(row)) for row in cur.fetchall()]
     json_stations = jsonify({'stations' : r})
@@ -61,7 +67,7 @@ def get_station_info():
     def run_station_query():
         cur = mysql.connect().cursor()
         sql_query = ("SELECT dt.Station_Number, st.address, dt.Available_Stands, dt.Available_Bikes, dt.Time_Entered "
-        "FROM maindb.static_table as st, maindb.dynamic_table as dt "
+        "FROM localdublinbikescopy.static_table as st, localdublinbikescopy.dynamic_table as dt "
         "WHERE dt.Station_Number=st.number ORDER BY Time_Entered DESC LIMIT 110;")
         cur.execute(sql_query)
         return cur

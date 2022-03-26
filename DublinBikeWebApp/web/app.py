@@ -41,7 +41,7 @@ def get():
 
 @app.route('/keys')
 def get_keys():
-    with open('keys.json', 'r') as keys_file:
+    with open('..\\..\\keys.json', 'r') as keys_file:
         api_keys = json.load(keys_file)
         return jsonify(api_keys)
 

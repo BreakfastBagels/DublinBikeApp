@@ -64,8 +64,8 @@ async function getHourJSON() {
 async function postHourInfoToDom() {
     const HourJSON = await getHourJSON();
     const collectionArray = HourJSON.hourly;
-    for (let i = 1; i < 8; i++) {
-        const lastEntry = collectionArray[collectionArray.length - i];
+    for (let i = 0; i < 7; i++) {
+        const lastEntry = collectionArray[i];
         const HourBox = drawHourBox(lastEntry);
         HourBoxCol.appendChild(HourBox);
     }
@@ -74,21 +74,21 @@ async function postHourInfoToDom() {
 function drawHourBox(json) {
     const HourBox = document.createElement('div.side');
 
-    let HourHeading = document.createElement('h3');
-    HourHeading.textContent = "Hourly Weather"
+    let HourHeading = document.createElement('h6');
+    HourHeading.textContent = json['Hourly_Time'].slice(17);
 
     let HourIcon = document.createElement('img')
     HourIcon.src = `http://openweathermap.org/img/wn/${json['Hourly_Picture']}@2x.png`;
 
-    let HourDescriptionHeading = document.createElement('h4');
+    let HourDescriptionHeading = document.createElement('h5');
     HourDescriptionHeading.textContent = capitalise(json['Hourly_Description']);
 
-    let HourTempHeading = document.createElement('h4');
+    let HourTempHeading = document.createElement('h6');
     // Plus sign turns string into a number
     HourTempHeading.innerHTML = `${+(json['Hourly_Temp']) - 273}&deg; celsius`
 
-    let HourOTempHeading = document.createElement('h5');
-    HourOTempHeading.innerHTML = `H: ${+json['Hourly_Temp'] - 273}&deg;'` //L: ${+json['Min_Temp'] - 273}&deg;`
+    let HourOTempHeading = document.createElement('h6');
+    HourOTempHeading.innerHTML = `Wind: ${+json['Hourly_Wind']} mph`
 
     const HourBoxElems = [HourHeading, HourIcon, HourDescriptionHeading, HourTempHeading, HourOTempHeading]
     
@@ -108,33 +108,36 @@ async function getDailyJSON() {
 async function postDailyInfoToDom() {
     const DailyJSON = await getDailyJSON();
     const collectionArray = DailyJSON.daily;
-    for (let i = 1; i < 8; i++) {
-        const lastEntry = collectionArray[collectionArray.length - i];
+    for (let i = 0; i < 7; i++) {
+        const lastEntry = collectionArray[i];
         const DailyBox = drawDailyBox(lastEntry);
         DailyBoxCol.appendChild(DailyBox);
     }
 }
 
 function drawDailyBox(json) {
-    const DailyBox = document.createElement('div');
+    const DailyBox = document.createElement('div.side');
 
-    let DailyHeading = document.createElement('h3');
-    DailyHeading.textContent = "Daily Weather"
+    let DailyHeading = document.createElement('h6');
+    DailyHeading.textContent = json['Daily_Time'].slice(0,11)
 
     let DailyIcon = document.createElement('img')
     DailyIcon.src = `http://openweathermap.org/img/wn/${json['Daily_Picture']}@2x.png`;
 
-    let DailyDescriptionHeading = document.createElement('h4');
+    let DailyDescriptionHeading = document.createElement('h5');
     DailyDescriptionHeading.textContent = capitalise(json['Daily_Description']);
 
-    let DailyTempHeading = document.createElement('h4');
+    let DailyTempHeading = document.createElement('h7');
     // Plus sign turns string into a number
-    DailyTempHeading.innerHTML = `${+(json['Daily_Temp']) - 273}&deg; celsius`
+    DailyTempHeading.innerHTML = `Temp: ${+(json['Daily_Temp']) - 273}&deg; celsius`
 
-    let DailyOTempHeading = document.createElement('h5');
-    DailyOTempHeading.innerHTML = `H: ${+json['Daily_Temp'] - 273}&deg;'` //L: ${+json['Min_Temp'] - 273}&deg;`
+    let DailyOTempHeading = document.createElement('h7');
+    DailyOTempHeading.innerHTML = `H: ${+json['Daily_Max'] - 273}&deg;' L: ${+json['Daily_Min'] - 273}&deg;'`
 
-    const DailyBoxElems = [DailyHeading, DailyIcon, DailyDescriptionHeading, DailyTempHeading, DailyOTempHeading]
+    let DailySunriseSet = document.createElement('h7');
+    DailySunriseSet.innerHTML = `Sunrise: ${json['Daily_Sunrise']} Sunset: ${json['Daily_Sunset']}` 
+
+    const DailyBoxElems = [DailyHeading, DailyIcon, DailyDescriptionHeading, DailyTempHeading, DailyOTempHeading, DailySunriseSet]
     
     DailyBoxElems.forEach(elem => DailyBox.appendChild(elem))
 

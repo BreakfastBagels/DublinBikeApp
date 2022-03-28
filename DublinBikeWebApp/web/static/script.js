@@ -127,17 +127,23 @@ function drawDailyBox(json) {
     let DailyDescriptionHeading = document.createElement('h5');
     DailyDescriptionHeading.textContent = capitalise(json['Daily_Description']);
 
-    let DailyTempHeading = document.createElement('h7');
+    let DailyTempHeading = document.createElement('h6');
     // Plus sign turns string into a number
-    DailyTempHeading.innerHTML = `Temp: ${+(json['Daily_Temp']) - 273}&deg; celsius`
+    DailyTempHeading.innerHTML = `${+(json['Daily_Temp']) - 273}&deg; celsius`
 
-    let DailyOTempHeading = document.createElement('h7');
-    DailyOTempHeading.innerHTML = `H: ${+json['Daily_Max'] - 273}&deg;' L: ${+json['Daily_Min'] - 273}&deg;'`
+    let DailyWind = document.createElement('h6');
+    DailyWind.innerHTML = `Wind: ${+json['Daily_Wind']} mph`
 
-    let DailySunriseSet = document.createElement('h7');
-    DailySunriseSet.innerHTML = `Sunrise: ${json['Daily_Sunrise']} Sunset: ${json['Daily_Sunset']}` 
+    let DailyOTempHeading = document.createElement('h6');
+    DailyOTempHeading.innerHTML = `H: ${+json['Daily_Max'] - 273}&deg; L: ${+json['Daily_Min'] - 273}&deg;`
 
-    const DailyBoxElems = [DailyHeading, DailyIcon, DailyDescriptionHeading, DailyTempHeading, DailyOTempHeading, DailySunriseSet]
+    let DailySunrise = document.createElement('h6');
+    DailySunrise.textContent = `Sunrise: ${json['Daily_Sunrise']}`
+
+    let DailySunset = document.createElement('h6');
+    DailySunset.textContent = `Sunset: ${json['Daily_Sunset']}`
+
+    const DailyBoxElems = [DailyHeading, DailyIcon, DailyDescriptionHeading, DailyTempHeading, DailyOTempHeading, DailySunrise, DailySunset, DailyWind]
     
     DailyBoxElems.forEach(elem => DailyBox.appendChild(elem))
 

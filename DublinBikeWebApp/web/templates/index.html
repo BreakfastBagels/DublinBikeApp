@@ -50,20 +50,18 @@
           </div>
         </section>
 
-<!-- Weather Section -->
-  
-    {% block content %}
+        <!-- Current Weather Section -->
 
-        <section class="bg-light text-dark p-5">
-        <div class="row">
-          <p class="lead">Current Weather</p>
-        </div>
-        <div class="row mt-3" id="weather-div">
-            <div class="col-6-md p-4 border text-center" id="weather-box-col"></div>
-            <div class="col-6-md text-center offset-1 h6"> If you're planning your bike journey, we have all the weather information you need!</div>
-        </div>
+        <section class="bg-light text-dark p-5"> 
+          <div class="d-sm-flex">
+            <div class="col-lg-3 row mt-2 offset-1" id="weather-div">
+              <div class="col-6-md p-4 border text-center" id="weather-box-col"></div>
+            </div>
+            <div class="col-lg-7 offset-1">
+              <div class="lead"> If you're planning your bike journey, we have all the weather information you need! To the left you'll find the most up-to-date current weather, and below you'll find weahter information for the next 7 hours and the next week. We've got you covered, sunshine or rain!</div>
+            </div>
+          </div>
         </section>
-    {% endblock %}
 
         <!-- Hourly Weather Section -->
 

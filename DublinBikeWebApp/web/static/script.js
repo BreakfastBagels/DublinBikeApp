@@ -138,10 +138,10 @@ function drawDailyBox(json) {
     DailyOTempHeading.innerHTML = `H: ${+json['Daily_Max'] - 273}&deg; L: ${+json['Daily_Min'] - 273}&deg;`
 
     let DailySunrise = document.createElement('h6');
-    DailySunrise.textContent = `Sunrise: ${json['Daily_Sunrise']}`
+    DailySunrise.textContent = `Sunrise: ${json['Daily_Sunrise'].slice(17,22)}`
 
     let DailySunset = document.createElement('h6');
-    DailySunset.textContent = `Sunset: ${json['Daily_Sunset']}`
+    DailySunset.textContent = `Sunset: ${json['Daily_Sunset'].slice(17,22)}`
 
     const DailyBoxElems = [DailyHeading, DailyIcon, DailyDescriptionHeading, DailyTempHeading, DailyOTempHeading, DailySunrise, DailySunset, DailyWind]
     

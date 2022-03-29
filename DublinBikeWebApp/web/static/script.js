@@ -72,15 +72,21 @@ function getInfoWindowContent(stationJSON) {
 }
 
 async function calc_availability(data) {
-    var currentStationInfo = getLiveStationJSON(data['number']);
+    var currentStationInfo = await getLiveStationJSON(data['number']);
+//    console.log(currentStationInfo);
     const stationCapacity = currentStationInfo['Available_Stands'] + currentStationInfo['Available_Bikes'];
+//    console.log(stationCapacity, currentStationInfo['Available_Bikes']);
     if (stationCapacity == currentStationInfo['Available_Bikes']) {
+//        console.log(currentStationInfo['address'], "is full")
         return "Full";
         } else if (currentStationInfo['Available_Bikes'] == 0) {
+//        console.log(currentStationInfo['address'], "is empty")
         return "Empty"
         } else if (((currentStationInfo['Available_Bikes']/stationCapacity)*100) < 50){
+//        console.log(currentStationInfo['address'], "is semi-empty")
         return "Semi_Empty"
         } else {
+//        console.log(currentStationInfo['address'], "is semi-full")
         return "Semi_Full"}
         }
 
@@ -128,11 +134,12 @@ fetch("/keys")
             .then(function(resp) {
                 return resp.json();
             })
-            .then(function(data) {
+            .then(async function(data) {
                 for (let i = 0; i < data['stations'].length; i++) {
                     const station_position = {'latitude':data['stations'][i]['latitude'],
                     'longitude':data['stations'][i]['longitude']}
-                    station_availability = calc_availability(data['stations'][i]);
+                    station_availability = await calc_availability(data['stations'][i]);
+//                    console.log(station_availability);
                     const marker = new google.maps.Marker({
                         position: {lat: parseFloat(station_position['latitude']),
                         lng: parseFloat(station_position['longitude'])},

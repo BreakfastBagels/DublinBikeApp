@@ -9,7 +9,7 @@ mysql = MySQL()
 app.config['MYSQL_DATABASE_HOST'] = '127.0.0.1'
 app.config['MYSQL_DATABASE_PORT'] = 3306
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = ''
+app.config['MYSQL_DATABASE_PASSWORD'] = 'jackjack'
 
 mysql.init_app(app)
 
@@ -27,13 +27,13 @@ def map_page():
 @app.route("/Bagel_Icon/<type>")
 def bagel_icon(type):
     if type == "Full":
-        return send_file("static\\icons\\Bagel_Full_Small.png", mimetype='image/png')
+        return send_file("static/icons/Bagel_Full_Small.png", mimetype='image/png')
     elif type == "Empty":
-        return send_file("static\\icons\\Bagel_Empty_Small.png", mimetype='image/png')
+        return send_file("static/icons/Bagel_Empty_Small.png", mimetype='image/png')
     elif type == "Semi_Empty":
-        return send_file("static\\icons\\Bagel_Semi_Empty_Small.png", mimetype='image/png')
+        return send_file("static/icons/Bagel_Semi_Empty_Small.png", mimetype='image/png')
     else:
-        return send_file("static\\icons\\Bagel_Semi_Full_Small.png", mimetype='image/png')
+        return send_file("static/icons/Bagel_Semi_Full_Small.png", mimetype='image/png')
 
 
 @app.route("/stats")
@@ -44,7 +44,7 @@ def stats_page():
 @app.route("/get-weather")
 def get():
     cur = mysql.connect().cursor()
-    cur.execute('''select * from localdublinbikescopy.current_weather''')
+    cur.execute('''select * from maindb.current_weather''')
     r = [dict((cur.description[i][0], value)
                 for i, value in enumerate(row)) for row in cur.fetchall()]
     json_weather = jsonify({'weather' : r})
@@ -53,7 +53,7 @@ def get():
 
 @app.route('/keys')
 def get_keys():
-    with open('..\\..\\keys.json', 'r') as keys_file:
+    with open('keys.json', 'r') as keys_file:
         api_keys = json.load(keys_file)
         return jsonify(api_keys)
 
@@ -61,7 +61,7 @@ def get_keys():
 @app.route('/static_stations')
 def static_stations():
     cur = mysql.connect().cursor()
-    cur.execute('''select * from localdublinbikescopy.static_table''')
+    cur.execute('''select * from maindb.static_table''')
     r = [dict((cur.description[i][0], value)
                 for i, value in enumerate(row)) for row in cur.fetchall()]
     json_stations = jsonify({'stations' : r})
@@ -73,7 +73,7 @@ def get_station_info():
     def run_station_query():
         cur = mysql.connect().cursor()
         sql_query = ("SELECT dt.Station_Number, st.address, dt.Available_Stands, dt.Available_Bikes, dt.Time_Entered "
-        "FROM localdublinbikescopy.static_table as st, localdublinbikescopy.dynamic_table as dt "
+        "FROM maindb.static_table as st, maindb.dynamic_table as dt "
         "WHERE dt.Station_Number=st.number ORDER BY Time_Entered DESC LIMIT 110;")
         cur.execute(sql_query)
         return cur

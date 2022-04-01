@@ -145,7 +145,7 @@ fetch("/keys")
                         lng: parseFloat(station_position['longitude'])},
                         map: map,
                         title: data['stations'][i]['name'],
-                        icon: "/Bagel_Icon/" + station_availability
+                        // icon: "/Bagel_Icon/" + station_availability
                     });
                     const stationNumber =  data['stations'][i]['number'];
                     marker.addListener("click", async () => {

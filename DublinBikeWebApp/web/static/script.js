@@ -1,6 +1,7 @@
 // Global Calls
 const weatherBoxCol = document.getElementById('weather-box-col');
 postWeatherInfoToDom()
+storeLiveStationInfo()
 
 // Weather Box Code
 async function getWeatherJSON() {
@@ -49,13 +50,18 @@ function capitalise(str) {
 }
 
 // Google Maps Code
-async function getLiveStationJSON (stationNumber) {
-    const response = await fetch('/station_info');
-    const json = await response.json();
-    const stationInfoArr = json["station_info"]
+function getLiveStationJSON (stationNumber) {
+    const stationInfoArr = JSON.parse(localStorage.getItem('station_info'))
     for (let i = 0; i < stationInfoArr.length; i++) {
         if (stationInfoArr[i]["Station_Number"] == stationNumber) return stationInfoArr[i]
     }
+}
+
+async function storeLiveStationInfo() {
+    const response = await fetch('/station_info');
+    const json = await response.json();
+    const stationInfoArr = json["station_info"]
+    localStorage.setItem('station_info', JSON.stringify(stationInfoArr));
 }
 
 function getInfoWindowContent(stationJSON) {
@@ -71,8 +77,8 @@ function getInfoWindowContent(stationJSON) {
     ].join("<br>");
 }
 
-async function calc_availability(data) {
-    var currentStationInfo = await getLiveStationJSON(data['number']);
+function calc_availability(data) {
+    var currentStationInfo = getLiveStationJSON(data['number']);
 //    console.log(currentStationInfo);
     const stationCapacity = currentStationInfo['Available_Stands'] + currentStationInfo['Available_Bikes'];
 //    console.log(stationCapacity, currentStationInfo['Available_Bikes']);
@@ -138,18 +144,18 @@ fetch("/keys")
                 for (let i = 0; i < data['stations'].length; i++) {
                     const station_position = {'latitude':data['stations'][i]['latitude'],
                     'longitude':data['stations'][i]['longitude']}
-                    station_availability = await calc_availability(data['stations'][i]);
+                    station_availability = calc_availability(data['stations'][i]);
 //                    console.log(station_availability);
                     const marker = new google.maps.Marker({
                         position: {lat: parseFloat(station_position['latitude']),
                         lng: parseFloat(station_position['longitude'])},
                         map: map,
                         title: data['stations'][i]['name'],
-                        // icon: "/Bagel_Icon/" + station_availability
+                        icon: "/Bagel_Icon/" + station_availability
                     });
                     const stationNumber =  data['stations'][i]['number'];
-                    marker.addListener("click", async () => {
-                        const liveStationJSON = await getLiveStationJSON(stationNumber)
+                    marker.addListener("click", () => {
+                        const liveStationJSON = getLiveStationJSON(stationNumber)
                         const infoWindowContent = getInfoWindowContent(liveStationJSON);
                         const infoWindow = new google.maps.InfoWindow({
                             content: infoWindowContent,

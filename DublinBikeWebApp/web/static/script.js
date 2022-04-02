@@ -8,7 +8,7 @@ var directionsRenderer;
 var marker;
 let map;
 
-createMarkerRouteOptions();
+// createMarkerRouteOptions();
 
 requestButtons.forEach((button) => {
     button.addEventListener('click', async () => {
@@ -167,6 +167,7 @@ function initAllMarkers() {
                 stationMarkerCoordinates.push(station_position);
                 stationMarkers.push(marker);
             }
+            createMarkerRouteOptions();
         });
     }
 
@@ -207,16 +208,21 @@ function hideRoute() {
 }
 
 function createMarkerRouteOptions() {
+//    console.log("create marker route function called")
     var stationMarkersString = "";
-        for (var i = 0; i < stationInfoArray.length; i++) {
-            var stationAddress = stationInfoArray[i]['address'];
-            console.log(stationAddress);
-            var stationLat = stationInfoArray[i]['latitude'];
-            var stationLng = stationInfoArray[i]['longitude'];
-            console.log(stationLat, stationLng);
-            stationMarkersString += "<option value = " +  parseFloat(stationLat) +
-                "," + parseFloat(stationLng) + ">" + stationAddress + "</li>";
-        }
+//    console.log(stationInfoArray[0]['address']);
+    for (var i = 0; i < stationInfoArray.length; i++) {
+//        console.log(stationInfoArray[i]);
+        var stationAddress = stationInfoArray[i]['address'];
+//        console.log(stationAddress);
+        var stationLat = stationInfoArray[i]['latitude'];
+        var stationLng = stationInfoArray[i]['longitude'];
+//        console.log(stationLat, stationLng);
+        stationMarkersString += "<option value = " +  parseFloat(stationLat) +
+            "," + parseFloat(stationLng) + ">" + stationAddress + "</li>";
+    };
+    stationMarkersString += "<option value = " +  parseFloat(stationInfoArray[0]['latitude']) +
+        "," + parseFloat(stationInfoArray[0]['longitude']) + ">" + stationAddress + "</li>";
     document.getElementById('start').innerHTML += stationMarkersString;
     document.getElementById('end').innerHTML += stationMarkersString;
 }

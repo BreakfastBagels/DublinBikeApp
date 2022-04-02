@@ -58,7 +58,7 @@ def get_station(station_id):
 
 @app.route('/keys')
 def get_keys():
-    with open('..\\static\\keys.json', 'r') as keys_file:
+    with open('..\\..\\keys.json', 'r') as keys_file:
         api_keys = json.load(keys_file)
         return jsonify(api_keys)
 

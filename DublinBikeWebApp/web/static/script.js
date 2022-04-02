@@ -196,6 +196,8 @@ function createRoute() {
     };
     directionsService.route(request, function(result, status) {
         if (status == 'OK') {
+//            console.log(result.routes[0].legs[0]);
+            displayRouteInstructions(result);
             directionsRenderer.setMap(map);
             directionsRenderer.setDirections(result);
         }
@@ -205,6 +207,7 @@ function createRoute() {
 
 function hideRoute() {
     directionsRenderer.setMap(null);
+    document.getElementById('directions').innerHTML = "";
 }
 
 function createMarkerRouteOptions() {
@@ -227,8 +230,11 @@ function createMarkerRouteOptions() {
     document.getElementById('end').innerHTML += stationMarkersString;
 }
 
-//for (var i = 0; i < stationInfoArray.length; i++) {
-//    document.getElementById('test').innerHTML += "<li>stationInfoArray[i]['address']</li>";
-//}
+function displayRouteInstructions(routeObj) {
+    var directionsInfo = routeObj.routes[0].legs[0];
+    var durationString = "Approximate time to complete journey: " + directionsInfo.duration['text'];
+    document.getElementById('directions').innerHTML += "<p>" + durationString + "</p>";
+    console.log(routeObj.routes[0].legs[0]);
+}
 
 

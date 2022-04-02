@@ -233,8 +233,11 @@ function createMarkerRouteOptions() {
 function displayRouteInstructions(routeObj) {
     var directionsInfo = routeObj.routes[0].legs[0];
     var durationString = "Approximate time to complete journey: " + directionsInfo.duration['text'];
-    document.getElementById('directions').innerHTML += "<p>" + durationString + "</p>";
-    console.log(routeObj.routes[0].legs[0]);
+    var distanceString = "Approximate distance of journey: " + directionsInfo.distance['text'];
+    document.getElementById('directions').innerHTML += "<p>" + durationString + "<br>" +
+        distanceString + "</p>";
+//    document.getElementById('directions').innerHTML += "<p>" + distanceString + "</p>";
+//    console.log(routeObj.routes[0].legs[0]);
 }
 
 

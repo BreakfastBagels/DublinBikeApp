@@ -231,6 +231,7 @@ function createMarkerRouteOptions() {
 }
 
 function displayRouteInstructions(routeObj) {
+    document.getElementById('directions').innerHTML = "";
     var directionsInfo = routeObj.routes[0].legs[0];
     var durationString = "Approximate time to complete journey: " + directionsInfo.duration['text'];
     var distanceString = "Approximate distance of journey: " + directionsInfo.distance['text'];

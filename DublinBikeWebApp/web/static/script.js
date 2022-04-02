@@ -235,10 +235,24 @@ function displayRouteInstructions(routeObj) {
     var directionsInfo = routeObj.routes[0].legs[0];
     var durationString = "Approximate time to complete journey: " + directionsInfo.duration['text'];
     var distanceString = "Approximate distance of journey: " + directionsInfo.distance['text'];
+    var directionsString = "<p>";
+    for (var i = 0; i < directionsInfo.steps.length; i++) {
+        var directionsStep = directionsInfo.steps[i].instructions;
+        if (directionsStep.indexOf("<div") != -1) {
+            var divIndex = directionsStep.indexOf("<div");
+            var directionsStepDiv = directionsStep.slice(divIndex);
+            var directionsMinusDiv = directionsStep.replace(directionsStepDiv, "");
+            directionsStep = directionsMinusDiv
+            }
+        directionsString += "<b>" + (i+1) + ": </b>" + directionsStep;
+        directionsString += "<br>";
+    };
+    directionsString += "</p>";
     document.getElementById('directions').innerHTML += "<p>" + durationString + "<br>" +
         distanceString + "</p>";
+    document.getElementById('directions').innerHTML += directionsString;
 //    document.getElementById('directions').innerHTML += "<p>" + distanceString + "</p>";
-//    console.log(routeObj.routes[0].legs[0]);
+    console.log(routeObj.routes[0].legs[0]);
 }
 
 

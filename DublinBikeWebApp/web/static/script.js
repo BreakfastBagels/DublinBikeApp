@@ -6,7 +6,9 @@ const stationMarkers = [];
 var directionsService;
 var directionsRenderer;
 var marker;
+var userMarker;
 let map;
+let geocoder;
 
 // createMarkerRouteOptions();
 
@@ -135,7 +137,7 @@ fetch("/keys")
             directionsService = new google.maps.DirectionsService();
             directionsRenderer = new google.maps.DirectionsRenderer();
 
-
+            geocoder = new google.maps.Geocoder();
             map = new google.maps.Map(document.getElementById("map"), {
                 center: { lat:53.34228, lng:-6.27455},
                 zoom: 14,
@@ -290,5 +292,33 @@ function displayRouteInstructions(routeObj) {
 //    document.getElementById('directions').innerHTML += "<p>" + distanceString + "</p>";
     console.log(routeObj.routes[0].legs[0]);
 }
+
+function find_station() {
+//    removeUserMarker();
+    var search_val = document.getElementById('find_station').value;
+    geocoder.geocode( {'address': search_val}, function(results, status) {
+        if(status == "OK") {
+            console.log(results[0]);
+            userMarker = new google.maps.Marker({
+                map: map,
+                position: results[0].geometry.location,
+                icon: {url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"}
+            });
+        }
+    });
+    document.getElementById('find_station_reset').disabled = false;
+    document.getElementById('find_station_search').disabled = true;
+}
+
+function removeUserMarker() {
+    userMarker.setMap(null);
+    document.getElementById('find_station_search').disabled = false;
+    document.getElementById('find_station_reset').disabled = true;
+}
+
+//    console.log(search_val, typeof(search_val));
+
+
+
 
 

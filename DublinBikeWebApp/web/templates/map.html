@@ -65,6 +65,9 @@
             </select>
             <button onclick="createRoute();">Create Route</button>
             <button onclick="initAllMarkers();hideRoute();">Done</button>
+            <input type="text" id="find_station">
+            <button id="find_station_search" onclick="find_station()">Search</button>
+            <button id="find_station_reset" onclick="removeUserMarker()" disabled>Reset Search</button>
             <div id="directions"></div>
         </div>
         </div>

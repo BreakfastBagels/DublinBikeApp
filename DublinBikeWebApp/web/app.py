@@ -19,6 +19,16 @@ def landing_page():
     return render_template("index.html", content = "trying stuff out")
 
 
+@app.route("/map")
+def map_page():
+    return render_template("map.html")
+
+
+@app.route("/stats")
+def stats_page():
+    return render_template("stats.html")
+
+
 @app.route("/get-weather")
 def get():
     cur = mysql.connect().cursor()

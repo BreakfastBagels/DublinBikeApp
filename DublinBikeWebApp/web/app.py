@@ -13,9 +13,11 @@ app.config['MYSQL_DATABASE_PASSWORD'] = ''
 
 mysql.init_app(app)
 
+
 @app.route("/")
 def landing_page():
     return render_template("index.html", content = "trying stuff out")
+
 
 @app.route("/get-weather")
 def get():
@@ -26,41 +28,13 @@ def get():
     json_weather = jsonify({'weather' : r})
     return json_weather
 
-@app.route('/station/<int:station_id>')
-def get_station(station_id):
-    if (station_id == 2):
-        return jsonify(
-             {
-                 "number": "2",
-                 "name" : "BLESSINGTON STREET",
-                 "address" : "Blessington Street",
-                 "latitude" : "53.356769",
-                 "longitude" : "-6.26814",
-             })
-    elif (station_id == 3):
-        return jsonify(
-             {
-                 "number": "3",
-                 "name" : "BOLTON STREET",
-                 "address" : "Bolton Street",
-                 "latitude" : "53.351182",
-                 "longitude" : "-6.269859",
-             })
-    else:
-        return jsonify(
-             {
-                 "number": "99",
-                 "name" : "ERROR",
-                 "address" : "Bolton Street",
-                 "latitude" : "0.0000",
-                 "longitude" : "0.0000",
-             })
 
 @app.route('/keys')
 def get_keys():
     with open('..\\..\\keys.json', 'r') as keys_file:
         api_keys = json.load(keys_file)
         return jsonify(api_keys)
+
 
 @app.route('/static_stations')
 def static_stations():
@@ -70,6 +44,34 @@ def static_stations():
                 for i, value in enumerate(row)) for row in cur.fetchall()]
     json_stations = jsonify({'stations' : r})
     return json_stations
+
+
+@app.route('/station_info')
+def get_station_info():
+    def run_station_query():
+        cur = mysql.connect().cursor()
+        sql_query = ("SELECT dt.Station_Number, st.address, dt.Available_Stands, dt.Available_Bikes, dt.Time_Entered "
+        "FROM localdublinbikescopy.static_table as st, localdublinbikescopy.dynamic_table as dt "
+        "WHERE dt.Station_Number=st.number ORDER BY Time_Entered DESC LIMIT 110;")
+        cur.execute(sql_query)
+        return cur
+
+    def create_station_data_list(cur):
+        rows = cur.fetchall()
+        column_list = cur.description
+        station_data_list = []
+        for row in rows:
+            station_dict = dict()
+            for i, row_value in enumerate(row):
+                column_name = column_list[i][0]
+                station_dict[column_name] = row_value
+            station_data_list.append(station_dict)
+        return station_data_list
+
+    cur = run_station_query()
+    station_data_list = create_station_data_list(cur)
+    return jsonify({'station_info': station_data_list})
+
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -97,6 +97,29 @@ function capitalise(str) {
     return str.charAt(0).toUpperCase() + lower.slice(1)
 }
 
+// Google Maps Code
+async function getLiveStationJSON (stationNumber) {
+    const response = await fetch('/station_info');
+    const json = await response.json();
+    const stationInfoArr = json["station_info"]
+    for (let i = 0; i < stationInfoArr.length; i++) {
+        if (stationInfoArr[i]["Station_Number"] == stationNumber) return stationInfoArr[i]
+    }
+}
+
+function getInfoWindowContent(stationJSON) {
+    const cleanedStationName = stationJSON['address'].replace(/\"/g, "");
+    const stationCapacity = stationJSON['Available_Stands'] + stationJSON['Available_Bikes'];
+    return [
+        `Station Name: ${cleanedStationName}`,
+        `Station Number: ${stationJSON['Station_Number']}`,
+        `Available Stands: ${stationJSON['Available_Stands']}`,
+        `Available Bikes: ${stationJSON['Available_Bikes']}`,
+        `Station Capacity: ${stationCapacity}`,
+        `Last Updated: ${stationJSON['Time_Entered']}`,
+    ].join("<br>");
+}
+
 fetch("/keys")
     .then(function(resp) {
         return resp.json();
@@ -164,6 +187,19 @@ function initAllMarkers() {
                     map: map,
                     title: data['stations'][i]['name'],
                 });
+                const stationNumber =  data['stations'][i]['number'];
+                    marker.addListener("click", async () => {
+                        const liveStationJSON = await getLiveStationJSON(stationNumber)
+                        const infoWindowContent = getInfoWindowContent(liveStationJSON);
+                        const infoWindow = new google.maps.InfoWindow({
+                            content: infoWindowContent,
+                        })
+                        infoWindow.open({
+                            anchor: marker,
+                            map,
+                            shouldFocus: false,
+                        })
+                    })
                 stationMarkerCoordinates.push(station_position);
                 stationMarkers.push(marker);
             }

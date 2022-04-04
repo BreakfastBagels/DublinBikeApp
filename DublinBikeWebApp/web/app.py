@@ -2,6 +2,8 @@
 from flask import Flask, jsonify, redirect, url_for, render_template
 from flaskext.mysql import MySQL
 import json
+import pickle
+from sklearn.preprocessing import PolynomialFeatures
 
 app = Flask(__name__)
 mysql = MySQL()
@@ -25,6 +27,26 @@ def map_page():
 def stats_page():
     return render_template("stats.html")
 
+
+@app.route("/model")
+def predict():
+    poly = PolynomialFeatures(degree=2)
+    with open('mean-bikes-pickle3-weekday', 'rb') as file:
+        model = pickle.load(file)
+    result = model.predict(poly.fit_transform(([ [4] ])))
+    prediction = json.dumps(result.tolist())
+    return jsonify(prediction)
+
+@app.route("/model2")
+def predict2():
+    poly = PolynomialFeatures(degree=2)
+    with open('mean-bikes-pickle3-weekday', 'rb') as file:
+        model = pickle.load(file)
+    result = []
+    for i in range(24):
+        result.append((model.predict(poly.fit_transform(([ [i] ])))))
+    prediction = json.dumps(result)
+    return jsonify(prediction)
 
 @app.route("/get-weather")
 def get():

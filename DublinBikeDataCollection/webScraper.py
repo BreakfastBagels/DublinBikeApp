@@ -3,7 +3,7 @@ import time
 import datetime
 
 import errors
-import getJSON as gj
+import getJson as gj
 from sqlalchemy import create_engine
 
 with open("keys.json", "r") as keys_file:

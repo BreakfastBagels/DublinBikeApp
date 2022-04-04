@@ -13,7 +13,7 @@ app.config['MYSQL_DATABASE_PASSWORD'] = 'creamcheese95'
 
 mysql.init_app(app)
 
-@app.route("/")
+@app.route("/index")
 def landing_page():
     return render_template("index.html", content = "trying stuff out")
 
@@ -22,6 +22,9 @@ def landing_page():
 def map_page():
     return render_template("map.html")
 
+@app.route("/stats")
+def stats_page():
+    return render_template("stats.html")
 
 @app.route("/Bagel_Icon/<type>")
 def bagel_icon(type):
@@ -34,12 +37,6 @@ def bagel_icon(type):
     else:
         return send_file("static/icons/Bagel_Semi_Full_Small.png", mimetype='image/png')
 
-
-@app.route("/stats")
-def stats_page():
-    return render_template("stats.html")
-
-
 @app.route("/get-weather")
 def get():
     cur = mysql.connect().cursor()
@@ -48,6 +45,24 @@ def get():
                 for i, value in enumerate(row)) for row in cur.fetchall()]
     json_weather = jsonify({'weather' : r})
     return json_weather
+
+@app.route("/hourly-weather")
+def get_hourly():
+    cur = mysql.connect().cursor()
+    cur.execute('''select * from maindb.hourly_weather order by Hour_Recorded desc''')
+    r = [dict((cur.description[i][0], value)
+                for i, value in enumerate(row)) for row in cur.fetchall()]
+    json_hourly = jsonify({'hourly' : r})
+    return json_hourly
+
+@app.route("/daily-weather")
+def get_daily():
+    cur = mysql.connect().cursor()
+    cur.execute('''select * from maindb.daily_weather order by Hour_Recorded desc''')
+    r = [dict((cur.description[i][0], value)
+                for i, value in enumerate(row)) for row in cur.fetchall()]
+    json_hourly = jsonify({'daily' : r})
+    return json_hourly
 
 
 @app.route('/static_stations')

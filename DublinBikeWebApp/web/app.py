@@ -1,25 +1,40 @@
 #!/usr/bin/env python
-from flask import Flask, jsonify, redirect, url_for, render_template
+from flask import Flask, jsonify, redirect, url_for, render_template, send_from_directory, send_file
 from flaskext.mysql import MySQL
 import json
 
 app = Flask(__name__)
 mysql = MySQL()
 
-app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+app.config['MYSQL_DATABASE_HOST'] = 'main-db.cd8z7cqv2c8a.us-east-1.rds.amazonaws.com'
 app.config['MYSQL_DATABASE_PORT'] = 3306
-app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'Pepper12'
+app.config['MYSQL_DATABASE_USER'] = 'admin'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'creamcheese95'
 
 mysql.init_app(app)
 
-@app.route("/index")
+
+@app.route("/")
 def landing_page():
     return render_template("index.html", content = "trying stuff out")
+
 
 @app.route("/map")
 def map_page():
     return render_template("map.html")
+
+
+@app.route("/Bagel_Icon/<type>")
+def bagel_icon(type):
+    if type == "Full":
+        return send_file("static/icons/Bagel_Full_Small.png", mimetype='image/png')
+    elif type == "Empty":
+        return send_file("static/icons/Bagel_Empty_Small.png", mimetype='image/png')
+    elif type == "Semi_Empty":
+        return send_file("static/icons/Bagel_Semi_Empty_Small.png", mimetype='image/png')
+    else:
+        return send_file("static/icons/Bagel_Semi_Full_Small.png", mimetype='image/png')
+
 
 @app.route("/stats")
 def stats_page():
@@ -52,12 +67,6 @@ def get_daily():
     json_hourly = jsonify({'daily' : r})
     return json_hourly
 
-@app.route('/keys')
-def get_keys():
-    with open('keys.json', 'r') as keys_file:
-        api_keys = json.load(keys_file)
-        return jsonify(api_keys)
-
 @app.route('/static_stations')
 def static_stations():
     cur = mysql.connect().cursor()
@@ -66,6 +75,7 @@ def static_stations():
                 for i, value in enumerate(row)) for row in cur.fetchall()]
     json_stations = jsonify({'stations' : r})
     return json_stations
+
 
 @app.route('/station_info')
 def get_station_info():
@@ -93,5 +103,6 @@ def get_station_info():
     station_data_list = create_station_data_list(cur) 
     return jsonify({'station_info': station_data_list})
 
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5000)

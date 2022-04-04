@@ -51,13 +51,6 @@ def get():
     return json_weather
 
 
-@app.route('/keys')
-def get_keys():
-    with open('keys.json', 'r') as keys_file:
-        api_keys = json.load(keys_file)
-        return jsonify(api_keys)
-
-
 @app.route('/static_stations')
 def static_stations():
     cur = mysql.connect().cursor()

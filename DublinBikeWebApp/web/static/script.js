@@ -1,7 +1,10 @@
-// Global Calls
+// Global Vaars
 const weatherBoxCol = document.getElementById('weather-box-col');
+
+// Global fns
 postWeatherInfoToDom()
 storeLiveStationInfo()
+appendMapsScriptToPage()
 
 // Weather Box Code
 async function getWeatherJSON() {
@@ -90,79 +93,75 @@ function calc_availability(data) {
         return "Semi_Full"}
     }
 
+function appendMapsScriptToPage() {
+    let script = document.createElement('script');
+    script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAn2fKpMTzQRBw-YNEf-FrmJtztXVkLt_8&callback=initMap';
+    script.async = true;
 
-fetch("/keys")
-    .then(function(resp) {
-        return resp.json();
-    })
-    .then(function(data) {
-        let mapkey = data['mapsApi'];
-        var script = document.createElement('script');
-        var api_url = 'https://maps.googleapis.com/maps/api/js?key='+mapkey+'&callback=initMap';
-        script.src = api_url;
-        script.async = true;
-
-        window.initMap = function() {
-            let map;
-
-            map = new google.maps.Map(document.getElementById("map"), {
-                center: { lat:53.34228, lng:-6.27455},
-                zoom: 14,
-                styles: [
-                {featureType: "administrative",
-                elementType: "all",
-                stylers: [{visibility: "off"}],},
-                {featureType: "poi.government",
-                elementType: "all",
-                stylers: [{visibility: "off"}],},
-                {featureType: "poi.medical",
-                elementType: "all",
-                stylers: [{visibility: "off"}],},
-                {featureType: "poi.school",
-                elementType: "all",
-                stylers: [{visibility: "off"}],},
-                {featureType: "poi.place_of_worship",
-                elementType: "all",
-                stylers: [{visibility: "off"}],},
-                {featureType: "poi.sports_complex",
-                elementType: "all",
-                stylers: [{visibility: "off"}],},
-                ]
-                });
-
-            fetch("/static_stations")
-            .then(function(resp) {
-                return resp.json();
-            })
-            .then(async function(data) {
-                for (let i = 0; i < data['stations'].length; i++) {
-                    const station_position = {'latitude':data['stations'][i]['latitude'],
-                    'longitude':data['stations'][i]['longitude']}
-                    station_availability = calc_availability(data['stations'][i]);
-                    const marker = new google.maps.Marker({
-                        position: {lat: parseFloat(station_position['latitude']),
-                        lng: parseFloat(station_position['longitude'])},
-                        map: map,
-                        title: data['stations'][i]['name'],
-                        icon: "/Bagel_Icon/" + station_availability
-                    });
-                    const stationNumber =  data['stations'][i]['number'];
-                    marker.addListener("click", () => {
-                        const liveStationJSON = getLiveStationJSON(stationNumber)
-                        const infoWindowContent = getInfoWindowContent(liveStationJSON);
-                        const infoWindow = new google.maps.InfoWindow({
-                            content: infoWindowContent,
-                        })
-                        infoWindow.open({
-                            anchor: marker,
-                            map,
-                            shouldFocus: false,
-                        })
-                    })                                                
-                    marker.setMap(map);
-                }
+    window.initMap = function() {
+        let map = new google.maps.Map(document.getElementById("map"), {
+            center: { lat:53.34228, lng:-6.27455},
+            zoom: 14,
+            styles: [
+            {featureType: "administrative",
+            elementType: "all",
+            stylers: [{visibility: "off"}],},
+            {featureType: "poi.government",
+            elementType: "all",
+            stylers: [{visibility: "off"}],},
+            {featureType: "poi.medical",
+            elementType: "all",
+            stylers: [{visibility: "off"}],},
+            {featureType: "poi.school",
+            elementType: "all",
+            stylers: [{visibility: "off"}],},
+            {featureType: "poi.place_of_worship",
+            elementType: "all",
+            stylers: [{visibility: "off"}],},
+            {featureType: "poi.sports_complex",
+            elementType: "all",
+            stylers: [{visibility: "off"}],},
+            ]
             });
-        };
 
-        document.head.appendChild(script);
-    })
+        fetch("/static_stations")
+        .then(function(resp) {
+            return resp.json();
+        })
+        .then(async function(data) {
+            for (let i = 0; i < data['stations'].length; i++) {
+                const station_position = {
+                    'latitude':data['stations'][i]['latitude'],
+                    'longitude':data['stations'][i]['longitude']}
+                
+                station_availability = calc_availability(data['stations'][i]);
+                
+                const marker = new google.maps.Marker({
+                    position: {lat: parseFloat(station_position['latitude']),
+                    lng: parseFloat(station_position['longitude'])},
+                    map: map,
+                    title: data['stations'][i]['name'],
+                    icon: "/Bagel_Icon/" + station_availability
+                });
+                
+                const stationNumber = data['stations'][i]['number'];
+                
+                marker.addListener("click", () => {
+                    const liveStationJSON = getLiveStationJSON(stationNumber)
+                    const infoWindowContent = getInfoWindowContent(liveStationJSON);
+                    const infoWindow = new google.maps.InfoWindow({
+                        content: infoWindowContent,
+                    })
+                    infoWindow.open({
+                        anchor: marker,
+                        map,
+                        shouldFocus: false,
+                    })
+                })                                                
+                
+                marker.setMap(map);
+            }
+        });
+    };
+    document.head.appendChild(script);
+}

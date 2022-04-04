@@ -2,6 +2,8 @@
 from flask import Flask, jsonify, redirect, url_for, render_template
 from flaskext.mysql import MySQL
 import json
+import pickle
+from sklearn.preprocessing import PolynomialFeatures
 
 app = Flask(__name__)
 mysql = MySQL()
@@ -9,59 +11,73 @@ mysql = MySQL()
 app.config['MYSQL_DATABASE_HOST'] = '127.0.0.1'
 app.config['MYSQL_DATABASE_PORT'] = 3306
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = ''
+app.config['MYSQL_DATABASE_PASSWORD'] = 'jackjack'
 
 mysql.init_app(app)
-
 
 @app.route("/")
 def landing_page():
     return render_template("index.html", content = "trying stuff out")
 
-
 @app.route("/map")
 def map_page():
     return render_template("map.html")
-
 
 @app.route("/stats")
 def stats_page():
     return render_template("stats.html")
 
 
+@app.route("/model")
+def predict():
+    poly = PolynomialFeatures(degree=2)
+    with open('mean-bikes-pickle3-weekday', 'rb') as file:
+        model = pickle.load(file)
+    result = model.predict(poly.fit_transform(([ [4] ])))
+    prediction = json.dumps(result.tolist())
+    return jsonify(prediction)
+
+@app.route("/model2")
+def predict2():
+    poly = PolynomialFeatures(degree=2)
+    with open('mean-bikes-pickle3-weekday', 'rb') as file:
+        model = pickle.load(file)
+    result = []
+    for i in range(24):
+        result.append((model.predict(poly.fit_transform(([ [i] ])))))
+    prediction = json.dumps(result)
+    return jsonify(prediction)
+
 @app.route("/get-weather")
 def get():
     cur = mysql.connect().cursor()
-    cur.execute('''select * from localdublinbikescopy.current_weather''')
+    cur.execute('''select * from maindb.current_weather''')
     r = [dict((cur.description[i][0], value)
                 for i, value in enumerate(row)) for row in cur.fetchall()]
     json_weather = jsonify({'weather' : r})
     return json_weather
 
-
 @app.route('/keys')
 def get_keys():
-    with open('..\\..\\keys.json', 'r') as keys_file:
+    with open('keys.json', 'r') as keys_file:
         api_keys = json.load(keys_file)
         return jsonify(api_keys)
-
 
 @app.route('/static_stations')
 def static_stations():
     cur = mysql.connect().cursor()
-    cur.execute('''select * from localdublinbikescopy.static_table''')
+    cur.execute('''select * from maindb.static_table''')
     r = [dict((cur.description[i][0], value)
                 for i, value in enumerate(row)) for row in cur.fetchall()]
     json_stations = jsonify({'stations' : r})
     return json_stations
-
 
 @app.route('/station_info')
 def get_station_info():
     def run_station_query():
         cur = mysql.connect().cursor()
         sql_query = ("SELECT dt.Station_Number, st.address, dt.Available_Stands, dt.Available_Bikes, dt.Time_Entered "
-        "FROM localdublinbikescopy.static_table as st, localdublinbikescopy.dynamic_table as dt "
+        "FROM maindb.static_table as st, maindb.dynamic_table as dt "
         "WHERE dt.Station_Number=st.number ORDER BY Time_Entered DESC LIMIT 110;")
         cur.execute(sql_query)
         return cur
@@ -81,7 +97,6 @@ def get_station_info():
     cur = run_station_query()
     station_data_list = create_station_data_list(cur)
     return jsonify({'station_info': station_data_list})
-
 
 if __name__ == "__main__":
     app.run(debug=True)

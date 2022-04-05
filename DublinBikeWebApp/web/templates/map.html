@@ -2,7 +2,7 @@
 <html>
     <head>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <link rel="stylesheet" type="text/css" 
+        <link rel="stylesheet" type="text/css"
         href="{{ url_for('static', filename='mapstyles.css')}}" />
         <link rel="stylesheet" href="style.css">
         <title>{%block title %}{% endblock %}</title>
@@ -56,6 +56,20 @@
       <p class="lead">Map with Current Bike Station Information</p>
         <div class="row-mt-3">
           <div id="map"></div>
+            <div>
+            <strong>Start: </strong>
+            <select id="start">
+            </select>
+            <strong>End: </strong>
+            <select id="end">
+            </select>
+            <button onclick="createRoute();">Create Route</button>
+            <button onclick="initAllMarkers();hideRoute();">Done</button>
+            <input type="text" id="find_station">
+            <button id="find_station_search" onclick="find_station()">Search</button>
+            <button id="find_station_reset" onclick="removeUserMarker()" disabled>Reset Search</button>
+            <div id="directions"></div>
+        </div>
         </div>
       </div>
     </section>

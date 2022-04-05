@@ -2,7 +2,7 @@
 <html>
     <head>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <link rel="stylesheet" type="text/css" 
+        <link rel="stylesheet" type="text/css"
         href="{{ url_for('static', filename='mapstyles.css')}}" />
         <link rel="stylesheet" href="style.css">
         <title>{%block title %}{% endblock %}</title>
@@ -55,7 +55,7 @@
         <p class="lead">Some statistics to aid you in your biking decision making:</p>
     </div>
     </section>
-  
+
   <section>
     <!-- Sets up the search bar-->
     <input type="text" id="BikeInput" onkeyup="BagelFunction()" placeholder="Search for stations.." title="Type in a Bike Station">
@@ -63,7 +63,7 @@
 
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   <script>
-    
+
     //This function allows for filtering
     function BagelFunction() {
     var input, filter, table, tr, td, i, txtValue;
@@ -80,11 +80,11 @@
       } else {
         tr[i].style.display = "none";
       }
-      }       
+      }
      }
     }
   
-    
+
       //This section sets up the table with the means table csv data
       function opsi(data) {
       var allRows = data.split(/\r?\n|\r/);

@@ -1,5 +1,25 @@
 // Global Calls
 const weatherBoxCol = document.getElementById('weather-box-col');
+const stationInfoArray = [];
+const stationMarkerCoordinates = [];
+const stationMarkers = [];
+var directionsService;
+var directionsRenderer;
+var marker;
+var userMarker;
+let map;
+let geocoder;
+
+// createMarkerRouteOptions();
+
+requestButtons.forEach((button) => {
+    button.addEventListener('click', async () => {
+        const stationJSON = await getStationJSON(button.id)
+        const stationTable = createStationTable(stationJSON);
+        insertStationTableToDom(stationTable);
+    })
+})
+
 postWeatherInfoToDom()
 
 // Weather Box Code
@@ -62,12 +82,12 @@ function getInfoWindowContent(stationJSON) {
     const cleanedStationName = stationJSON['address'].replace(/\"/g, "");
     const stationCapacity = stationJSON['Available_Stands'] + stationJSON['Available_Bikes'];
     return [
-        `Station Name: ${cleanedStationName}`, 
+        `Station Name: ${cleanedStationName}`,
         `Station Number: ${stationJSON['Station_Number']}`,
-        `Available Stands: ${stationJSON['Available_Stands']}`, 
+        `Available Stands: ${stationJSON['Available_Stands']}`,
         `Available Bikes: ${stationJSON['Available_Bikes']}`,
         `Station Capacity: ${stationCapacity}`,
-        `Last Updated: ${stationJSON['Time_Entered']}`,  
+        `Last Updated: ${stationJSON['Time_Entered']}`,
     ].join("<br>");
 }
 
@@ -83,8 +103,10 @@ fetch("/keys")
         script.async = true;
 
         window.initMap = function() {
-            let map;
+            directionsService = new google.maps.DirectionsService();
+            directionsRenderer = new google.maps.DirectionsRenderer();
 
+            geocoder = new google.maps.Geocoder();
             map = new google.maps.Map(document.getElementById("map"), {
                 center: { lat:53.34228, lng:-6.27455},
                 zoom: 14,
@@ -110,21 +132,33 @@ fetch("/keys")
                 ]
                 });
 
-            fetch("/static_stations")
-            .then(function(resp) {
-                return resp.json();
-            })
-            .then(function(data) {
-                for (let i = 0; i < data['stations'].length; i++) {
-                    const station_position = {'latitude':data['stations'][i]['latitude'],
-                    'longitude':data['stations'][i]['longitude']}
-                    const marker = new google.maps.Marker({
-                        position: {lat: parseFloat(station_position['latitude']),
-                        lng: parseFloat(station_position['longitude'])},
-                        map: map,
-                        title: data['stations'][i]['name'],
-                    });
-                    const stationNumber =  data['stations'][i]['number'];
+            directionsRenderer.setMap(map);
+
+            initAllMarkers();
+        };
+
+        document.head.appendChild(script);
+
+    })
+
+function initAllMarkers() {
+    fetch("/static_stations")
+        .then(function(resp) {
+            return resp.json();
+        })
+        .then(function(data) {
+            for (var i = 0; i < data['stations'].length; i++) {
+                fillStationInfoArray(stationInfoArray, data['stations'][i]);
+//                stationInfoArray.push(data['stations'][i]);
+                var station_position = {'latitude':data['stations'][i]['latitude'],
+                'longitude':data['stations'][i]['longitude']}
+                var marker = new google.maps.Marker({
+                    position: {lat: parseFloat(station_position['latitude']),
+                    lng: parseFloat(station_position['longitude'])},
+                    map: map,
+                    title: data['stations'][i]['name'],
+                });
+                const stationNumber =  data['stations'][i]['number'];
                     marker.addListener("click", async () => {
                         const liveStationJSON = await getLiveStationJSON(stationNumber)
                         const infoWindowContent = getInfoWindowContent(liveStationJSON);
@@ -136,11 +170,124 @@ fetch("/keys")
                             map,
                             shouldFocus: false,
                         })
-                    })                                                
-                    marker.setMap(map);
-                }
-            });
-        };
+                    })
+                stationMarkerCoordinates.push(station_position);
+                stationMarkers.push(marker);
+            }
+            createMarkerRouteOptions();
+        });
+    }
 
-        document.head.appendChild(script);
-    })
+function fillStationInfoArray(infoArray, data) {
+    if (infoArray.length < 110) {
+        infoArray.push(data);
+    }
+}
+
+function hideNonRouteMarkers(markerA, markerB) {
+    for (var i = 0; i < stationMarkers.length; i++) {
+        if (stationMarkers[i] != markerA || stationMarkers[i] != markerB)
+            stationMarkers[i].setMap(null);
+    }
+}
+
+function createRoute() {
+    var startString = document.getElementById('start').value;
+    var endString = document.getElementById('end').value;
+    var startArray = startString.split(",");
+    var endArray = endString.split(",");
+    var request = {
+        origin: {lat: parseFloat(startArray[0]), lng: parseFloat(startArray[1])},
+        destination: {lat: parseFloat(endArray[0]), lng: parseFloat(endArray[1])},
+        travelMode: 'BICYCLING',
+    };
+    directionsService.route(request, function(result, status) {
+        if (status == 'OK') {
+//            console.log(result.routes[0].legs[0]);
+            displayRouteInstructions(result);
+            directionsRenderer.setMap(map);
+            directionsRenderer.setDirections(result);
+        }
+    });
+    hideNonRouteMarkers();
+}
+
+function hideRoute() {
+    directionsRenderer.setMap(null);
+    document.getElementById('directions').innerHTML = "";
+}
+
+function createMarkerRouteOptions() {
+//    console.log("create marker route function called")
+    var stationMarkersString = "";
+//    console.log(stationInfoArray[0]['address']);
+    for (var i = 0; i < stationInfoArray.length; i++) {
+//        console.log(stationInfoArray[i]);
+        var stationAddress = stationInfoArray[i]['address'];
+//        console.log(stationAddress);
+        var stationLat = stationInfoArray[i]['latitude'];
+        var stationLng = stationInfoArray[i]['longitude'];
+//        console.log(stationLat, stationLng);
+        stationMarkersString += "<option value = " +  parseFloat(stationLat) +
+            "," + parseFloat(stationLng) + ">" + stationAddress + "</li>";
+    };
+    stationMarkersString += "<option value = " +  parseFloat(stationInfoArray[0]['latitude']) +
+        "," + parseFloat(stationInfoArray[0]['longitude']) + ">" + stationAddress + "</li>";
+    document.getElementById('start').innerHTML += stationMarkersString;
+    document.getElementById('end').innerHTML += stationMarkersString;
+}
+
+function displayRouteInstructions(routeObj) {
+    document.getElementById('directions').innerHTML = "";
+    var directionsInfo = routeObj.routes[0].legs[0];
+    var durationString = "Approximate time to complete journey: " + directionsInfo.duration['text'];
+    var distanceString = "Approximate distance of journey: " + directionsInfo.distance['text'];
+    var directionsString = "<p>";
+    for (var i = 0; i < directionsInfo.steps.length; i++) {
+        var directionsStep = directionsInfo.steps[i].instructions;
+        if (directionsStep.indexOf("<div") != -1) {
+            var divIndex = directionsStep.indexOf("<div");
+            var directionsStepDiv = directionsStep.slice(divIndex);
+            var directionsMinusDiv = directionsStep.replace(directionsStepDiv, "");
+            directionsStep = directionsMinusDiv
+            }
+        directionsString += "<b>" + (i+1) + ": </b>" + directionsStep;
+        directionsString += "<br>";
+    };
+    directionsString += "</p>";
+    document.getElementById('directions').innerHTML += "<p>" + durationString + "<br>" +
+        distanceString + "</p>";
+    document.getElementById('directions').innerHTML += directionsString;
+//    document.getElementById('directions').innerHTML += "<p>" + distanceString + "</p>";
+    console.log(routeObj.routes[0].legs[0]);
+}
+
+function find_station() {
+//    removeUserMarker();
+    var search_val = document.getElementById('find_station').value;
+    geocoder.geocode( {'address': search_val}, function(results, status) {
+        if(status == "OK") {
+            console.log(results[0]);
+            userMarker = new google.maps.Marker({
+                map: map,
+                position: results[0].geometry.location,
+                icon: {url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"}
+            });
+        }
+    });
+    document.getElementById('find_station_reset').disabled = false;
+    document.getElementById('find_station_search').disabled = true;
+}
+
+function removeUserMarker() {
+    userMarker.setMap(null);
+    document.getElementById('find_station_search').disabled = false;
+    document.getElementById('find_station_reset').disabled = true;
+}
+
+//    console.log(search_val, typeof(search_val));
+
+
+
+
+

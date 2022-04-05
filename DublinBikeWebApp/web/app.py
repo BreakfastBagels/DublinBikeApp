@@ -27,26 +27,22 @@ def map_page():
 def stats_page():
     return render_template("stats.html")
 
-
-@app.route("/model")
-def predict():
+@app.route("/model/<num>/<weekday>")
+def predict3(num, weekday):
+    pickle_rick = "ModellingNotebooks/mean-bikes-pickle"
+    pickle_rick += str(num) + "-"
+    if str(weekday) == "weekday":
+        pickle_rick += "weekday"
+    elif str(weekday) == "weekend":
+        pickle_rick += "weekend"
     poly = PolynomialFeatures(degree=2)
-    with open('mean-bikes-pickle3-weekday', 'rb') as file:
+    with open(pickle_rick, 'rb') as file:
         model = pickle.load(file)
-    result = model.predict(poly.fit_transform(([ [4] ])))
-    prediction = json.dumps(result.tolist())
-    return jsonify(prediction)
-
-@app.route("/model2")
-def predict2():
-    poly = PolynomialFeatures(degree=2)
-    with open('mean-bikes-pickle3-weekday', 'rb') as file:
-        model = pickle.load(file)
-    result = []
+    result = {}
     for i in range(24):
-        result.append((model.predict(poly.fit_transform(([ [i] ])))))
-    prediction = json.dumps(result)
-    return jsonify(prediction)
+        value = (model.predict(poly.fit_transform(([ [i] ]))))[0]
+        result.update({i: (value)})
+    return jsonify(result)
 
 @app.route("/get-weather")
 def get():

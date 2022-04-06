@@ -389,8 +389,8 @@ function find_station() {
                 map: map,
                 position: results[0].geometry.location,
                 icon: {url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"},
-                shouldFocus: true,
             });
+            map.panTo(results[0].geometry.location);
         }
     });
     document.getElementById('find_station_reset').disabled = false;

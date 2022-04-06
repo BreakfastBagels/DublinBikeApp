@@ -308,7 +308,6 @@ function hideNonRouteMarkers(markerA, markerB) {
 }
 
 function createRoute() {
-    bikeLayer.setMap(null);
     var startString = document.getElementById('start').value;
     var endString = document.getElementById('end').value;
     var startArray = startString.split(",");
@@ -323,8 +322,10 @@ function createRoute() {
             displayRouteInstructions(result);
             directionsRenderer.setMap(map);
             directionsRenderer.setDirections(result);
+            bikeLayer.setMap(map);
         }
     });
+    bikeLayer.setMap(null);
     hideNonRouteMarkers();
 }
 

@@ -349,8 +349,8 @@ function createMarkerRouteOptions() {
     var stationNames = [];
     for (var i = 0; i < stationInfoArray.length; i++) {
         var thisName = stationInfoArray[i]['address'];
-        stationName = thisName.replace(/\"/g, "");
-        stationNames.push(stationInfoArray[i]['address']);
+        var stationName = thisName.replace(/\"/g, "");
+        stationNames.push(stationName);
     }
     stationNames.sort();
 

@@ -213,7 +213,7 @@ function appendMapsScriptToPage() {
         directionsService = new google.maps.DirectionsService();
         directionsRenderer = new google.maps.DirectionsRenderer({
             suppressBicyclingLayer: true});
-        }
+
 
         geocoder = new google.maps.Geocoder();
         map = new google.maps.Map(document.getElementById("map"), {

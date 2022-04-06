@@ -388,7 +388,8 @@ function find_station() {
             userMarker = new google.maps.Marker({
                 map: map,
                 position: results[0].geometry.location,
-                icon: {url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"}
+                icon: {url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"},
+                shouldFocus: true,
             });
         }
     });

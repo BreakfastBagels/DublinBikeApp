@@ -7,6 +7,7 @@ var directionsService;
 var directionsRenderer;
 var marker;
 var userMarker;
+var bikeLayer;
 let map;
 let geocoder;
 
@@ -212,6 +213,7 @@ function appendMapsScriptToPage() {
     window.initMap = function() {
         directionsService = new google.maps.DirectionsService();
         directionsRenderer = new google.maps.DirectionsRenderer();
+        bikeLayer = new google.maps.BicyclingLayer();
 
         geocoder = new google.maps.Geocoder();
         map = new google.maps.Map(document.getElementById("map"), {
@@ -306,6 +308,7 @@ function hideNonRouteMarkers(markerA, markerB) {
 }
 
 function createRoute() {
+    bikeLayer.setMap(null);
     var startString = document.getElementById('start').value;
     var endString = document.getElementById('end').value;
     var startArray = startString.split(",");

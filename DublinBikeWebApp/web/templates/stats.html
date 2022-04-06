@@ -13,7 +13,9 @@
       <!-- Navigation -->
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-          <a class="navbar-brand" href="#">BAGEL BIKES</a>
+          <a class="navbar-brand" href="#">BAGEL BIKES
+            <img style="width:25px;height:25px;margin-bottom:5px;margin-left:10px" src="static/icons/logo_bagel.png" />
+          </a>
 
           <button class="navbar-toggler" typer="button" data-bs-toggle="collapse" data-bs-target="#nav">
             <span class="navbar-toggler-icon"></span>
@@ -38,12 +40,13 @@
       <!-- Banner Image -->
 
       <section class="bg-info text-light p-5">
-        <div class="container">
-          <div class="d-sm-flex">
-            <div>
-              <h1 class="lead">Helpful Bike Statistics</h1>
-              <p>Below you will find helpful information to help you plan your next bike ride.</p>
-            </div>
+        <div class="d-sm-flex">
+          <div class="col-lg-6">
+            <h1 class="lead">Wondering if your bike station will have any bikes?</h1>
+            <p>Fill out our form below to find bike avilability information for your bike station. We have predicted accuracy to the hour, whether it's during the week or at the weekend!</p>
+          </div>
+          <div class="col-lg-6">
+            <img class="imag-fluid" style="width:200px;height:200px;margin-left:30px" src="static/icons/copy of logo_bagel.png" />
           </div>
         </div>
       </section>
@@ -53,7 +56,7 @@
     {% block content %}
     <section class="bg-light text-dark p-5">
     <div class="container">
-        <p class="lead">Some statistics to aid you in your biking decision making:</p>
+        <p class="lead">Please fill out the form to include your bike station and time of your desired travel:</p>
 
     </div>
     </section>

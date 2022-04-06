@@ -330,7 +330,7 @@ function initAllMarkers() {
     }
 
 function fillStationInfoArray(infoArray, data) {
-    if (infoArray.length < 110) {
+    if (infoArray.length < 109) {
         infoArray.push(data);
     }
 }

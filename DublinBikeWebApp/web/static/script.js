@@ -242,7 +242,7 @@ function appendMapsScriptToPage() {
             });
 
         directionsRenderer.setMap(map);
-
+        directionsRenderer.setPanel(document.getElementById('directions'));
         initAllMarkers();
 
     };
@@ -331,7 +331,7 @@ function createRoute() {
     };
     directionsService.route(request, function(result, status) {
         if (status == 'OK') {
-            displayRouteInstructions(result);
+//            displayRouteInstructions(result);
             directionsRenderer.setMap(map);
             directionsRenderer.setDirections(result);
         }
@@ -364,40 +364,35 @@ function createMarkerRouteOptions() {
                     "," + parseFloat(stationLng) + ">" + stationAddress + "</li>";
             }
         }
-//        var stationAddress = stationInfoArray[i]['address'];
-//        var stationLat = stationInfoArray[i]['latitude'];
-//        var stationLng = stationInfoArray[i]['longitude'];
-//        stationMarkersString += "<option value = " +  parseFloat(stationLat) +
-//            "," + parseFloat(stationLng) + ">" + stationAddress + "</li>";
     };
 
     document.getElementById('start').innerHTML += stationMarkersString;
     document.getElementById('end').innerHTML += stationMarkersString;
 }
 
-function displayRouteInstructions(routeObj) {
-    document.getElementById('directions').innerHTML = "";
-    var directionsInfo = routeObj.routes[0].legs[0];
-    var durationString = "Approximate time to complete journey: " + directionsInfo.duration['text'];
-    var distanceString = "Approximate distance of journey: " + directionsInfo.distance['text'];
-    var directionsString = "<p>";
-    for (var i = 0; i < directionsInfo.steps.length; i++) {
-        var directionsStep = directionsInfo.steps[i].instructions;
-        if (directionsStep.indexOf("<div") != -1) {
-            var divIndex = directionsStep.indexOf("<div");
-            var directionsStepDiv = directionsStep.slice(divIndex);
-            var directionsMinusDiv = directionsStep.replace(directionsStepDiv, "");
-            directionsStep = directionsMinusDiv
-            }
-        directionsString += "<b>" + (i+1) + ": </b>" + directionsStep;
-        directionsString += "<br>";
-    };
-    directionsString += "</p>";
-    document.getElementById('directions').innerHTML += "<p>" + durationString + "<br>" +
-        distanceString + "</p>";
-    document.getElementById('directions').innerHTML += directionsString;
-    console.log(routeObj.routes[0].legs[0]);
-}
+//function displayRouteInstructions(routeObj) {
+//    document.getElementById('directions').innerHTML = "";
+//    var directionsInfo = routeObj.routes[0].legs[0];
+//    var durationString = "Approximate time to complete journey: " + directionsInfo.duration['text'];
+//    var distanceString = "Approximate distance of journey: " + directionsInfo.distance['text'];
+//    var directionsString = "<p>";
+//    for (var i = 0; i < directionsInfo.steps.length; i++) {
+//        var directionsStep = directionsInfo.steps[i].instructions;
+//        if (directionsStep.indexOf("<div") != -1) {
+//            var divIndex = directionsStep.indexOf("<div");
+//            var directionsStepDiv = directionsStep.slice(divIndex);
+//            var directionsMinusDiv = directionsStep.replace(directionsStepDiv, "");
+//            directionsStep = directionsMinusDiv
+//            }
+//        directionsString += "<b>" + (i+1) + ": </b>" + directionsStep;
+//        directionsString += "<br>";
+//    };
+//    directionsString += "</p>";
+//    document.getElementById('directions').innerHTML += "<p>" + durationString + "<br>" +
+//        distanceString + "</p>";
+//    document.getElementById('directions').innerHTML += directionsString;
+//    console.log(routeObj.routes[0].legs[0]);
+//}
 
 function find_station() {
     var search_val = document.getElementById('find_station').value;

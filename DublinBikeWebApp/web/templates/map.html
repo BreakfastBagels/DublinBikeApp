@@ -70,8 +70,23 @@
       <p class="lead">Map with Current Bike Station Information</p>
         <div class="row-mt-3">
           <div id="map"></div>
+            <div>
+                <strong>Start: </strong>
+                <select id="start">
+                </select>
+                <strong>End: </strong>
+                <select id="end">
+                </select>
+                </div>
+                <button onclick="createRoute();">Create Route</button>
+                <button onclick="initAllMarkers();hideRoute();">Done</button>
+                <input type="text" id="find_station">
+                <button id="find_station_search" onclick="find_station()">Search</button>
+                <button id="find_station_reset" onclick="removeUserMarker()" disabled>Reset Search</button>
+                <div id="directions"></div>
+            </div>
         </div>
-      </div>
+    </div>
     </section>
     {% endblock %}
 

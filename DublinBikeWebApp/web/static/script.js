@@ -242,44 +242,7 @@ function appendMapsScriptToPage() {
         directionsRenderer.setMap(map);
 
         initAllMarkers();
-//        fetch("/static_stations")
-//        .then(function(resp) {
-//            return resp.json();
-//        })
-//        .then(async function(data) {
-//            for (let i = 0; i < data['stations'].length; i++) {
-//                const station_position = {
-//                    'latitude':data['stations'][i]['latitude'],
-//                    'longitude':data['stations'][i]['longitude']}
-//
-//                station_availability = calc_availability(data['stations'][i]);
-//
-//                const marker = new google.maps.Marker({
-//                    position: {lat: parseFloat(station_position['latitude']),
-//                    lng: parseFloat(station_position['longitude'])},
-//                    map: map,
-//                    title: data['stations'][i]['name'],
-//                    icon: "/Bagel_Icon/" + station_availability
-//                });
-//
-//                const stationNumber = data['stations'][i]['number'];
-//
-//                marker.addListener("click", () => {
-//                    const liveStationJSON = getLiveStationJSON(stationNumber)
-//                    const infoWindowContent = getInfoWindowContent(liveStationJSON);
-//                    const infoWindow = new google.maps.InfoWindow({
-//                        content: infoWindowContent,
-//                    })
-//                    infoWindow.open({
-//                        anchor: marker,
-//                        map,
-//                        shouldFocus: false,
-//                    })
-//                })
-//
-//                marker.setMap(map);
-//            }
-//        });
+
     };
 
     document.head.appendChild(script);
@@ -330,7 +293,7 @@ function initAllMarkers() {
     }
 
 function fillStationInfoArray(infoArray, data) {
-    if (infoArray.length < 109) {
+    if (infoArray.length < 110) {
         infoArray.push(data);
     }
 }
@@ -376,8 +339,8 @@ function createMarkerRouteOptions() {
         stationMarkersString += "<option value = " +  parseFloat(stationLat) +
             "," + parseFloat(stationLng) + ">" + stationAddress + "</li>";
     };
-    stationMarkersString += "<option value = " +  parseFloat(stationInfoArray[0]['latitude']) +
-        "," + parseFloat(stationInfoArray[0]['longitude']) + ">" + stationAddress + "</li>";
+//    stationMarkersString += "<option value = " +  parseFloat(stationInfoArray[0]['latitude']) +
+//        "," + parseFloat(stationInfoArray[0]['longitude']) + ">" + stationAddress + "</li>";
     document.getElementById('start').innerHTML += stationMarkersString;
     document.getElementById('end').innerHTML += stationMarkersString;
 }

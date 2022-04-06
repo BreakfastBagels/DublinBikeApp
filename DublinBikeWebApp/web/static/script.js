@@ -309,6 +309,7 @@ function fillStationMarkersArray(markersArray, marker) {
 function fillStationInfoArray(infoArray, data) {
     if (infoArray.length < 110) {
         infoArray.push(data);
+        infoArray.sort()
     }
 }
 

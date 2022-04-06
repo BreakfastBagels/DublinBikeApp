@@ -287,12 +287,24 @@ function initAllMarkers() {
                         shouldFocus: false,
                     })
                 })
-                stationMarkerCoordinates.push(station_position);
+                fillStationCoordinatesArray(stationMarkerCoordinates, station_position);
                 stationMarkers.push(marker);
             }
             createMarkerRouteOptions();
         });
     }
+
+function fillStationCoordinatesArray(infoArray, coordinates) {
+    if(infoArray.length < 110) {
+        infoArray.push(coordinates);
+    }
+}
+
+function fillStationMarkersArray(markersArray, marker) {
+    if(markersArray.length < 110) {
+        markersArray.push(marker);
+    }
+}
 
 function fillStationInfoArray(infoArray, data) {
     if (infoArray.length < 110) {
@@ -333,6 +345,7 @@ function hideRoute() {
 }
 
 function createMarkerRouteOptions() {
+    stationInfoArray.sort();
     var stationMarkersString = "";
     for (var i = 0; i < stationInfoArray.length; i++) {
         var stationAddress = stationInfoArray[i]['address'];
@@ -341,8 +354,7 @@ function createMarkerRouteOptions() {
         stationMarkersString += "<option value = " +  parseFloat(stationLat) +
             "," + parseFloat(stationLng) + ">" + stationAddress + "</li>";
     };
-//    stationMarkersString += "<option value = " +  parseFloat(stationInfoArray[0]['latitude']) +
-//        "," + parseFloat(stationInfoArray[0]['longitude']) + ">" + stationAddress + "</li>";
+
     document.getElementById('start').innerHTML += stationMarkersString;
     document.getElementById('end').innerHTML += stationMarkersString;
 }

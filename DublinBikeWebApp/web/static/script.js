@@ -7,7 +7,6 @@ var directionsService;
 var directionsRenderer;
 var marker;
 var userMarker;
-var bikeLayer;
 let map;
 let geocoder;
 
@@ -212,8 +211,9 @@ function appendMapsScriptToPage() {
 
     window.initMap = function() {
         directionsService = new google.maps.DirectionsService();
-        directionsRenderer = new google.maps.DirectionsRenderer();
-        bikeLayer = new google.maps.BicyclingLayer();
+        directionsRenderer = new google.maps.DirectionsRenderer({
+            suppressBicyclingLayer: true});
+        }
 
         geocoder = new google.maps.Geocoder();
         map = new google.maps.Map(document.getElementById("map"), {
@@ -322,10 +322,8 @@ function createRoute() {
             displayRouteInstructions(result);
             directionsRenderer.setMap(map);
             directionsRenderer.setDirections(result);
-            bikeLayer.setMap(map);
         }
     });
-    bikeLayer.setMap(null);
     hideNonRouteMarkers();
 }
 

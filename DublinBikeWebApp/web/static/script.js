@@ -309,7 +309,6 @@ function fillStationMarkersArray(markersArray, marker) {
 function fillStationInfoArray(infoArray, data) {
     if (infoArray.length < 110) {
         infoArray.push(data);
-        infoArray.sort()
     }
 }
 
@@ -346,14 +345,30 @@ function hideRoute() {
 }
 
 function createMarkerRouteOptions() {
-    stationInfoArray.sort();
     var stationMarkersString = "";
+    var stationNames = [];
     for (var i = 0; i < stationInfoArray.length; i++) {
-        var stationAddress = stationInfoArray[i]['address'];
-        var stationLat = stationInfoArray[i]['latitude'];
-        var stationLng = stationInfoArray[i]['longitude'];
-        stationMarkersString += "<option value = " +  parseFloat(stationLat) +
-            "," + parseFloat(stationLng) + ">" + stationAddress + "</li>";
+        var thisName = stationInfoArray[i]['address'];
+        stationName = thisName.replace(/\"/g, "");
+        stationNames.push(stationInfoArray[i]['address']);
+    }
+    stationNames.sort();
+
+    for (var i = 0; i < stationNames.length; i++) {
+        for (var j = 0; j < stationInfoArray.length; j++) {
+            if (stationInfoArray[j]['address'] == '"' + stationNames[i] + '"') {
+                var stationAddress = stationInfoArray[j]['address'];
+                var stationLat = stationInfoArray[j]['latitude'];
+                var stationLng = stationInfoArray[j]['longitude'];
+                stationMarkersString += "<option value = " +  parseFloat(stationLat) +
+                    "," + parseFloat(stationLng) + ">" + stationAddress + "</li>";
+            }
+        }
+//        var stationAddress = stationInfoArray[i]['address'];
+//        var stationLat = stationInfoArray[i]['latitude'];
+//        var stationLng = stationInfoArray[i]['longitude'];
+//        stationMarkersString += "<option value = " +  parseFloat(stationLat) +
+//            "," + parseFloat(stationLng) + ">" + stationAddress + "</li>";
     };
 
     document.getElementById('start').innerHTML += stationMarkersString;

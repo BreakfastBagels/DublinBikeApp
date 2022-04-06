@@ -11,7 +11,7 @@ let map;
 const DUBLIN_BOUNDS = {
     north: 53.383584,
     south: 53.30752,
-    east: -6.150828,
+    east: -6.203132,
     west: -6.348253,
     };
 let geocoder;

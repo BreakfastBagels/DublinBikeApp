@@ -8,6 +8,12 @@ var directionsRenderer;
 var marker;
 var userMarker;
 let map;
+const DUBLIN_BOUNDS = {
+    north: 53.383584,
+    south: 53.30752,
+    east: -6.150828,
+    west: -6.348253,
+    };
 let geocoder;
 
 // Global fns
@@ -218,6 +224,10 @@ function appendMapsScriptToPage() {
         geocoder = new google.maps.Geocoder();
         map = new google.maps.Map(document.getElementById("map"), {
             center: { lat:53.34228, lng:-6.27455},
+            restriction: {
+                latLngBounds: DUBLIN_BOUNDS,
+                strictBounds: false,
+            },
             zoom: 14,
             styles: [
             {featureType: "administrative",
@@ -331,7 +341,6 @@ function createRoute() {
     };
     directionsService.route(request, function(result, status) {
         if (status == 'OK') {
-//            displayRouteInstructions(result);
             directionsRenderer.setMap(map);
             directionsRenderer.setDirections(result);
         }
@@ -370,29 +379,6 @@ function createMarkerRouteOptions() {
     document.getElementById('end').innerHTML += stationMarkersString;
 }
 
-//function displayRouteInstructions(routeObj) {
-//    document.getElementById('directions').innerHTML = "";
-//    var directionsInfo = routeObj.routes[0].legs[0];
-//    var durationString = "Approximate time to complete journey: " + directionsInfo.duration['text'];
-//    var distanceString = "Approximate distance of journey: " + directionsInfo.distance['text'];
-//    var directionsString = "<p>";
-//    for (var i = 0; i < directionsInfo.steps.length; i++) {
-//        var directionsStep = directionsInfo.steps[i].instructions;
-//        if (directionsStep.indexOf("<div") != -1) {
-//            var divIndex = directionsStep.indexOf("<div");
-//            var directionsStepDiv = directionsStep.slice(divIndex);
-//            var directionsMinusDiv = directionsStep.replace(directionsStepDiv, "");
-//            directionsStep = directionsMinusDiv
-//            }
-//        directionsString += "<b>" + (i+1) + ": </b>" + directionsStep;
-//        directionsString += "<br>";
-//    };
-//    directionsString += "</p>";
-//    document.getElementById('directions').innerHTML += "<p>" + durationString + "<br>" +
-//        distanceString + "</p>";
-//    document.getElementById('directions').innerHTML += directionsString;
-//    console.log(routeObj.routes[0].legs[0]);
-//}
 
 function find_station() {
     var search_val = document.getElementById('find_station').value;

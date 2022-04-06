@@ -357,7 +357,7 @@ function createMarkerRouteOptions() {
     for (var i = 0; i < stationNames.length; i++) {
         for (var j = 0; j < stationInfoArray.length; j++) {
             if (stationInfoArray[j]['address'] == '"' + stationNames[i] + '"') {
-                var stationAddress = stationInfoArray[j]['address'];
+                var stationAddress = stationNames[i];
                 var stationLat = stationInfoArray[j]['latitude'];
                 var stationLng = stationInfoArray[j]['longitude'];
                 stationMarkersString += "<option value = " +  parseFloat(stationLat) +

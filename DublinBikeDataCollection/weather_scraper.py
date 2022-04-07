@@ -79,8 +79,8 @@ def post_weather_to_table(json):
     #daily_weather
     for j in range(len(json)):
         day_time = f"\'{datetime.datetime.fromtimestamp(json['daily'][j]['dt'])}\'"
-        day_sunrise = f"\'{json['daily'][j]['sunrise']}\'"
-        day_sunset = f"\'{json['daily'][j]['sunset']}\'"
+        day_sunrise = f"\'{datetime.datetime.fromtimestamp(json['daily'][j]['sunrise'])}\'"
+        day_sunset = f"\'{datetime.datetime.fromtimestamp(json['daily'][j]['sunset'])}\'"
         day_temp = f"\'{json['daily'][j]['temp']['day']}\'"
         day_max = f"\'{json['daily'][j]['temp']['max']}\'"
         day_min = f"\'{json['daily'][j]['temp']['min']}\'"

@@ -133,5 +133,5 @@ dmypy.json
 **/nohup.out
 **/Bagel_Weather.json
 
-#Ignore JetBrains IDE files
+# Ignore JetBrains IDE files
 .idea/

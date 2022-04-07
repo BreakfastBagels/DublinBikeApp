@@ -1,4 +1,4 @@
-// Global Calls
+// Global Vaars
 const weatherBoxCol = document.getElementById('weather-box-col');
 const stationInfoArray = [];
 const stationMarkerCoordinates = [];
@@ -8,19 +8,25 @@ var directionsRenderer;
 var marker;
 var userMarker;
 let map;
+
+const DUBLIN_BOUNDS = {
+    north: 53.383584,
+    south: 53.30752,
+    east: -6.203132,
+    west: -6.348253,
+    };
 let geocoder;
 
-// createMarkerRouteOptions();
-
-requestButtons.forEach((button) => {
-    button.addEventListener('click', async () => {
-        const stationJSON = await getStationJSON(button.id)
-        const stationTable = createStationTable(stationJSON);
-        insertStationTableToDom(stationTable);
-    })
-})
-
+// Global fns
 postWeatherInfoToDom()
+storeLiveStationInfo()
+appendMapsScriptToPage()
+
+const HourBoxCol = document.getElementById('hour-box-col');
+postHourInfoToDom()
+
+const DailyBoxCol = document.getElementById('daily-box-col');
+postDailyInfoToDom()
 
 // Weather Box Code
 async function getWeatherJSON() {
@@ -68,14 +74,115 @@ function capitalise(str) {
     return str.charAt(0).toUpperCase() + lower.slice(1)
 }
 
-// Google Maps Code
-async function getLiveStationJSON (stationNumber) {
-    const response = await fetch('/station_info');
+//Hourly Weather Box Code
+async function getHourJSON() {
+    const response = await fetch('/hourly-weather');
     const json = await response.json();
-    const stationInfoArr = json["station_info"]
+    return json
+}
+
+async function postHourInfoToDom() {
+    const HourJSON = await getHourJSON();
+    const collectionArray = HourJSON.hourly;
+    for (let i = 0; i < 7; i++) {
+        const lastEntry = collectionArray[i];
+        const HourBox = drawHourBox(lastEntry);
+        HourBoxCol.appendChild(HourBox);
+    }
+}
+
+function drawHourBox(json) {
+    const HourBox = document.createElement('div.side');
+
+    let HourHeading = document.createElement('h6');
+    HourHeading.textContent = json['Hourly_Time'].slice(17);
+
+    let HourIcon = document.createElement('img')
+    HourIcon.src = `http://openweathermap.org/img/wn/${json['Hourly_Picture']}@2x.png`;
+
+    let HourDescriptionHeading = document.createElement('h5');
+    HourDescriptionHeading.textContent = capitalise(json['Hourly_Description']);
+
+    let HourTempHeading = document.createElement('h6');
+    // Plus sign turns string into a number
+    HourTempHeading.innerHTML = `${+(json['Hourly_Temp']) - 273}&deg; celsius`
+
+    let HourOTempHeading = document.createElement('h6');
+    HourOTempHeading.innerHTML = `Wind: ${+json['Hourly_Wind']} mph`
+
+    const HourBoxElems = [HourHeading, HourIcon, HourDescriptionHeading, HourTempHeading, HourOTempHeading]
+    
+    HourBoxElems.forEach(elem => HourBox.appendChild(elem))
+
+    return HourBox
+}
+
+//Daily Weather Box Code
+
+async function getDailyJSON() {
+    const response = await fetch('/daily-weather');
+    const json = await response.json();
+    return json
+}
+
+async function postDailyInfoToDom() {
+    const DailyJSON = await getDailyJSON();
+    const collectionArray = DailyJSON.daily;
+    for (let i = 0; i < 7; i++) {
+        const lastEntry = collectionArray[i];
+        const DailyBox = drawDailyBox(lastEntry);
+        DailyBoxCol.appendChild(DailyBox);
+    }
+}
+
+function drawDailyBox(json) {
+    const DailyBox = document.createElement('div.side');
+
+    let DailyHeading = document.createElement('h6');
+    DailyHeading.textContent = json['Daily_Time'].slice(0,11)
+
+    let DailyIcon = document.createElement('img')
+    DailyIcon.src = `http://openweathermap.org/img/wn/${json['Daily_Picture']}@2x.png`;
+
+    let DailyDescriptionHeading = document.createElement('h5');
+    DailyDescriptionHeading.textContent = capitalise(json['Daily_Description']);
+
+    let DailyTempHeading = document.createElement('h6');
+    // Plus sign turns string into a number
+    DailyTempHeading.innerHTML = `${+(json['Daily_Temp']) - 273}&deg; celsius`
+
+    let DailyWind = document.createElement('h6');
+    DailyWind.innerHTML = `Wind: ${+json['Daily_Wind']} mph`
+
+    let DailyOTempHeading = document.createElement('h6');
+    DailyOTempHeading.innerHTML = `H: ${+json['Daily_Max'] - 273}&deg; L: ${+json['Daily_Min'] - 273}&deg;`
+
+    let DailySunrise = document.createElement('h6');
+    DailySunrise.textContent = `Sunrise: ${json['Daily_Sunrise'].slice(17,22)}`
+
+    let DailySunset = document.createElement('h6');
+    DailySunset.textContent = `Sunset: ${json['Daily_Sunset'].slice(17,22)}`
+
+    const DailyBoxElems = [DailyHeading, DailyIcon, DailyDescriptionHeading, DailyTempHeading, DailyOTempHeading, DailySunrise, DailySunset, DailyWind]
+    
+    DailyBoxElems.forEach(elem => DailyBox.appendChild(elem))
+
+    return DailyBox
+}
+
+// Google Maps Code
+function getLiveStationJSON (stationNumber) {
+    const stationInfoArr = JSON.parse(localStorage.getItem('station_info'))
     for (let i = 0; i < stationInfoArr.length; i++) {
         if (stationInfoArr[i]["Station_Number"] == stationNumber) return stationInfoArr[i]
     }
+}
+
+async function storeLiveStationInfo() {
+    const response = await fetch('/station_info');
+    const json = await response.json();
+    const stationInfoArr = json["station_info"]
+    localStorage.setItem('station_info', JSON.stringify(stationInfoArr));
 }
 
 function getInfoWindowContent(stationJSON) {
@@ -91,92 +198,124 @@ function getInfoWindowContent(stationJSON) {
     ].join("<br>");
 }
 
-fetch("/keys")
-    .then(function(resp) {
-        return resp.json();
-    })
-    .then(function(data) {
-        let mapkey = data['mapsApi'];
-        var script = document.createElement('script');
-        var api_url = 'https://maps.googleapis.com/maps/api/js?key='+mapkey+'&callback=initMap';
-        script.src = api_url;
-        script.async = true;
+function calc_availability(data) {
+    const currentStationInfo = getLiveStationJSON(data['number']);
+    const stationCapacity = currentStationInfo['Available_Stands'] + currentStationInfo['Available_Bikes'];
+    if (stationCapacity == currentStationInfo['Available_Bikes']) {
+        return "Full";
+    } else if (currentStationInfo['Available_Bikes'] == 0) {
+        return "Empty"
+    } else if (((currentStationInfo['Available_Bikes']/stationCapacity)*100) < 50){
+        return "Semi_Empty"
+    } else {
+        return "Semi_Full"}
+    }
 
-        window.initMap = function() {
-            directionsService = new google.maps.DirectionsService();
-            directionsRenderer = new google.maps.DirectionsRenderer();
+function appendMapsScriptToPage() {
+    let script = document.createElement('script');
+    script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAn2fKpMTzQRBw-YNEf-FrmJtztXVkLt_8&callback=initMap';
+    script.async = true;
 
-            geocoder = new google.maps.Geocoder();
-            map = new google.maps.Map(document.getElementById("map"), {
-                center: { lat:53.34228, lng:-6.27455},
-                zoom: 14,
-                styles: [
-                {featureType: "administrative",
-                elementType: "all",
-                stylers: [{visibility: "off"}],},
-                {featureType: "poi.government",
-                elementType: "all",
-                stylers: [{visibility: "off"}],},
-                {featureType: "poi.medical",
-                elementType: "all",
-                stylers: [{visibility: "off"}],},
-                {featureType: "poi.school",
-                elementType: "all",
-                stylers: [{visibility: "off"}],},
-                {featureType: "poi.place_of_worship",
-                elementType: "all",
-                stylers: [{visibility: "off"}],},
-                {featureType: "poi.sports_complex",
-                elementType: "all",
-                stylers: [{visibility: "off"}],},
-                ]
-                });
+    window.initMap = function() {
+        directionsService = new google.maps.DirectionsService();
+        directionsRenderer = new google.maps.DirectionsRenderer({
+            suppressBicyclingLayer: true});
 
-            directionsRenderer.setMap(map);
 
-            initAllMarkers();
-        };
+        geocoder = new google.maps.Geocoder();
+        map = new google.maps.Map(document.getElementById("map"), {
+            center: { lat:53.34228, lng:-6.27455},
+            restriction: {
+                latLngBounds: DUBLIN_BOUNDS,
+                strictBounds: false,
+            },
+            zoom: 14,
+            styles: [
+            {featureType: "administrative",
+            elementType: "all",
+            stylers: [{visibility: "off"}],},
+            {featureType: "poi.government",
+            elementType: "all",
+            stylers: [{visibility: "off"}],},
+            {featureType: "poi.medical",
+            elementType: "all",
+            stylers: [{visibility: "off"}],},
+            {featureType: "poi.school",
+            elementType: "all",
+            stylers: [{visibility: "off"}],},
+            {featureType: "poi.place_of_worship",
+            elementType: "all",
+            stylers: [{visibility: "off"}],},
+            {featureType: "poi.sports_complex",
+            elementType: "all",
+            stylers: [{visibility: "off"}],},
+            ]
+            });
 
-        document.head.appendChild(script);
+        directionsRenderer.setMap(map);
+        directionsRenderer.setPanel(document.getElementById('directions'));
+        initAllMarkers();
 
-    })
+    };
+
+    document.head.appendChild(script);
+}
 
 function initAllMarkers() {
     fetch("/static_stations")
         .then(function(resp) {
             return resp.json();
         })
-        .then(function(data) {
+        .then(async function(data) {
             for (var i = 0; i < data['stations'].length; i++) {
                 fillStationInfoArray(stationInfoArray, data['stations'][i]);
-//                stationInfoArray.push(data['stations'][i]);
-                var station_position = {'latitude':data['stations'][i]['latitude'],
-                'longitude':data['stations'][i]['longitude']}
-                var marker = new google.maps.Marker({
+
+                const station_position = {
+                    'latitude':data['stations'][i]['latitude'],
+                    'longitude':data['stations'][i]['longitude']}
+
+                station_availability = calc_availability(data['stations'][i]);
+
+                const marker = new google.maps.Marker({
                     position: {lat: parseFloat(station_position['latitude']),
                     lng: parseFloat(station_position['longitude'])},
                     map: map,
                     title: data['stations'][i]['name'],
+                    icon: "/Bagel_Icon/" + station_availability
                 });
+
                 const stationNumber =  data['stations'][i]['number'];
-                    marker.addListener("click", async () => {
-                        const liveStationJSON = await getLiveStationJSON(stationNumber)
-                        const infoWindowContent = getInfoWindowContent(liveStationJSON);
-                        const infoWindow = new google.maps.InfoWindow({
-                            content: infoWindowContent,
-                        })
-                        infoWindow.open({
-                            anchor: marker,
-                            map,
-                            shouldFocus: false,
-                        })
+
+                marker.addListener("click", () => {
+                    const liveStationJSON = getLiveStationJSON(stationNumber)
+                    const infoWindowContent = getInfoWindowContent(liveStationJSON);
+                    const infoWindow = new google.maps.InfoWindow({
+                        content: infoWindowContent,
                     })
-                stationMarkerCoordinates.push(station_position);
+                    infoWindow.open({
+                        anchor: marker,
+                        map,
+                        shouldFocus: false,
+                    })
+                })
+                fillStationCoordinatesArray(stationMarkerCoordinates, station_position);
                 stationMarkers.push(marker);
             }
             createMarkerRouteOptions();
         });
     }
+
+function fillStationCoordinatesArray(infoArray, coordinates) {
+    if(infoArray.length < 110) {
+        infoArray.push(coordinates);
+    }
+}
+
+function fillStationMarkersArray(markersArray, marker) {
+    if(markersArray.length < 110) {
+        markersArray.push(marker);
+    }
+}
 
 function fillStationInfoArray(infoArray, data) {
     if (infoArray.length < 110) {
@@ -203,8 +342,6 @@ function createRoute() {
     };
     directionsService.route(request, function(result, status) {
         if (status == 'OK') {
-//            console.log(result.routes[0].legs[0]);
-            displayRouteInstructions(result);
             directionsRenderer.setMap(map);
             directionsRenderer.setDirections(result);
         }
@@ -218,52 +355,31 @@ function hideRoute() {
 }
 
 function createMarkerRouteOptions() {
-//    console.log("create marker route function called")
     var stationMarkersString = "";
-//    console.log(stationInfoArray[0]['address']);
+    var stationNames = [];
     for (var i = 0; i < stationInfoArray.length; i++) {
-//        console.log(stationInfoArray[i]);
-        var stationAddress = stationInfoArray[i]['address'];
-//        console.log(stationAddress);
-        var stationLat = stationInfoArray[i]['latitude'];
-        var stationLng = stationInfoArray[i]['longitude'];
-//        console.log(stationLat, stationLng);
-        stationMarkersString += "<option value = " +  parseFloat(stationLat) +
-            "," + parseFloat(stationLng) + ">" + stationAddress + "</li>";
+        var thisName = stationInfoArray[i]['address'];
+        var stationName = thisName.replace(/\"/g, "");
+        stationNames.push(stationName);
+    }
+    stationNames.sort();
+
+    for (var i = 0; i < stationNames.length; i++) {
+        for (var j = 0; j < stationInfoArray.length; j++) {
+            if (stationInfoArray[j]['address'] == '"' + stationNames[i] + '"') {
+                var stationAddress = stationNames[i];
+                var stationLat = stationInfoArray[j]['latitude'];
+                var stationLng = stationInfoArray[j]['longitude'];
+                stationMarkersString += "<option value = " +  parseFloat(stationLat) +
+                    "," + parseFloat(stationLng) + ">" + stationAddress + "</li>";
+            }
+        }
     };
-    stationMarkersString += "<option value = " +  parseFloat(stationInfoArray[0]['latitude']) +
-        "," + parseFloat(stationInfoArray[0]['longitude']) + ">" + stationAddress + "</li>";
     document.getElementById('start').innerHTML += stationMarkersString;
     document.getElementById('end').innerHTML += stationMarkersString;
 }
 
-function displayRouteInstructions(routeObj) {
-    document.getElementById('directions').innerHTML = "";
-    var directionsInfo = routeObj.routes[0].legs[0];
-    var durationString = "Approximate time to complete journey: " + directionsInfo.duration['text'];
-    var distanceString = "Approximate distance of journey: " + directionsInfo.distance['text'];
-    var directionsString = "<p>";
-    for (var i = 0; i < directionsInfo.steps.length; i++) {
-        var directionsStep = directionsInfo.steps[i].instructions;
-        if (directionsStep.indexOf("<div") != -1) {
-            var divIndex = directionsStep.indexOf("<div");
-            var directionsStepDiv = directionsStep.slice(divIndex);
-            var directionsMinusDiv = directionsStep.replace(directionsStepDiv, "");
-            directionsStep = directionsMinusDiv
-            }
-        directionsString += "<b>" + (i+1) + ": </b>" + directionsStep;
-        directionsString += "<br>";
-    };
-    directionsString += "</p>";
-    document.getElementById('directions').innerHTML += "<p>" + durationString + "<br>" +
-        distanceString + "</p>";
-    document.getElementById('directions').innerHTML += directionsString;
-//    document.getElementById('directions').innerHTML += "<p>" + distanceString + "</p>";
-    console.log(routeObj.routes[0].legs[0]);
-}
-
 function find_station() {
-//    removeUserMarker();
     var search_val = document.getElementById('find_station').value;
     geocoder.geocode( {'address': search_val}, function(results, status) {
         if(status == "OK") {
@@ -271,8 +387,9 @@ function find_station() {
             userMarker = new google.maps.Marker({
                 map: map,
                 position: results[0].geometry.location,
-                icon: {url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"}
+                icon: {url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"},
             });
+            map.panTo(results[0].geometry.location);
         }
     });
     document.getElementById('find_station_reset').disabled = false;
@@ -284,10 +401,3 @@ function removeUserMarker() {
     document.getElementById('find_station_search').disabled = false;
     document.getElementById('find_station_reset').disabled = true;
 }
-
-//    console.log(search_val, typeof(search_val));
-
-
-
-
-

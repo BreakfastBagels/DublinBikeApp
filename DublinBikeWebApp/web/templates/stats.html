@@ -2,7 +2,7 @@
 <html>
     <head>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <link rel="stylesheet" type="text/css" 
+        <link rel="stylesheet" type="text/css"
         href="{{ url_for('static', filename='mapstyles.css')}}" />
 <!--        <link rel="stylesheet" href="style.css">-->
         <title>{%block title %}{% endblock %}</title>
@@ -52,15 +52,83 @@
 
 <!-- Stats Section -->
 
-    {% block content %}
-    <section class="bg-light text-dark p-5">
+<section class="bg-light text-dark p-5">
     <div class="container">
         <p class="lead">Please fill out the form to include your bike station and time of your desired travel:</p>
         <p>Again, please also take into account that bikes are only avilable between 5am and 12:30am daily, however they can be returned at anytime 24/7.</p>
     </div>
     </section>
-    {% endblock %}
 
+  <section>
+    <!-- Sets up the search bar-->
+    <input type="text" id="BikeInput" onkeyup="BagelFunction()" placeholder="Search for stations.." title="Type in a Bike Station">
+  </section>
+
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>
+
+    //This function allows for filtering
+    function BagelFunction() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("BikeInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("bikes");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[0];
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+      }
+     }
+    }
+  
+
+      //This section sets up the table with the means table csv data
+      function opsi(data) {
+      var allRows = data.split(/\r?\n|\r/);
+      var table = "<table id='bikes'>";
+      for(var singleRow=0;singleRow<allRows.length;singleRow++) {
+        if(singleRow === 0) {
+          table += "<thead>";
+            table += "<tr>";
+        } else {
+          table += "<tr>";
+        }
+        var rowCells = allRows[singleRow].split(',');
+        for(var rowSingleCell=0; rowSingleCell<rowCells.length;rowSingleCell++) {
+          if(singleRow === 0) {
+            table += "<th>";
+            table += rowCells[rowSingleCell];
+            table += "</th>";
+          } else {
+            table += "<td>";
+            table += rowCells[rowSingleCell];
+            table += "</td>";
+          }
+        }
+        if(singleRow === 0) {
+          table += "</tr";
+          table += "</thead>";
+          table += "<tbody>";
+        } else {
+          table += "</tr>";
+        }
+      }
+      table += "</tbody>";
+      table += "</table>";
+      $("body").append(table);
+    }
+    $.ajax({
+      url: "../static/mean-bikes-available.csv",
+      dataType: "text"
+    }).done(opsi);
+
+  </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </body>
 </html>

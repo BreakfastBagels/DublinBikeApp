@@ -4,7 +4,7 @@ import datetime
 import getJson as gj
 import errors
 from sqlalchemy import create_engine
-    
+
 with open("keys.json", "r") as keys_file:
     keys_handle = json.load(keys_file)
 
@@ -40,7 +40,7 @@ def post_weather_to_table(json):
     host = keys_handle['DB']['host']
     port = keys_handle['DB']['port']
     db = keys_handle['DB']['db']
-    
+
     #current weather
     conn_weather = f"mysql+mysqlconnector://{user}:{password}@{host}:{port}/{db}"
     weather_engine = create_engine(conn_weather, echo=True)

@@ -8,6 +8,7 @@ var directionsRenderer;
 var marker;
 var userMarker;
 let map;
+
 const DUBLIN_BOUNDS = {
     north: 53.383584,
     south: 53.30752,
@@ -188,12 +189,12 @@ function getInfoWindowContent(stationJSON) {
     const cleanedStationName = stationJSON['address'].replace(/\"/g, "");
     const stationCapacity = stationJSON['Available_Stands'] + stationJSON['Available_Bikes'];
     return [
-        `Station Name: ${cleanedStationName}`, 
+        `Station Name: ${cleanedStationName}`,
         `Station Number: ${stationJSON['Station_Number']}`,
-        `Available Stands: ${stationJSON['Available_Stands']}`, 
+        `Available Stands: ${stationJSON['Available_Stands']}`,
         `Available Bikes: ${stationJSON['Available_Bikes']}`,
         `Station Capacity: ${stationCapacity}`,
-        `Last Updated: ${stationJSON['Time_Entered']}`,  
+        `Last Updated: ${stationJSON['Time_Entered']}`,
     ].join("<br>");
 }
 
@@ -374,11 +375,9 @@ function createMarkerRouteOptions() {
             }
         }
     };
-
     document.getElementById('start').innerHTML += stationMarkersString;
     document.getElementById('end').innerHTML += stationMarkersString;
 }
-
 
 function find_station() {
     var search_val = document.getElementById('find_station').value;

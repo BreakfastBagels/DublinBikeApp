@@ -2,6 +2,8 @@
 from flask import Flask, jsonify, redirect, url_for, render_template, send_from_directory, send_file
 from flaskext.mysql import MySQL
 import json
+import pickle
+from sklearn.preprocessing import PolynomialFeatures
 
 app = Flask(__name__)
 mysql = MySQL()
@@ -40,6 +42,23 @@ def bagel_icon(type):
 @app.route("/stats")
 def stats_page():
     return render_template("stats.html")
+
+@app.route("/model/<num>/<weekday>")
+def predict3(num, weekday):
+    pickle_rick = "ModellingNotebooks/mean-bikes-pickle"
+    pickle_rick += str(num) + "-"
+    if str(weekday) == "weekday":
+        pickle_rick += "weekday"
+    elif str(weekday) == "weekend":
+        pickle_rick += "weekend"
+    poly = PolynomialFeatures(degree=2)
+    with open(pickle_rick, 'rb') as file:
+        model = pickle.load(file)
+    result = {}
+    for i in range(24):
+        value = (model.predict(poly.fit_transform(([ [i] ]))))[0]
+        result.update({i: (value)})
+    return jsonify(result)
 
 @app.route("/get-weather")
 def get():

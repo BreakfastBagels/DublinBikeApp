@@ -6,15 +6,16 @@ import json
 app = Flask(__name__)
 mysql = MySQL()
 
-app.config['MYSQL_DATABASE_HOST'] = 'main-db.cd8z7cqv2c8a.us-east-1.rds.amazonaws.com'
+app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 app.config['MYSQL_DATABASE_PORT'] = 3306
-app.config['MYSQL_DATABASE_USER'] = 'admin'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'creamcheese95'
+app.config['MYSQL_DATABASE_USER'] = 'root'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'Pepper12'
 
 mysql.init_app(app)
 
 
 @app.route("/")
+@app.route("/index")
 def landing_page():
     return render_template("index.html", content = "trying stuff out")
 
@@ -43,7 +44,7 @@ def stats_page():
 @app.route("/get-weather")
 def get():
     cur = mysql.connect().cursor()
-    cur.execute('''select * from maindb.current_weather''')
+    cur.execute('''select * from maindb.current_weather order by Time desc limit 1''')
     r = [dict((cur.description[i][0], value)
                 for i, value in enumerate(row)) for row in cur.fetchall()]
     json_weather = jsonify({'weather' : r})
@@ -52,7 +53,7 @@ def get():
 @app.route("/hourly-weather")
 def get_hourly():
     cur = mysql.connect().cursor()
-    cur.execute('''select * from maindb.hourly_weather order by Hour_Recorded desc''')
+    cur.execute('''select * from maindb.hourly_weather order by Hour_Recorded desc limit 10''')
     r = [dict((cur.description[i][0], value)
                 for i, value in enumerate(row)) for row in cur.fetchall()]
     json_hourly = jsonify({'hourly' : r})
@@ -61,7 +62,7 @@ def get_hourly():
 @app.route("/daily-weather")
 def get_daily():
     cur = mysql.connect().cursor()
-    cur.execute('''select * from maindb.daily_weather order by Hour_Recorded desc''')
+    cur.execute('''select * from maindb.daily_weather order by Hour_Recorded desc limit 10''')
     r = [dict((cur.description[i][0], value)
                 for i, value in enumerate(row)) for row in cur.fetchall()]
     json_hourly = jsonify({'daily' : r})

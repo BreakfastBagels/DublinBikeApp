@@ -1,7 +1,6 @@
 //Nothing here yet
 
 // Global Vaars
-const weatherBoxCol = document.getElementById('weather-box-col');
 const stationInfoArray = [];
 const stationMarkerCoordinates = [];
 const stationMarkers = [];
@@ -20,15 +19,8 @@ const DUBLIN_BOUNDS = {
 let geocoder;
 
 // Global fns
-postWeatherInfoToDom()
 storeLiveStationInfo()
 appendMapsScriptToPage()
-
-const HourBoxCol = document.getElementById('hour-box-col');
-postHourInfoToDom()
-
-const DailyBoxCol = document.getElementById('daily-box-col');
-postDailyInfoToDom()
 
 // Google Maps Code
 function getLiveStationJSON (stationNumber) {

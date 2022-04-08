@@ -301,7 +301,7 @@ function nearestStation(origin) {
             console.log(minDistance);
 
             console.log("Initial Nearest Station:");
-            var nearestStation = response.destinationAddresses[0];
+            var nearestStation = stationMarkers[0].position;
             console.log(nearestStation);
             console.log(stationMarkers[0]);
             console.log(stationMarkers[0].position);
@@ -311,7 +311,7 @@ function nearestStation(origin) {
                 console.log(response.rows[0].elements[i]);
                 if (response.rows[0].elements[i].distance.value < minDistance) {
                     minDistance = response.rows[0].elements[i].distance.value;
-                    nearestStation = response.destinationAddress[i];
+                    nearestStation = stationMarkers[i].position;
                 }
             }
 

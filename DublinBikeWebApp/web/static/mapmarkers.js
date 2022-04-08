@@ -266,10 +266,8 @@ function nearestStation(origin) {
     distanceService.getDistanceMatrix({
         origins: [origin],
         destinations: destinationArray,
-        travelMode: 'WALKING'}, callback);
-
-    function callback(response, status) {
-        if (status == 'OK') {
+        travelMode: 'WALKING'}, function callback(response, status) {
+            if (status == 'OK') {
             console.log("Initial Min Distance:");
             var minDistance = response.rows[0].elements[0].distance.value;
             console.log(minDistance);
@@ -300,5 +298,39 @@ function nearestStation(origin) {
             });
             hideNonRouteMarkers();
                 }
-    }
+        };
+
+//    function callback(response, status) {
+//        if (status == 'OK') {
+//            console.log("Initial Min Distance:");
+//            var minDistance = response.rows[0].elements[0].distance.value;
+//            console.log(minDistance);
+//
+//            console.log("Initial Nearest Station:");
+//            var nearestStation = response.destinationAddresses[0];
+//            console.log(nearestStation);
+//
+//            for (var i = 1; i < response.rows[0].elements; i++) {
+//
+//                console.log(response.rows[0].elements[i])
+//                if (response.rows[0].elements[i].distance.value < minDistance) {
+//                    minDistance = response.rows[0].elements[i].distance.value;
+//                    nearestStation = response.destinationAddress[i];
+//                }
+//            }
+//
+//            var request = {
+//                origin: response.originAddresses[0],
+//                destination: nearestStation,
+//                travelMode: 'WALKING',
+//            };
+//            directionsService.route(request, function(result, status) {
+//                if (status == 'OK') {
+//                    directionsRenderer.setMap(map);
+//                    directionsRenderer.setDirections(result);
+//                }
+//            });
+//            hideNonRouteMarkers();
+//                }
+//    }
 }

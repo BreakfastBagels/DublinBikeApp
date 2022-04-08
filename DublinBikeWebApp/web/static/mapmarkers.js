@@ -266,7 +266,7 @@ function nearestStation(origin) {
     distanceService.getDistanceMatrix({
         origins: [origin],
         destinations: destinationArray,
-        travelMode: 'WALKING'}, function callback(response, status) {
+        travelMode: 'WALKING'}, function(response, status) {
             if (status == 'OK') {
             console.log("Initial Min Distance:");
             var minDistance = response.rows[0].elements[0].distance.value;

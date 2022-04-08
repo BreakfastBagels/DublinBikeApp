@@ -119,6 +119,11 @@ function appendMapsScriptToPage() {
 }
 
 function initAllMarkers() {
+
+    stationMarkers = [];
+    stationInfoArray = [];
+    stationMarkerCoordinates = [];
+    
     fetch("/static_stations")
         .then(function(resp) {
             return resp.json();

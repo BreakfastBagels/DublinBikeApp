@@ -1,7 +1,7 @@
 // Global Vaars
-const stationInfoArray = [];
-const stationMarkerCoordinates = [];
-const stationMarkers = [];
+var stationInfoArray = [];
+var stationMarkerCoordinates = [];
+var stationMarkers = [];
 //const destinationArray1 = [];
 //const destinationArray2 = [];
 //const destinationArray3 = [];
@@ -123,7 +123,7 @@ function initAllMarkers() {
     stationMarkers = [];
     stationInfoArray = [];
     stationMarkerCoordinates = [];
-    
+
     fetch("/static_stations")
         .then(function(resp) {
             return resp.json();

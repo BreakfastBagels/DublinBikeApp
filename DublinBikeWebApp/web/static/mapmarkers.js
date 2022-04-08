@@ -269,19 +269,19 @@ function nearestStation(origin) {
     var destinationArray5 = [];
     for (var i = 0; i < stationMarkers.length; i++) {
         if (i < 25) {
-            destinationArray1.push(stationMarkers[i]);
+            destinationArray1.push(stationMarkers[i].position);
         }
         else if (i < 50) {
-            destinationArray2.push(stationMarkers[i]);
+            destinationArray2.push(stationMarkers[i].position);
         }
         else if (i < 75) {
-            destinationArray3.push(stationMarkers[i]);
+            destinationArray3.push(stationMarkers[i].position);
         }
         else if (i < 100) {
-            destinationArray4.push(stationMarkers[i]);
+            destinationArray4.push(stationMarkers[i].position);
         }
         else {
-            destinationArray5.push(stationMarkers[i]);
+            destinationArray5.push(stationMarkers[i].position);
         }
     }
 

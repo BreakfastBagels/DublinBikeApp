@@ -298,7 +298,7 @@ function nearestStation(origin) {
             });
             hideNonRouteMarkers();
                 }
-        };
+        });
 
 //    function callback(response, status) {
 //        if (status == 'OK') {

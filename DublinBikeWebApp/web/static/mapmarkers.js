@@ -267,6 +267,7 @@ function nearestStation(origin) {
         origins: [origin],
         destinations: destinationArray,
         travelMode: 'WALKING'}, function(response, status) {
+            console.log(status);
             if (status == 'OK') {
             console.log("Initial Min Distance:");
             var minDistance = response.rows[0].elements[0].distance.value;

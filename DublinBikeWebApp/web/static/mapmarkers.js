@@ -264,7 +264,7 @@ function nearestStation(origin) {
     console.log(destinationArray);
 
     distanceService.getDistanceMatrix({
-        origins: origin,
+        origins: [origin],
         destinations: destinationArray,
         travelMode: 'WALKING'}, callback);
 

@@ -2,6 +2,11 @@
 const stationInfoArray = [];
 const stationMarkerCoordinates = [];
 const stationMarkers = [];
+//const destinationArray1 = [];
+//const destinationArray2 = [];
+//const destinationArray3 = [];
+//const destinationArray4 = [];
+//const destinationArray5 = [];
 var directionsService;
 var directionsRenderer;
 var distanceService;
@@ -257,15 +262,32 @@ function nearestStation(origin) {
 
     console.log("Origin station:");
     console.log(origin, typeof(origin));
-    destinationArray = []
+    var destinationArray1 = [];
+    var destinationArray2 = [];
+    var destinationArray3 = [];
+    var destinationArray4 = [];
+    var destinationArray5 = [];
     for (var i = 0; i < stationMarkers.length; i++) {
-        destinationArray.push(stationMarkers[i].position);
+        if (i < 25) {
+            destinationArray1.push(stationMarkers[i]);
+        }
+        else if (i < 50) {
+            destinationArray2.push(stationMarkers[i]);
+        }
+        else if (i < 75) {
+            destinationArray3.push(stationMarkers[i]);
+        }
+        else if (i < 100) {
+            destinationArray4.push(stationMarkers[i]);
+        }
+        else {
+            destinationArray5.push(stationMarkers[i]);
+        }
     }
-    console.log(destinationArray);
 
     distanceService.getDistanceMatrix({
         origins: [origin],
-        destinations: destinationArray,
+        destinations: destinationArray1,
         travelMode: 'WALKING'}, function(response, status) {
             console.log(status);
             if (status == 'OK') {

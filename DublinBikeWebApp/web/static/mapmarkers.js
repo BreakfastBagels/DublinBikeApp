@@ -2,11 +2,6 @@
 var stationInfoArray = [];
 var stationMarkerCoordinates = [];
 var stationMarkers = [];
-//const destinationArray1 = [];
-//const destinationArray2 = [];
-//const destinationArray3 = [];
-//const destinationArray4 = [];
-//const destinationArray5 = [];
 var directionsService;
 var directionsRenderer;
 var distanceService;
@@ -272,6 +267,9 @@ function nearestStation(origin) {
     var destinationArray3 = [];
     var destinationArray4 = [];
     var destinationArray5 = [];
+    var minDistance;
+    var nearestStation;
+
     for (var i = 0; i < stationMarkers.length; i++) {
         if (i < 25) {
             destinationArray1.push(stationMarkers[i].position);
@@ -294,21 +292,12 @@ function nearestStation(origin) {
         origins: [origin],
         destinations: destinationArray1,
         travelMode: 'WALKING'}, function(response, status) {
-            console.log(status);
             if (status == 'OK') {
-            console.log("Initial Min Distance:");
-            var minDistance = response.rows[0].elements[0].distance.value;
-            console.log(minDistance);
+            minDistance = response.rows[0].elements[0].distance.value;
 
             console.log("Initial Nearest Station:");
-            var nearestStation = stationMarkers[0].position;
-            console.log(nearestStation);
-            console.log(stationMarkers[0]);
-            console.log(stationMarkers[0].position);
-            console.log(response.rows);
-            console.log(response.destinationAddresses);
+            nearestStation = stationMarkers[0].position;
             for (var i = 1; i < response.rows[0].elements.length; i++) {
-                console.log(response.rows[0].elements[i]);
                 if (response.rows[0].elements[i].distance.value < minDistance) {
                     minDistance = response.rows[0].elements[i].distance.value;
                     nearestStation = stationMarkers[i].position;
@@ -330,37 +319,5 @@ function nearestStation(origin) {
                 }
         });
 
-//    function callback(response, status) {
-//        if (status == 'OK') {
-//            console.log("Initial Min Distance:");
-//            var minDistance = response.rows[0].elements[0].distance.value;
-//            console.log(minDistance);
-//
-//            console.log("Initial Nearest Station:");
-//            var nearestStation = response.destinationAddresses[0];
-//            console.log(nearestStation);
-//
-//            for (var i = 1; i < response.rows[0].elements; i++) {
-//
-//                console.log(response.rows[0].elements[i])
-//                if (response.rows[0].elements[i].distance.value < minDistance) {
-//                    minDistance = response.rows[0].elements[i].distance.value;
-//                    nearestStation = response.destinationAddress[i];
-//                }
-//            }
-//
-//            var request = {
-//                origin: response.originAddresses[0],
-//                destination: nearestStation,
-//                travelMode: 'WALKING',
-//            };
-//            directionsService.route(request, function(result, status) {
-//                if (status == 'OK') {
-//                    directionsRenderer.setMap(map);
-//                    directionsRenderer.setDirections(result);
-//                }
-//            });
-//            hideNonRouteMarkers();
-//                }
-//    }
+
 }

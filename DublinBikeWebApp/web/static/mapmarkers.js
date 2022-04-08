@@ -303,7 +303,7 @@ function nearestStation(origin) {
             console.log("Initial Nearest Station:");
             var nearestStation = response.destinationAddresses[0];
             console.log(nearestStation);
-
+            console.log(response.rows);
             for (var i = 1; i < response.rows[0].elements; i++) {
 
                 console.log(response.rows[0].elements[i])

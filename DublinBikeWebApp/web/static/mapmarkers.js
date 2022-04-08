@@ -175,9 +175,8 @@ function fillStationInfoArray(infoArray, data) {
     }
 }
 
-function hideNonRouteMarkers(markerA, markerB) {
+function hideNonRouteMarkers() {
     for (var i = 0; i < stationMarkers.length; i++) {
-        if (stationMarkers[i] != markerA || stationMarkers[i] != markerB)
             stationMarkers[i].setMap(null);
     }
 }
@@ -235,7 +234,6 @@ function find_station() {
     var search_val = document.getElementById('find_station').value;
     geocoder.geocode( {'address': search_val}, function(results, status) {
         if(status == "OK") {
-            console.log(results[0]);
             userMarker = new google.maps.Marker({
                 map: map,
                 position: results[0].geometry.location,
@@ -256,10 +254,15 @@ function removeUserMarker() {
 }
 
 function nearestStation(origin) {
+
+    console.log("Origin station:");
+    console.log(origin, typeof(origin));
     destinationArray = []
     for (var i = 0; i < stationMarkers.length; i++) {
         destinationArray.push(stationMarkers[i].position);
     }
+    console.log(destinationArray);
+
     distanceService.getDistanceMatrix({
         origins: origin,
         destinations: destinationArray,
@@ -267,9 +270,17 @@ function nearestStation(origin) {
 
     function callback(response, status) {
         if (status == 'OK') {
+            console.log("Initial Min Distance:");
             var minDistance = response.rows[0].elements[0].distance.value;
+            console.log(minDistance);
+
+            console.log("Initial Nearest Station:");
             var nearestStation = response.destinationAddresses[0];
+            console.log(nearestStation);
+
             for (var i = 1; i < response.rows[0].elements; i++) {
+
+                console.log(response.rows[0].elements[i])
                 if (response.rows[0].elements[i].distance.value < minDistance) {
                     minDistance = response.rows[0].elements[i].distance.value;
                     nearestStation = response.destinationAddress[i];

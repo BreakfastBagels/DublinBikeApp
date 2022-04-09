@@ -266,6 +266,7 @@ function nearestStation(origin) {
     var destinationArray3 = [];
     var destinationArray4 = [];
     var destinationArray5 = [];
+    var distanceValueAndStation = [];
     var minDistance;
     var nearestStation;
 
@@ -287,7 +288,7 @@ function nearestStation(origin) {
         }
     }
 
-        var distanceValueAndStation = getDistance(originAsArray, destinationArray1);
+        distanceValueAndStation = getDistance(originAsArray, destinationArray1);
         if (distanceValueAndStation[0] > 500) {
             distanceValueAndStation = getDistance(originAsArray, destinationArray2);
             distanceValueAndStation[1] += 25;

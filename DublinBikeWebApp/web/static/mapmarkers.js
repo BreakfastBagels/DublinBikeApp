@@ -337,8 +337,8 @@ function getDistance(originArray, destinationArray) {
         travelMode: 'WALKING', function(response, status) {
             console.log(status);
             if (status == 'OK') {
-                distanceOutput = response.rows[0].elements[0].distance.value;
-                stationOutput = 0;
+                var distanceOutput = response.rows[0].elements[0].distance.value;
+                var stationOutput = 0;
 
                 for (var i = 1; i < response.rows[0].elements.length; i++) {
                 if (response.rows[0].elements[i].distance.value < distanceOutput) {

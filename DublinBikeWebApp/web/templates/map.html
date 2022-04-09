@@ -74,15 +74,19 @@
         </div>
     </section>
     <section class="bg-light text-dark px-5 py-2">
-        <strong>Start: </strong>
-        <select id="start"></select>
-        <strong>End: </strong>
-        <select id="end"></select>
+        <div>
+            <strong>Start: </strong>
+            <select id="start"></select>
+            <strong>End: </strong>
+            <select id="end"></select>
+        </div>
+        <div>
         <button onclick="createBikeRoute()">Create Route</button>
         <button onclick="initAllMarkers();hideRoute();">Done</button>
         <input type="text" id="find_station">
         <button id="find_station_search" onclick="find_station()">Search</button>
         <button id="find_station_reset" onclick="removeUserMarker()" disabled>Reset Search</button>
+        </div>
         <div id="directions"></div>
     </section>
     {% endblock %}

@@ -266,9 +266,8 @@ function nearestStation(origin) {
     var destinationArray3 = [];
     var destinationArray4 = [];
     var destinationArray5 = [];
-    var distanceValueAndStation = [];
     var minDistance;
-    var nearestStation;
+    var nearestStationIndex;
 
     for (var i = 0; i < stationMarkers.length; i++) {
         if (i < 25) {
@@ -288,33 +287,33 @@ function nearestStation(origin) {
         }
     }
 
-        distanceValueAndStation = getDistance(originAsArray, destinationArray1);
+        [minDistance, nearestStationIndex] = getDistance(originAsArray, destinationArray1);
         if (distanceValueAndStation[0] > 500) {
-            distanceValueAndStation = getDistance(originAsArray, destinationArray2);
-            distanceValueAndStation[1] += 25;
+            [minDistance, nearestStationIndex] = getDistance(originAsArray, destinationArray2);
+            nearestStationIndex += 25;
         }
 
         if (distanceValueAndStation[0] > 500) {
-            distanceValueAndStation = getDistance(originAsArray, destinationArray3);
-            distanceValueAndStation[1] += 50;
+            [minDistance, nearestStationIndex] = getDistance(originAsArray, destinationArray3);
+            nearestStationIndex += 50;
         }
 
         if (distanceValueAndStation[0] > 500) {
-            distanceValueAndStation = getDistance(originAsArray, destinationArray4);
-            distanceValueAndStation[1] += 75;
+            [minDistance, nearestStationIndex] = getDistance(originAsArray, destinationArray4);
+            nearestStationIndex += 75;
         }
 
         if (distanceValueAndStation[0] > 500) {
-            distanceValueAndStation = getDistance(originAsArray, destinationArray5);
-            distanceValueAndStation[1] += 100;
+            [minDistance, nearestStationIndex] = getDistance(originAsArray, destinationArray5);
+            nearestStationIndex += 100;
         }
 
-        console.log(distanceValueAndStation);
+        console.log(minDistance, nearestStationIndex);
 
 
         var request = {
                 origin: origin,
-                destination: stationMarkers[distanceValueAndStation[1]].position,
+                destination: stationMarkers[nearestStationIndex].position,
                 travelMode: 'WALKING',
             };
             directionsService.route(request, function(result, status) {

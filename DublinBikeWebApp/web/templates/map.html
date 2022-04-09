@@ -73,21 +73,21 @@
           <div class="col-lg-12" id="map"></div>
         </div>
     </section>
-    <section class="bg-light text-dark px-5 py-2">
+    <section class="bg-info text-dark px-5 py-2">
         <div class="col-lg-10 mx-auto p-2">
             <strong>Start: </strong>
             <select id="start"></select>
             <strong>End: </strong>
             <select id="end"></select>
-            <button onclick="createBikeRoute()">Create Route</button>
-            <button onclick="initAllMarkers();hideRoute();">Done</button>
+            <button class="btn btn-light" onclick="createBikeRoute()">Create Route</button>
+            <button class="btn btn-light" onclick="initAllMarkers();hideRoute();">Done</button>
         </div>
         <div class="col-lg-6 mx-auto p-2">
             <input type="text" id="find_station">
-            <button id="find_station_search" onclick="find_station()">Search</button>
-            <button id="find_station_reset" onclick="removeUserMarker()" disabled>Reset Search</button>
+            <button class="btn btn-light" id="find_station_search" onclick="find_station()">Search</button>
+            <button class="btn btn-light" id="find_station_reset" onclick="removeUserMarker()" disabled>Reset Search</button>
         </div>
-        <div id="directions"></div>
+        <div id="directions" class="col-lg-10 mx-auto p-2"></div>
     </section>
     {% endblock %}
 

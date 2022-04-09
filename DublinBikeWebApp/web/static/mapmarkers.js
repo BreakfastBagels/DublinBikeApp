@@ -328,6 +328,7 @@ function nearestStation(origin) {
 
 function getDistance(originArray, destinationArray) {
 
+    console.log("getDistance function called");
     var distanceOutput;
     var stationOutput;
 
@@ -348,6 +349,9 @@ function getDistance(originArray, destinationArray) {
             }
         }
     });
+
+    console.log("Distance output is now: " + distanceOutput);
+    console.log("Station index is now: " + stationOutput);
 
     var output = [distanceOutput, stationOutput];
     return output

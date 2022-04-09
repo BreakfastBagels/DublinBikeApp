@@ -74,23 +74,16 @@
         </div>
     </section>
     <section>
-            <div class="col-lg-6">
-                <strong>Start: </strong>
-                <select id="start"></select>
-                <strong>End: </strong>
-                <select id="end"></select>
-                <button onclick="createBikeRoute()">Create Route</button>
-                <button onclick="initAllMarkers();hideRoute();">Done</button>
-                <input type="text" id="find_station">
-                <button id="find_station_search" onclick="find_station()">Search</button>
-                <button id="find_station_reset" onclick="removeUserMarker()" disabled>Reset Search</button>
-                <div id="directions"></div>
-            </div>
-            <div class="col-lg-6">
-                <p>Stats in here?</p>
-            </div>
-        </div>
-    </div>
+        <strong>Start: </strong>
+        <select id="start"></select>
+        <strong>End: </strong>
+        <select id="end"></select>
+        <button onclick="createBikeRoute()">Create Route</button>
+        <button onclick="initAllMarkers();hideRoute();">Done</button>
+        <input type="text" id="find_station">
+        <button id="find_station_search" onclick="find_station()">Search</button>
+        <button id="find_station_reset" onclick="removeUserMarker()" disabled>Reset Search</button>
+        <div id="directions"></div>
     </section>
     {% endblock %}
 

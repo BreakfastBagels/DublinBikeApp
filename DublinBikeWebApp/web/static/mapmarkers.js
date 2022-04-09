@@ -308,6 +308,8 @@ function nearestStation(origin) {
             distanceValueAndStation[1] += 100;
         }
 
+        console.log(distanceValueAndStation);
+
 
         var request = {
                 origin: origin,

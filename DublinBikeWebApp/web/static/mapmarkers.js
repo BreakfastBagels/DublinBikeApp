@@ -245,7 +245,7 @@ function find_station() {
                 icon: {url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"},
             });
             map.panTo(results[0].geometry.location);
-            nearestStation(results[0].geometry.location);
+            nearestStation(userMarker.position);
         }
     });
     document.getElementById('find_station_reset').disabled = false;

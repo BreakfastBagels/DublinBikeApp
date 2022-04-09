@@ -330,6 +330,8 @@ function getDistance(originArray, destinationArray) {
 
 
     console.log("getDistance function called");
+    console.log(originArray);
+    console.log(destinationArray);
 
 
     distanceService.getDistanceMatrix({

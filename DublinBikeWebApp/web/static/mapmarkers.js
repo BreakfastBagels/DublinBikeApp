@@ -305,7 +305,7 @@ function nearestStation(origin) {
             }
 
             var request = {
-                origin: response.originAddresses[0],
+                origin: origin,
                 destination: nearestStation,
                 travelMode: 'WALKING',
             };

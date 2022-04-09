@@ -311,7 +311,7 @@ function nearestStation(origin) {
 
         var request = {
                 origin: origin,
-                destination: stationMarkers[distanceValueAndStation[1]],
+                destination: stationMarkers[distanceValueAndStation[1]].position,
                 travelMode: 'WALKING',
             };
             directionsService.route(request, function(result, status) {

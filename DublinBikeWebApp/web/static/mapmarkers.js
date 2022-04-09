@@ -304,6 +304,7 @@ function nearestStation(origin) {
                 }
             }
 
+
             var request = {
                 origin: origin,
                 destination: nearestStation,
@@ -316,7 +317,8 @@ function nearestStation(origin) {
                 }
             });
             hideNonRouteMarkers();
-                }
+
+            }
         });
 
 
@@ -358,3 +360,33 @@ function nearestStation(origin) {
 //    var output = [distanceOutput, stationOutput];
 //    return output
 //}
+
+//        function distanceCallback(response, status) {
+//            if (status == 'OK') {
+//            minDistance = response.rows[0].elements[0].distance.value;
+//
+//            console.log("Initial Nearest Station:");
+//            nearestStation = stationMarkers[0].position;
+//            for (var i = 1; i < response.rows[0].elements.length; i++) {
+//                if (response.rows[0].elements[i].distance.value < minDistance) {
+//                    minDistance = response.rows[0].elements[i].distance.value;
+//                    nearestStation = stationMarkers[i].position;
+//                }
+//            }
+//
+//            if (minDistance < 500) {
+//                var request = {
+//                    origin: origin,
+//                    destination: nearestStation,
+//                    travelMode: 'WALKING',
+//                };
+//                directionsService.route(request, function(result, status) {
+//                    if (status == 'OK') {
+//                        directionsRenderer.setMap(map);
+//                        directionsRenderer.setDirections(result);
+//                    }
+//                });
+//                hideNonRouteMarkers();
+//                    }
+//            }
+//        }

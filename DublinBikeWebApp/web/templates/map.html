@@ -69,17 +69,15 @@
     {% block content %}
     <section class="bg-light text-dark p-5">
     <div class="d-md-flex">
-        <div class="row-mt-3">
         <p class="lead">Map with Current Bike Station Information</p>
-          <div class="col-lg-8"id="map"></div>
-            <div class="col-lg-8">
+        <div class="row-mt-3">
+          <div class="col-lg-6" id="map"></div>
+            <div class="col-lg-6">
                 <strong>Start: </strong>
-                <select id="start">
-                </select>
+                <select id="start"></select>
                 <strong>End: </strong>
-                <select id="end">
-                </select>
-                <button onclick="createBikeRoute();">Create Route</button>
+                <select id="end"></select>
+                <button onclick="createBikeRoute()">Create Route</button>
                 <button onclick="initAllMarkers();hideRoute();">Done</button>
                 <input type="text" id="find_station">
                 <button id="find_station_search" onclick="find_station()">Search</button>

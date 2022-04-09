@@ -260,14 +260,15 @@ function removeUserMarker() {
 
 function nearestStation(origin) {
 
-    var originAsArray = [origin];
+    console.log("Origin station:");
+    console.log(origin, typeof(origin));
     var destinationArray1 = [];
     var destinationArray2 = [];
     var destinationArray3 = [];
     var destinationArray4 = [];
     var destinationArray5 = [];
     var minDistance;
-    var nearestStationIndex;
+    var nearestStation;
 
     for (var i = 0; i < stationMarkers.length; i++) {
         if (i < 25) {
@@ -287,33 +288,25 @@ function nearestStation(origin) {
         }
     }
 
-        [minDistance, nearestStationIndex] = getDistance(originAsArray, destinationArray1);
-        if (minDistance > 500) {
-            [minDistance, nearestStationIndex] = getDistance(originAsArray, destinationArray2);
-            nearestStationIndex += 25;
-        }
+    distanceService.getDistanceMatrix({
+        origins: [origin],
+        destinations: destinationArray1,
+        travelMode: 'WALKING'}, function(response, status) {
+            if (status == 'OK') {
+            minDistance = response.rows[0].elements[0].distance.value;
 
-        if (minDistance > 500) {
-            [minDistance, nearestStationIndex] = getDistance(originAsArray, destinationArray3);
-            nearestStationIndex += 50;
-        }
+            console.log("Initial Nearest Station:");
+            nearestStation = stationMarkers[0].position;
+            for (var i = 1; i < response.rows[0].elements.length; i++) {
+                if (response.rows[0].elements[i].distance.value < minDistance) {
+                    minDistance = response.rows[0].elements[i].distance.value;
+                    nearestStation = stationMarkers[i].position;
+                }
+            }
 
-        if (minDistance > 500) {
-            [minDistance, nearestStationIndex] = getDistance(originAsArray, destinationArray4);
-            nearestStationIndex += 75;
-        }
-
-        if (minDistance > 500) {
-            [minDistance, nearestStationIndex] = getDistance(originAsArray, destinationArray5);
-            nearestStationIndex += 100;
-        }
-
-        console.log(minDistance, nearestStationIndex);
-
-
-        var request = {
-                origin: origin,
-                destination: stationMarkers[nearestStationIndex].position,
+            var request = {
+                origin: response.originAddresses[0],
+                destination: nearestStation,
                 travelMode: 'WALKING',
             };
             directionsService.route(request, function(result, status) {
@@ -323,42 +316,45 @@ function nearestStation(origin) {
                 }
             });
             hideNonRouteMarkers();
-
-}
-
-function getDistance(originArray, destinationArray) {
-
-
-    console.log("getDistance function called");
-    console.log(originArray);
-    console.log(destinationArray);
-
-
-    distanceService.getDistanceMatrix({
-        origins: originArray,
-        destinations: destinationArray,
-        travelMode: 'WALKING', function(response, status) {
-            console.log(status);
-            if (status == 'OK') {
-                var distanceOutput = response.rows[0].elements[0].distance.value;
-                var stationOutput = 0;
-
-                for (var i = 1; i < response.rows[0].elements.length; i++) {
-                if (response.rows[0].elements[i].distance.value < distanceOutput) {
-                    distanceOutput = response.rows[0].elements[i].distance.value;
-                    stationOutput = i;
-                    }
                 }
-            }
+        });
 
-            console.log(distanceOutput);
-            console.log(stationOutput);
-        }
-    });
 
-    console.log("Distance output is now: " + distanceOutput);
-    console.log("Station index is now: " + stationOutput);
-
-    var output = [distanceOutput, stationOutput];
-    return output
 }
+
+//function getDistance(originArray, destinationArray) {
+//
+//
+//    console.log("getDistance function called");
+//    console.log(originArray);
+//    console.log(destinationArray);
+//
+//
+//    distanceService.getDistanceMatrix({
+//        origins: originArray,
+//        destinations: destinationArray,
+//        travelMode: 'WALKING', function(response, status) {
+//            console.log(status);
+//            if (status == 'OK') {
+//                var distanceOutput = response.rows[0].elements[0].distance.value;
+//                var stationOutput = 0;
+//
+//                for (var i = 1; i < response.rows[0].elements.length; i++) {
+//                if (response.rows[0].elements[i].distance.value < distanceOutput) {
+//                    distanceOutput = response.rows[0].elements[i].distance.value;
+//                    stationOutput = i;
+//                    }
+//                }
+//            }
+//
+//            console.log(distanceOutput);
+//            console.log(stationOutput);
+//        }
+//    });
+//
+////    console.log("Distance output is now: " + distanceOutput);
+////    console.log("Station index is now: " + stationOutput);
+//
+//    var output = [distanceOutput, stationOutput];
+//    return output
+//}

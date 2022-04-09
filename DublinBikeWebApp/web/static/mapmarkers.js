@@ -329,13 +329,13 @@ function nearestStation(origin) {
 function getDistance(originArray, destinationArray) {
 
     console.log("getDistance function called");
-    var distanceOutput;
-    var stationOutput;
+
 
     distanceService.getDistanceMatrix({
         origins: originArray,
         destinations: destinationArray,
         travelMode: 'WALKING', function(response, status) {
+            console.log(status);
             if (status == 'OK') {
                 distanceOutput = response.rows[0].elements[0].distance.value;
                 stationOutput = 0;

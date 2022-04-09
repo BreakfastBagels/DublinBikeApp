@@ -288,22 +288,22 @@ function nearestStation(origin) {
     }
 
         [minDistance, nearestStationIndex] = getDistance(originAsArray, destinationArray1);
-        if (distanceValueAndStation[0] > 500) {
+        if (minDistance > 500) {
             [minDistance, nearestStationIndex] = getDistance(originAsArray, destinationArray2);
             nearestStationIndex += 25;
         }
 
-        if (distanceValueAndStation[0] > 500) {
+        if (minDistance > 500) {
             [minDistance, nearestStationIndex] = getDistance(originAsArray, destinationArray3);
             nearestStationIndex += 50;
         }
 
-        if (distanceValueAndStation[0] > 500) {
+        if (minDistance > 500) {
             [minDistance, nearestStationIndex] = getDistance(originAsArray, destinationArray4);
             nearestStationIndex += 75;
         }
 
-        if (distanceValueAndStation[0] > 500) {
+        if (minDistance > 500) {
             [minDistance, nearestStationIndex] = getDistance(originAsArray, destinationArray5);
             nearestStationIndex += 100;
         }

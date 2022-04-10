@@ -90,7 +90,7 @@ def get_daily():
 @app.route('/static_stations')
 def static_stations():
     cur = mysql.connect().cursor()
-    cur.execute('''select * from maindb.static_table''')
+    cur.execute('''select * from maindb.static_table order by address''')
     r = [dict((cur.description[i][0], value)
                 for i, value in enumerate(row)) for row in cur.fetchall()]
     json_stations = jsonify({'stations' : r})

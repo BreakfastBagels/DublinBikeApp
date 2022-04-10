@@ -27,23 +27,79 @@ function fillStationsOptions() {
 }
 
 function fillHourOptions() {
+    function getTransformedHour(hour) {
+        let transformedHour;
+        if (hour >= 0 && hour < 12) {
+            transformedHour = `${hour}am`;
+        }
+        else if (hour == 12) {
+            transformedHour = `${hour}pm`;
+        }
+        else if (hour >= 12 && hour < 24) {
+            hour -= 12;
+            transformedHour = `${hour}pm`;
+        }
+        return transformedHour
+    }
     const hoursSelect = document.getElementById('hours-options');
     for (let i = 0; i <= 23; i++) {
         let optionElem = document.createElement('option');
-        optionElem.textContent = i;
+        optionElem.textContent = getTransformedHour(i);
         optionElem.value = i;
         hoursSelect.appendChild(optionElem);
     }
 }
 
 function showStationPrediction(station, timeframe) {
-    let predictionHeader = document.getElementById('prediction-output');
-    const selectedHour = document.getElementById('hours-options').value;
     const requestString = `model/${station}/${timeframe}`;
     fetch(requestString)
     .then(response => response.json())
     .then(data => {
-        const predictionValue = data[selectedHour];
-        predictionHeader.textContent = Math.round(predictionValue);
+        // Prepping values for card
+        let predictionCardCol = document.getElementById('prediction-card-col');
+        const selectedHour = document.getElementById('hours-options').value;
+        const predictionValue = Math.round(data[selectedHour]);
+        const stationsOptions = document.getElementById('station-name-options').options;
+        const hoursOptions = document.getElementById('hours-options').options;
+        let stationName;
+        let hourText;
+        for (let i = 0; i < stationsOptions.length; i++) {
+            if (stationsOptions[i].value === station) stationName = stationsOptions[i].textContent;
+        }
+
+        for (let i = 0; i < hoursOptions.length; i++) {
+            if (hoursOptions[i].value === selectedHour) hourText = hoursOptions[i].textContent;
+        }
+        //Generating card + appending
+        const predictionCard = getAvailabilityCard(hourText, stationName, predictionValue, timeframe);
+        const cardColChildren = predictionCardCol.childNodes;
+        const lastNode = cardColChildren[cardColChildren.length - 1]
+        if (lastNode.className === 'card') predictionCardCol.removeChild(lastNode);
+        predictionCardCol.appendChild(predictionCard);
     })
+}
+
+function getAvailabilityCard(selectedHour, stationName, predictionValue, timeframe) {
+    let headerDiv = document.createElement('div');
+    headerDiv.classList.add('card-header', 'bg-info', 'text-light');
+    headerDiv.textContent = `${stationName} [${selectedHour} – W${timeframe.slice(1,)}]`;
+
+    let subtitleDiv = document.createElement('div');
+    subtitleDiv.classList.add('card-subtitle', 'text-muted', 'mb-2');
+    subtitleDiv.textContent = `Predicted Bikes Available`;
+
+    let textDiv = document.createElement('div');
+    textDiv.classList.add('card-text', 'display-4', 'text-center');
+    textDiv.textContent = `${predictionValue}`;
+
+    let bodyDiv = document.createElement('div');
+    bodyDiv.classList.add('card-body');
+    [subtitleDiv, textDiv].forEach(div => bodyDiv.appendChild(div));
+
+    let cardDiv = document.createElement('div');
+    cardDiv.classList.add('card');
+    cardDiv.appendChild(headerDiv);
+    cardDiv.appendChild(bodyDiv);
+
+    return cardDiv
 }

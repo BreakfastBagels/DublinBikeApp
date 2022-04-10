@@ -8,10 +8,10 @@ from sklearn.preprocessing import PolynomialFeatures
 app = Flask(__name__)
 mysql = MySQL()
 
-app.config['MYSQL_DATABASE_HOST'] = 'main-db.cd8z7cqv2c8a.us-east-1.rds.amazonaws.com'
+app.config['MYSQL_DATABASE_HOST'] = '127.0.0.1'
 app.config['MYSQL_DATABASE_PORT'] = 3306
-app.config['MYSQL_DATABASE_USER'] = 'admin'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'creamcheese95'
+app.config['MYSQL_DATABASE_USER'] = 'root'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'jackjack'
 
 mysql.init_app(app)
 
@@ -90,7 +90,7 @@ def get_daily():
 @app.route('/static_stations')
 def static_stations():
     cur = mysql.connect().cursor()
-    cur.execute('''select * from maindb.static_table''')
+    cur.execute('''select * from maindb.static_table order by address''')
     r = [dict((cur.description[i][0], value)
                 for i, value in enumerate(row)) for row in cur.fetchall()]
     json_stations = jsonify({'stations' : r})

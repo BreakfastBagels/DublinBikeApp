@@ -235,94 +235,99 @@ function createMarkerRouteOptions() {
     document.getElementById('end').innerHTML += stationMarkersString;
 }
 
-function find_station() {
-    var search_val = document.getElementById('find_station').value;
-    geocoder.geocode( {'address': search_val}, function(results, status) {
-        if(status == "OK") {
-            userMarker = new google.maps.Marker({
-                map: map,
-                position: results[0].geometry.location,
-                icon: {url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"},
-            });
-            map.panTo(results[0].geometry.location);
-            nearestStation(userMarker.position);
-        }
-    });
-    document.getElementById('find_station_reset').disabled = false;
-    document.getElementById('find_station_search').disabled = true;
-}
 
-function removeUserMarker() {
-    userMarker.setMap(null);
-    document.getElementById('find_station_search').disabled = false;
-    document.getElementById('find_station_reset').disabled = true;
-}
+// Nearest map marker functions removed from this current release but saved for later releases
 
-function nearestStation(origin) {
+//function find_station() {
+//    var search_val = document.getElementById('find_station').value;
+//    geocoder.geocode( {'address': search_val}, function(results, status) {
+//        if(status == "OK") {
+//            userMarker = new google.maps.Marker({
+//                map: map,
+//                position: results[0].geometry.location,
+//                icon: {url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"},
+//            });
+//            map.panTo(results[0].geometry.location);
+//            nearestStation(userMarker.position);
+//        }
+//    });
+//    document.getElementById('find_station_reset').disabled = false;
+//    document.getElementById('find_station_search').disabled = true;
+//}
+//
+//function removeUserMarker() {
+//    userMarker.setMap(null);
+//    document.getElementById('find_station_search').disabled = false;
+//    document.getElementById('find_station_reset').disabled = true;
+//}
 
-    console.log("Origin station:");
-    console.log(origin, typeof(origin));
-    var destinationArray1 = [];
-    var destinationArray2 = [];
-    var destinationArray3 = [];
-    var destinationArray4 = [];
-    var destinationArray5 = [];
-    var minDistance;
-    var nearestStation;
+//function nearestStation(origin) {
+//
+//    console.log("Origin station:");
+//    console.log(origin, typeof(origin));
+//    var destinationArray1 = [];
+//    var destinationArray2 = [];
+//    var destinationArray3 = [];
+//    var destinationArray4 = [];
+//    var destinationArray5 = [];
+//    var minDistance;
+//    var nearestStation;
+//
+//    for (var i = 0; i < stationMarkers.length; i++) {
+//        if (i < 25) {
+//            destinationArray1.push(stationMarkers[i].position);
+//        }
+//        else if (i < 50) {
+//            destinationArray2.push(stationMarkers[i].position);
+//        }
+//        else if (i < 75) {
+//            destinationArray3.push(stationMarkers[i].position);
+//        }
+//        else if (i < 100) {
+//            destinationArray4.push(stationMarkers[i].position);
+//        }
+//        else {
+//            destinationArray5.push(stationMarkers[i].position);
+//        }
+//    }
+//
+//    distanceService.getDistanceMatrix({
+//        origins: [origin],
+//        destinations: destinationArray1,
+//        travelMode: 'WALKING'}, function(response, status) {
+//            if (status == 'OK') {
+//            minDistance = response.rows[0].elements[0].distance.value;
+//
+//            console.log("Initial Nearest Station:");
+//            nearestStation = stationMarkers[0].position;
+//            for (var i = 1; i < response.rows[0].elements.length; i++) {
+//                if (response.rows[0].elements[i].distance.value < minDistance) {
+//                    minDistance = response.rows[0].elements[i].distance.value;
+//                    nearestStation = stationMarkers[i].position;
+//                }
+//            }
+//
+//
+//            var request = {
+//                origin: origin,
+//                destination: nearestStation,
+//                travelMode: 'WALKING',
+//            };
+//            directionsService.route(request, function(result, status) {
+//                if (status == 'OK') {
+//                    directionsRenderer.setMap(map);
+//                    directionsRenderer.setDirections(result);
+//                }
+//            });
+//            hideNonRouteMarkers();
+//
+//            }
+//        });
+//
+//
+//}
+// Distance functions to be saved for later releases
 
-    for (var i = 0; i < stationMarkers.length; i++) {
-        if (i < 25) {
-            destinationArray1.push(stationMarkers[i].position);
-        }
-        else if (i < 50) {
-            destinationArray2.push(stationMarkers[i].position);
-        }
-        else if (i < 75) {
-            destinationArray3.push(stationMarkers[i].position);
-        }
-        else if (i < 100) {
-            destinationArray4.push(stationMarkers[i].position);
-        }
-        else {
-            destinationArray5.push(stationMarkers[i].position);
-        }
-    }
-
-    distanceService.getDistanceMatrix({
-        origins: [origin],
-        destinations: destinationArray1,
-        travelMode: 'WALKING'}, function(response, status) {
-            if (status == 'OK') {
-            minDistance = response.rows[0].elements[0].distance.value;
-
-            console.log("Initial Nearest Station:");
-            nearestStation = stationMarkers[0].position;
-            for (var i = 1; i < response.rows[0].elements.length; i++) {
-                if (response.rows[0].elements[i].distance.value < minDistance) {
-                    minDistance = response.rows[0].elements[i].distance.value;
-                    nearestStation = stationMarkers[i].position;
-                }
-            }
-
-
-            var request = {
-                origin: origin,
-                destination: nearestStation,
-                travelMode: 'WALKING',
-            };
-            directionsService.route(request, function(result, status) {
-                if (status == 'OK') {
-                    directionsRenderer.setMap(map);
-                    directionsRenderer.setDirections(result);
-                }
-            });
-            hideNonRouteMarkers();
-
-            }
-        });
-
-
-}
 
 //function getDistance(originArray, destinationArray) {
 //

@@ -1,11 +1,10 @@
-//Nothing here yet
-
 // Global Vaars
-const stationInfoArray = [];
-const stationMarkerCoordinates = [];
-const stationMarkers = [];
+var stationInfoArray = [];
+var stationMarkerCoordinates = [];
+var stationMarkers = [];
 var directionsService;
 var directionsRenderer;
+var distanceService;
 var marker;
 var userMarker;
 let map;
@@ -72,6 +71,7 @@ function appendMapsScriptToPage() {
         directionsService = new google.maps.DirectionsService();
         directionsRenderer = new google.maps.DirectionsRenderer({
             suppressBicyclingLayer: true});
+        distanceService = new google.maps.DistanceMatrixService();
 
 
         geocoder = new google.maps.Geocoder();
@@ -114,6 +114,11 @@ function appendMapsScriptToPage() {
 }
 
 function initAllMarkers() {
+
+    stationMarkers = [];
+    stationInfoArray = [];
+    stationMarkerCoordinates = [];
+
     fetch("/static_stations")
         .then(function(resp) {
             return resp.json();
@@ -151,7 +156,7 @@ function initAllMarkers() {
                     })
                 })
                 fillStationCoordinatesArray(stationMarkerCoordinates, station_position);
-                stationMarkers.push(marker);
+                fillStationMarkersArray(stationMarkers, marker);
             }
             createMarkerRouteOptions();
         });
@@ -175,14 +180,13 @@ function fillStationInfoArray(infoArray, data) {
     }
 }
 
-function hideNonRouteMarkers(markerA, markerB) {
+function hideNonRouteMarkers() {
     for (var i = 0; i < stationMarkers.length; i++) {
-        if (stationMarkers[i] != markerA || stationMarkers[i] != markerB)
             stationMarkers[i].setMap(null);
     }
 }
 
-function createRoute() {
+function createBikeRoute() {
     var startString = document.getElementById('start').value;
     var endString = document.getElementById('end').value;
     var startArray = startString.split(",");
@@ -235,13 +239,13 @@ function find_station() {
     var search_val = document.getElementById('find_station').value;
     geocoder.geocode( {'address': search_val}, function(results, status) {
         if(status == "OK") {
-            console.log(results[0]);
             userMarker = new google.maps.Marker({
                 map: map,
                 position: results[0].geometry.location,
                 icon: {url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"},
             });
             map.panTo(results[0].geometry.location);
+            nearestStation(userMarker.position);
         }
     });
     document.getElementById('find_station_reset').disabled = false;
@@ -253,3 +257,136 @@ function removeUserMarker() {
     document.getElementById('find_station_search').disabled = false;
     document.getElementById('find_station_reset').disabled = true;
 }
+
+function nearestStation(origin) {
+
+    console.log("Origin station:");
+    console.log(origin, typeof(origin));
+    var destinationArray1 = [];
+    var destinationArray2 = [];
+    var destinationArray3 = [];
+    var destinationArray4 = [];
+    var destinationArray5 = [];
+    var minDistance;
+    var nearestStation;
+
+    for (var i = 0; i < stationMarkers.length; i++) {
+        if (i < 25) {
+            destinationArray1.push(stationMarkers[i].position);
+        }
+        else if (i < 50) {
+            destinationArray2.push(stationMarkers[i].position);
+        }
+        else if (i < 75) {
+            destinationArray3.push(stationMarkers[i].position);
+        }
+        else if (i < 100) {
+            destinationArray4.push(stationMarkers[i].position);
+        }
+        else {
+            destinationArray5.push(stationMarkers[i].position);
+        }
+    }
+
+    distanceService.getDistanceMatrix({
+        origins: [origin],
+        destinations: destinationArray1,
+        travelMode: 'WALKING'}, function(response, status) {
+            if (status == 'OK') {
+            minDistance = response.rows[0].elements[0].distance.value;
+
+            console.log("Initial Nearest Station:");
+            nearestStation = stationMarkers[0].position;
+            for (var i = 1; i < response.rows[0].elements.length; i++) {
+                if (response.rows[0].elements[i].distance.value < minDistance) {
+                    minDistance = response.rows[0].elements[i].distance.value;
+                    nearestStation = stationMarkers[i].position;
+                }
+            }
+
+
+            var request = {
+                origin: origin,
+                destination: nearestStation,
+                travelMode: 'WALKING',
+            };
+            directionsService.route(request, function(result, status) {
+                if (status == 'OK') {
+                    directionsRenderer.setMap(map);
+                    directionsRenderer.setDirections(result);
+                }
+            });
+            hideNonRouteMarkers();
+
+            }
+        });
+
+
+}
+
+//function getDistance(originArray, destinationArray) {
+//
+//
+//    console.log("getDistance function called");
+//    console.log(originArray);
+//    console.log(destinationArray);
+//
+//
+//    distanceService.getDistanceMatrix({
+//        origins: originArray,
+//        destinations: destinationArray,
+//        travelMode: 'WALKING', function(response, status) {
+//            console.log(status);
+//            if (status == 'OK') {
+//                var distanceOutput = response.rows[0].elements[0].distance.value;
+//                var stationOutput = 0;
+//
+//                for (var i = 1; i < response.rows[0].elements.length; i++) {
+//                if (response.rows[0].elements[i].distance.value < distanceOutput) {
+//                    distanceOutput = response.rows[0].elements[i].distance.value;
+//                    stationOutput = i;
+//                    }
+//                }
+//            }
+//
+//            console.log(distanceOutput);
+//            console.log(stationOutput);
+//        }
+//    });
+//
+////    console.log("Distance output is now: " + distanceOutput);
+////    console.log("Station index is now: " + stationOutput);
+//
+//    var output = [distanceOutput, stationOutput];
+//    return output
+//}
+
+//        function distanceCallback(response, status) {
+//            if (status == 'OK') {
+//            minDistance = response.rows[0].elements[0].distance.value;
+//
+//            console.log("Initial Nearest Station:");
+//            nearestStation = stationMarkers[0].position;
+//            for (var i = 1; i < response.rows[0].elements.length; i++) {
+//                if (response.rows[0].elements[i].distance.value < minDistance) {
+//                    minDistance = response.rows[0].elements[i].distance.value;
+//                    nearestStation = stationMarkers[i].position;
+//                }
+//            }
+//
+//            if (minDistance < 500) {
+//                var request = {
+//                    origin: origin,
+//                    destination: nearestStation,
+//                    travelMode: 'WALKING',
+//                };
+//                directionsService.route(request, function(result, status) {
+//                    if (status == 'OK') {
+//                        directionsRenderer.setMap(map);
+//                        directionsRenderer.setDirections(result);
+//                    }
+//                });
+//                hideNonRouteMarkers();
+//                    }
+//            }
+//        }

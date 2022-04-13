@@ -5,6 +5,7 @@ fillHourOptions()
 // Global values
 const statsFormButton = document.getElementById('stats-form-button');
 
+// Event listener added to button on stats page for generating predictions
 statsFormButton.addEventListener('click', e => {
     e.preventDefault();
     const stationSelected = document.getElementById('station-name-options').value;
@@ -12,8 +13,13 @@ statsFormButton.addEventListener('click', e => {
     showStationPrediction(stationSelected, timeframeSelected);
 })
 
+// Function to create the station options to fill the element for dropdown options
+// for generating predictions
 function fillStationsOptions() {
     const stationNameSelect = document.getElementById('station-name-options');
+
+    // Fetch request for static station information provides information for filling out
+    // html elements
     fetch('/static_stations')
     .then(response => response.json())
     .then(data => {
@@ -26,6 +32,7 @@ function fillStationsOptions() {
     })
 }
 
+// Function to create hour selection options for dropdown menu
 function fillHourOptions() {
     function getTransformedHour(hour) {
         let transformedHour;
@@ -50,8 +57,12 @@ function fillHourOptions() {
     }
 }
 
+// Function that generates bike availability prediction for a given station at a given time
 function showStationPrediction(station, timeframe) {
     const requestString = `model/${station}/${timeframe}`;
+
+    // Fetch request on flask API to find correct model pickle file for generating availability
+    // prediction for a given time
     fetch(requestString)
     .then(response => response.json())
     .then(data => {
@@ -79,6 +90,8 @@ function showStationPrediction(station, timeframe) {
     })
 }
 
+// Function that dynamically creates element and bootstrap styling classes
+// for bootstrap card displaying availability prediction
 function getAvailabilityCard(selectedHour, stationName, predictionValue, timeframe) {
     let headerDiv = document.createElement('div');
     headerDiv.classList.add('card-header', 'bg-info', 'text-light');

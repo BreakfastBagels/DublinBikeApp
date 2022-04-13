@@ -9,12 +9,15 @@ var marker;
 var userMarker;
 let map;
 
+// Constant values for map bounds
 const DUBLIN_BOUNDS = {
     north: 53.383584,
     south: 53.30752,
     east: -6.203132,
     west: -6.348253,
     };
+
+// Uninitialised geocoding service object
 let geocoder;
 
 // Global fns
@@ -22,6 +25,8 @@ storeLiveStationInfo()
 appendMapsScriptToPage()
 
 // Google Maps Code
+
+// Function that gets current information for a given station from locally sourced station information
 function getLiveStationJSON (stationNumber) {
     const stationInfoArr = JSON.parse(localStorage.getItem('station_info'))
     for (let i = 0; i < stationInfoArr.length; i++) {
@@ -29,6 +34,8 @@ function getLiveStationJSON (stationNumber) {
     }
 }
 
+// Function that runs fetch request on flask app API to get current station information store
+// the result locally for later use
 async function storeLiveStationInfo() {
     const response = await fetch('/station_info');
     const json = await response.json();
@@ -36,6 +43,8 @@ async function storeLiveStationInfo() {
     localStorage.setItem('station_info', JSON.stringify(stationInfoArr));
 }
 
+// Function that takes input station JSON information and formats it for display on map
+// marker click event
 function getInfoWindowContent(stationJSON) {
     const cleanedStationName = stationJSON['address'].replace(/\"/g, "");
     const stationCapacity = stationJSON['Available_Stands'] + stationJSON['Available_Bikes'];
@@ -49,6 +58,8 @@ function getInfoWindowContent(stationJSON) {
     ].join("<br>");
 }
 
+// Function that calculates current bike availability to determine the correct bagel icon
+// for display
 function calc_availability(data) {
     const currentStationInfo = getLiveStationJSON(data['number']);
     const stationCapacity = currentStationInfo['Available_Stands'] + currentStationInfo['Available_Bikes'];
@@ -62,25 +73,28 @@ function calc_availability(data) {
         return "Semi_Full"}
     }
 
+// Function that appends the Map script to the web page
 function appendMapsScriptToPage() {
     let script = document.createElement('script');
     script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAn2fKpMTzQRBw-YNEf-FrmJtztXVkLt_8&callback=initMap';
     script.async = true;
 
+    // Function that initialises map on page as well as service API objects for later use
     window.initMap = function() {
         directionsService = new google.maps.DirectionsService();
         directionsRenderer = new google.maps.DirectionsRenderer({
             suppressBicyclingLayer: true});
         distanceService = new google.maps.DistanceMatrixService();
-
-
         geocoder = new google.maps.Geocoder();
+
+        // Center map on Dublin using the predesignated map bounds
         map = new google.maps.Map(document.getElementById("map"), {
             center: { lat:53.34228, lng:-6.27455},
             restriction: {
                 latLngBounds: DUBLIN_BOUNDS,
                 strictBounds: false,
             },
+            // Remove some icons from display to improve UI of Map with additional bike station markers
             zoom: 14,
             styles: [
             {featureType: "administrative",
@@ -103,9 +117,10 @@ function appendMapsScriptToPage() {
             stylers: [{visibility: "off"}],},
             ]
             });
-
+        // Designate map part of page as the area where direction routes should be rendered
         directionsRenderer.setMap(map);
         directionsRenderer.setPanel(document.getElementById('directions'));
+        // Function that places marker on page
         initAllMarkers();
 
     };
@@ -113,26 +128,35 @@ function appendMapsScriptToPage() {
     document.head.appendChild(script);
 }
 
+// Function that initialises station markers
 function initAllMarkers() {
 
+    // Initialises empty arrays for different parts of station information
     stationMarkers = [];
     stationInfoArray = [];
     stationMarkerCoordinates = [];
 
+    // Run fetch request on static information to begin populating markers
     fetch("/static_stations")
         .then(function(resp) {
             return resp.json();
         })
+        // Async callback fills empty arrays and creates markers
         .then(async function(data) {
             for (var i = 0; i < data['stations'].length; i++) {
                 fillStationInfoArray(stationInfoArray, data['stations'][i]);
 
+                // Create variables for station position geographically
                 const station_position = {
                     'latitude':data['stations'][i]['latitude'],
                     'longitude':data['stations'][i]['longitude']}
 
+                // Calculate the appropriate marker icon for display
                 station_availability = calc_availability(data['stations'][i]);
 
+                // Create bike station marker with constants for position, the map
+                // as the created map on page, title for information on hover and the icon
+                // with the correct associated bagel marker
                 const marker = new google.maps.Marker({
                     position: {lat: parseFloat(station_position['latitude']),
                     lng: parseFloat(station_position['longitude'])},
@@ -143,6 +167,7 @@ function initAllMarkers() {
 
                 const stationNumber =  data['stations'][i]['number'];
 
+                // Create event listener for generating information window to user on click
                 marker.addListener("click", () => {
                     const liveStationJSON = getLiveStationJSON(stationNumber)
                     const infoWindowContent = getInfoWindowContent(liveStationJSON);
@@ -155,6 +180,8 @@ function initAllMarkers() {
                         shouldFocus: false,
                     })
                 })
+
+                // Fill additional marker information arrays for later use
                 fillStationCoordinatesArray(stationMarkerCoordinates, station_position);
                 fillStationMarkersArray(stationMarkers, marker);
             }
@@ -162,55 +189,74 @@ function initAllMarkers() {
         });
     }
 
+// Function that fills array with station coordinates
 function fillStationCoordinatesArray(infoArray, coordinates) {
     if(infoArray.length < 110) {
         infoArray.push(coordinates);
     }
 }
 
+// Function that fills array with marker objects
 function fillStationMarkersArray(markersArray, marker) {
     if(markersArray.length < 110) {
         markersArray.push(marker);
     }
 }
 
+// Function that fills stationInfo array with associated data for a given station
 function fillStationInfoArray(infoArray, data) {
     if (infoArray.length < 110) {
         infoArray.push(data);
     }
 }
 
+// Function that renders markers invisible when routes are generated on the map
 function hideNonRouteMarkers() {
     for (var i = 0; i < stationMarkers.length; i++) {
             stationMarkers[i].setMap(null);
     }
 }
 
+// Function that uses directions service to create a bike route from one station to another
 function createBikeRoute() {
+
+    // Take in values from html as strings and format to match addresses
     var startString = document.getElementById('start').value;
     var endString = document.getElementById('end').value;
     var startArray = startString.split(",");
     var endArray = endString.split(",");
+
+    // Create request object to hold directions request information
     var request = {
         origin: {lat: parseFloat(startArray[0]), lng: parseFloat(startArray[1])},
         destination: {lat: parseFloat(endArray[0]), lng: parseFloat(endArray[1])},
         travelMode: 'BICYCLING',
     };
+
+    // Callback function renders route and step-by-step directions if the status is returned as
+    // OK from the Google API
     directionsService.route(request, function(result, status) {
         if (status == 'OK') {
             directionsRenderer.setMap(map);
             directionsRenderer.setDirections(result);
         }
     });
+
+    // Station markers are hidden to improve route visibility
     hideNonRouteMarkers();
 }
 
+// Function that removes route from map and step-by-step directions
 function hideRoute() {
     directionsRenderer.setMap(null);
     document.getElementById('directions').innerHTML = "";
 }
 
+// Function that fills dropdown menus with options for generating routes
 function createMarkerRouteOptions() {
+
+    // Start by creating strings from station addresses, removing commas and putting
+    // resulting strings in an array to be sorted alphabetically
     var stationMarkersString = "";
     var stationNames = [];
     for (var i = 0; i < stationInfoArray.length; i++) {
@@ -220,6 +266,8 @@ function createMarkerRouteOptions() {
     }
     stationNames.sort();
 
+    // Iterate through the modified station names and create html for each that contains
+    // the position value of the marker to pass through for creating the route
     for (var i = 0; i < stationNames.length; i++) {
         for (var j = 0; j < stationInfoArray.length; j++) {
             if (stationInfoArray[j]['address'] == '"' + stationNames[i] + '"') {
@@ -231,12 +279,17 @@ function createMarkerRouteOptions() {
             }
         }
     };
+
+    // Add plain text to html for display on page
     document.getElementById('start').innerHTML += stationMarkersString;
     document.getElementById('end').innerHTML += stationMarkersString;
 }
 
 
-// Nearest map marker functions removed from this current release but saved for later releases
+/* Nearest map marker distance functionality removed from active code but retained here
+*  for use in future releases of application
+*/
+
 
 //function find_station() {
 //    var search_val = document.getElementById('find_station').value;

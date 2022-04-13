@@ -40,6 +40,7 @@ class GetJson:
         bikes_data = requests.get\
             (f"https://api.jcdecaux.com/vls/v1/stations?contract=dublin&apiKey={self.get_api()}")
 
+        # Specific responses for each request handled here
         if bikes_data.status_code == 200:
             return json.loads(bikes_data.content)
         elif bikes_data.status_code == 400:
@@ -63,6 +64,8 @@ class GetJson:
     def get_weather_data(self):
         weather_data = requests.get\
             (f"https://api.openweathermap.org/data/2.5/onecall?lat=53.3497645&lon=-6.2602732&exclude=minutely&appid={self.get_api()}")
+
+        # Similar handling of specific requests as per get_bikes_json() above
         if weather_data.status_code == 200:
             return json.loads(weather_data.content)
         elif weather_data.status_code == 400:

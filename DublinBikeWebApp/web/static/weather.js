@@ -11,12 +11,16 @@ const DailyBoxCol = document.getElementById('daily-box-col');
 postDailyInfoToDom()
 
 // Weather Box Code
+
+// Function to make API call for getting weather information from database and
+// returning JSON representation
 async function getWeatherJSON() {
     const response = await fetch('/get-weather');
     const json = await response.json();
     return json
 }
 
+// Function to place weather information within HTML document
 async function postWeatherInfoToDom() {
     const weatherJSON = await getWeatherJSON();
     const collectionArray = weatherJSON.weather;
@@ -25,6 +29,7 @@ async function postWeatherInfoToDom() {
     weatherBoxCol.appendChild(weatherBox);
 }
 
+// Function to dynamically create the html element for displaying weather information
 function drawWeatherBox(json) {
     const weatherBox = document.createElement('div');
 
@@ -51,18 +56,23 @@ function drawWeatherBox(json) {
     return weatherBox
 }
 
+// Function for manipulating string
 function capitalise(str) {
     const lower = str.toLowerCase()
     return str.charAt(0).toUpperCase() + lower.slice(1)
 }
 
 //Hourly Weather Box Code
+
+// Function that makes API call to flask API for hourly weather and returns
+// response as JSON object
 async function getHourJSON() {
     const response = await fetch('/hourly-weather');
     const json = await response.json();
     return json
 }
 
+// Function to place the array of hourly information boxes on page
 async function postHourInfoToDom() {
     const HourJSON = await getHourJSON();
     const collectionArray = HourJSON.hourly;
@@ -73,6 +83,7 @@ async function postHourInfoToDom() {
     }
 }
 
+// Function for drawing html box for information on hourly weather with the provided json
 function drawHourBox(json) {
     const HourBox = document.createElement('div.side');
 
@@ -101,12 +112,15 @@ function drawHourBox(json) {
 
 //Daily Weather Box Code
 
+// Function that makes API call to get daily weather information from the flask API and
+// return a JSON object representation
 async function getDailyJSON() {
     const response = await fetch('/daily-weather');
     const json = await response.json();
     return json
 }
 
+// Function that posts array of daily information to html page
 async function postDailyInfoToDom() {
     const DailyJSON = await getDailyJSON();
     const collectionArray = DailyJSON.daily;
@@ -117,6 +131,8 @@ async function postDailyInfoToDom() {
     }
 }
 
+// Function to draw box with daily weather information using passed in JSON
+// and create appropriate html element for the page
 function drawDailyBox(json) {
     const DailyBox = document.createElement('div.side');
 

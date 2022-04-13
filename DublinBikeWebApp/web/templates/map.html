@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" 
+              href="{{ url_for('static', filename='mapstyles.css')}}" />
+<!--        <link rel="stylesheet" type="text/css"-->
+<!--              href="{{url_for('static', filename='style.css')}}" />-->
+        <title>{%block title %}{% endblock %}</title>
+        <!-- <script src="../static/script.js" defer></script> -->
+        <script src="../static/mapmarkers.js" defer></script>
+    </head>
+    <body>
+
+      <!-- Navigation -->
+     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+          <a class="navbar-brand" href="/index">BAGEL BIKES</a>
+
+          <button class="navbar-toggler" typer="button" data-bs-toggle="collapse" data-bs-target="#nav">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="nav">
+            <ul class="navbar-nav ms-auto">
+<!--              <li class="nav-item">-->
+<!--                <a href="index" class="nav-link">Home</a>-->
+<!--              </li>-->
+              <li class="nav-item">
+                <a href="/map" class="nav-link">Bike Map</a>
+              </li>
+              <li class="nav-item">
+                <a href="/stats" class="nav-link">Helpful Statistics</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Banner Image -->
+
+      <section class="bg-info text-light p-5">
+        <div class="d-md-flex">
+          <div class="col-lg-5">
+            <h1 class="lead">Up-To-Date Map Information</h1>
+            <p>Below you will find all the information you need regarding bike stations and their location, as well as the ability to get directions between stations!</p>
+            <p>Please take a look at the key for guidance on how to read our Bagel Bike map. They are colour blind friendly!</p>
+            <p>Please also take into account that bikes are only avilable between 5am and 12:30am daily, however they can be returned at anytime 24/7.</p>
+          </div>
+          <div class="d-md-flex offset-lg-1">
+          <div class="col-lg-1 justify-content-center">
+            <img class="imag-fluid" style="width:50px;height:50px;margin-bottom:15px" src="static/icons/Bagel_Empty (2).png" alt="Dark Blue Bagel indicates Empty Station"/>
+            <img class="imag-fluid" style="width:50px;height:50px;margin-bottom:15px" src="static/icons/Bagel_Semi_Empty.png" alt="Dark Blue Bagel indicates Empty Station"/>
+            <img class="imag-fluid" style="width:50px;height:50px;margin-bottom:15px" src="static/icons/Bagel_Semi_Full.png" alt="Dark Blue Bagel indicates Empty Station"/>
+            <img class="imag-fluid" style="width:50px;height:50px;margin-bottom:15px" src="static/icons/Bagel_Full.png" alt="Dark Blue Bagel indicates Empty Station"/>
+          </div>
+          <div class="col-lg-9 offset-lg-1">
+            <p>Our dark blue bagel indicates that a bike station is completely empty (meaning there are no available bikes)</p>
+            <p>Our light blue bagel indicates there are a few bikes available and many open spaces</p>
+            <p>Our pink bagel indicates that the station is mostly full with bikes and there are few open spaces</p>
+            <p>Our dark red bagel indicates that the station is full with bikes and there are no open spaces</p>
+          </div>
+        </div>
+        </div>
+      </section>
+
+<!-- Map Section -->
+
+    {% block content %}
+    <section class="bg-light text-dark px-5 py-2">
+        <div class="row-mt-3">
+          <p class="lead">Map with Current Bike Station Information</p>
+          <div class="col-lg-12" id="map"></div>
+        </div>
+    </section>
+    <section class="bg-info text-dark px-5 py-2">
+        <div class="col-lg-10 mx-auto pt-2 pb-1">
+            <p class="text-light">Use our handy bike route service to help you get where you need to go! Pick from a
+                start and end bike station each and hit 'Create Route' to get directions on how to get there. Once
+                you're done looking for a route you can hit the 'Done' button to get another look at those bagels!</p>
+            <strong class="text-light">Start: </strong>
+            <select id="start"></select>
+            <strong class="text-light">End: </strong>
+            <select id="end"></select>
+            <button class="btn btn-light" onclick="createBikeRoute()">Create Route</button>
+            <button class="btn btn-light" onclick="initAllMarkers();hideRoute();">Done</button>
+        </div>
+<!--        <div class="col-lg-10 mx-auto pb-5 pt-2">-->
+<!--            <p class="text-light"> If you're not sure what station will be nearby, you can always type in a location-->
+<!--                in our search bar to find a nearby bike station as well as walking directions on how to get there.-->
+<!--                Just hit reset search whenever you want to put a new marker down if there is somewhere else you want-->
+<!--                to use as your starting location to find a nearby bike station!</p>-->
+<!--            <input type="text" id="find_station">-->
+<!--            <button class="btn btn-light" id="find_station_search" onclick="find_station()">Search</button>-->
+<!--            <button class="btn btn-light" id="find_station_reset" onclick="removeUserMarker()" disabled>Reset Search</button>-->
+<!--        </div>-->
+        <div id="directions" class="col-lg-10 mx-auto bg-light"></div>
+    </section>
+    {% endblock %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,11 +1,15 @@
 class CommunicationError(Exception):
+    """Custom error handling class to adapt messages for exceptions when
+    dealing with server responses"""
 
     def __init__(self, code, additional_info):
+        """Constructor uses status code and info defined in each subclass"""
         self._response_code = code
         self._message = f"There was an error in the communication with the server. " \
                         f"The server response code was {self._response_code}.\n"
         self._message += additional_info
 
+# String method defined to be used with representation method when displaying info to user
     def __str__(self):
         return self._message
 
@@ -13,6 +17,8 @@ class CommunicationError(Exception):
         return str(type(self))
 
 
+# Additional info around requests and recommendations sourced online
+# Each error handled here is individual subclass of custom Exception class
 class Error400(CommunicationError):
 
     def __init__(self):

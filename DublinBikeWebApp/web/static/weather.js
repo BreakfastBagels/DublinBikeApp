@@ -81,7 +81,8 @@ async function postHourInfoToDom() {
         const HourBox = drawHourBox(lastEntry);
         HourBoxCol.appendChild(HourBox);
         if (i === 0) {
-            HourBox.classList.add('bg-info, rounded');
+            HourBox.classList.add('bg-info');
+            HourBox.classList.add('rounded');
         }
     }
 }
@@ -132,7 +133,8 @@ async function postDailyInfoToDom() {
         const DailyBox = drawDailyBox(lastEntry);
         DailyBoxCol.appendChild(DailyBox);
         if (i === 0) {
-            DailyBox.classList.add('bg-info, rounded');
+            DailyBox.classList.add('bg-info');
+            DailyBox.classList.add('rounded');
         }
     }
 }

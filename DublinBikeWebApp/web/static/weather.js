@@ -80,6 +80,9 @@ async function postHourInfoToDom() {
         const lastEntry = collectionArray[i];
         const HourBox = drawHourBox(lastEntry);
         HourBoxCol.appendChild(HourBox);
+        if (i = 0) {
+            HourBox.classList.add('bg-primary');
+        }
     }
 }
 
@@ -128,6 +131,9 @@ async function postDailyInfoToDom() {
         const lastEntry = collectionArray[i];
         const DailyBox = drawDailyBox(lastEntry);
         DailyBoxCol.appendChild(DailyBox);
+        if (i = 0) {
+            DailyBox.classList.add('bg-primary');
+        }
     }
 }
 

@@ -60,7 +60,7 @@ def post_json_to_table(json):
 
     # Iteratively create sql queries to put bike station info into database by station at any given time
     for row in json:
-        timestamp_entered = datetime.datetime.fromtimestamp(time.time())
+        timestamp_entered = datetime.datetime.fromtimestamp((time.time())+3600)
         timestamp_entered = f"\'{timestamp_entered}\'"
         status = f"\'{row['status']}\'"
         sql_query = (

@@ -60,7 +60,7 @@ def post_weather_to_table(json):
     weather_engine = create_engine(conn_weather, echo=True)
 
     # Take specific variables from JSON object and cast to strings
-    timestamp_current_weather = datetime.datetime.fromtimestamp(time.time())
+    timestamp_current_weather = datetime.datetime.fromtimestamp((time.time())+3600)
     timestamp_current_weather = f"\'{timestamp_current_weather}\'"
     current_temp = f"\'{json['current']['temp']}\'"
     wind_speed = f"\'{json['current']['wind_speed']}\'"
@@ -71,12 +71,13 @@ def post_weather_to_table(json):
     min_weather = f"\'{json['daily'][0]['temp']['min']}\'"
     sunrise = f"\'{json['current']['sunrise']}\'"
     sunset = f"\'{json['current']['sunset']}\'"
+    picture = f"\'{json['current']['weather'][0]['icon']}\'"
 
     # Cast strings now added to SQL query passed into database connection
     sql_weather = f'''INSERT INTO `current_weather` (Time, Current_Temp,
-     Feels_Like, Wind_Speed, Current_ID, Current_Description, Sunrise, Sunset, Max_Temp, Min_Temp) 
+     Feels_Like, Wind_Speed, Current_ID, Current_Description, Sunrise, Sunset, Max_Temp, Min_Temp, Picture_ID) 
      VALUES ({timestamp_current_weather}, {current_temp}, {feels_like}, 
-    {wind_speed}, {current_id}, {current_description}, {sunrise}, {sunset}, {max_weather}, {min_weather});'''
+    {wind_speed}, {current_id}, {current_description}, {sunrise}, {sunset}, {max_weather}, {min_weather}, {picture});'''
     weather_engine.execute(sql_weather)
 
     # hourly weather
@@ -86,13 +87,13 @@ def post_weather_to_table(json):
 
     for i in range(len(json)):
         hour_temp = f"\'{json['hourly'][i]['temp']}\'"
-        hour_time = f"\'{datetime.datetime.fromtimestamp(json['hourly'][i]['dt'])}\'"
+        hour_time = f"\'{datetime.datetime.fromtimestamp((json['hourly'][i]['dt'])+3600)}\'"
         hour_feels = f"\'{json['hourly'][i]['feels_like']}\'"
         hour_wind = f"\'{json['hourly'][i]['wind_speed']}\'"
         hour_id = f"\'{json['hourly'][i]['weather'][0]['id']}\'"
         hour_des = f"\'{json['hourly'][i]['weather'][0]['description']}\'"
         hour_pic = f"\'{json['hourly'][i]['weather'][0]['icon']}\'"
-        hour_recorded = f"\'{datetime.datetime.fromtimestamp(time.time())}\'"
+        hour_recorded = f"\'{datetime.datetime.fromtimestamp((time.time())+3600)}\'"
         sql_hourly = f'''INSERT INTO `hourly_weather` (Hourly_Time, Hourly_Temp, Hourly_Feels_Like,
          Hourly_Wind, Hourly_ID, Hourly_Description, Hourly_Picture, Hour_Recorded) 
          VALUES ({hour_time}, {hour_temp}, {hour_feels}, {hour_wind}, {hour_id}, {hour_des}, {hour_pic}, {hour_recorded});'''
@@ -103,9 +104,9 @@ def post_weather_to_table(json):
     # Same method as above (casting specific components to strings and adding to SQL query)
     # used to obtain daily forecast information iteratively
     for j in range(len(json)):
-        day_time = f"\'{datetime.datetime.fromtimestamp(json['daily'][j]['dt'])}\'"
-        day_sunrise = f"\'{datetime.datetime.fromtimestamp(json['daily'][j]['sunrise'])}\'"
-        day_sunset = f"\'{datetime.datetime.fromtimestamp(json['daily'][j]['sunset'])}\'"
+        day_time = f"\'{datetime.datetime.fromtimestamp((json['daily'][j]['dt'])+3600)}\'"
+        day_sunrise = f"\'{datetime.datetime.fromtimestamp((json['daily'][j]['sunrise'])+3600)}\'"
+        day_sunset = f"\'{datetime.datetime.fromtimestamp((json['daily'][j]['sunset'])+3600)}\'"
         day_temp = f"\'{json['daily'][j]['temp']['day']}\'"
         day_max = f"\'{json['daily'][j]['temp']['max']}\'"
         day_min = f"\'{json['daily'][j]['temp']['min']}\'"

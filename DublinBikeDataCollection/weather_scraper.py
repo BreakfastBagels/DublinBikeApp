@@ -71,12 +71,13 @@ def post_weather_to_table(json):
     min_weather = f"\'{json['daily'][0]['temp']['min']}\'"
     sunrise = f"\'{json['current']['sunrise']}\'"
     sunset = f"\'{json['current']['sunset']}\'"
+    picture = f"\'{json['current']['weather'][0]['icon']}\'"
 
     # Cast strings now added to SQL query passed into database connection
     sql_weather = f'''INSERT INTO `current_weather` (Time, Current_Temp,
-     Feels_Like, Wind_Speed, Current_ID, Current_Description, Sunrise, Sunset, Max_Temp, Min_Temp) 
+     Feels_Like, Wind_Speed, Current_ID, Current_Description, Sunrise, Sunset, Max_Temp, Min_Temp, Picture_ID) 
      VALUES ({timestamp_current_weather}, {current_temp}, {feels_like}, 
-    {wind_speed}, {current_id}, {current_description}, {sunrise}, {sunset}, {max_weather}, {min_weather});'''
+    {wind_speed}, {current_id}, {current_description}, {sunrise}, {sunset}, {max_weather}, {min_weather}, {picture});'''
     weather_engine.execute(sql_weather)
 
     # hourly weather

@@ -2,6 +2,7 @@
 var stationInfoArray = [];
 var stationMarkerCoordinates = [];
 var stationMarkers = [];
+var infoWindows = [];
 var directionsService;
 var directionsRenderer;
 var distanceService;
@@ -169,11 +170,18 @@ function initAllMarkers() {
 
                 // Create event listener for generating information window to user on click
                 marker.addListener("click", () => {
+                    // Ensures only one window open on screen
+                    if (infoWindows.length > 0) {
+                        const openWindow = infoWindows[0]
+                        openWindow.close();
+                        infoWindows.pop(openWindow)
+                    }
                     const liveStationJSON = getLiveStationJSON(stationNumber)
                     const infoWindowContent = getInfoWindowContent(liveStationJSON);
                     const infoWindow = new google.maps.InfoWindow({
                         content: infoWindowContent,
                     })
+                    infoWindows.push(infoWindow);
                     infoWindow.open({
                         anchor: marker,
                         map,
